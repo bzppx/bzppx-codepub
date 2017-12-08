@@ -1,0 +1,9 @@
+.idea/*
+*.exe
+*.exe~
+.vscode
+.vscode/*
+.sessions
+.DS_Store
+*.log
+bzppx-codepub
