@@ -22,6 +22,7 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
+
 	if !this.isLogin() {
 		this.Redirect("/login/index.html", 302)
 		this.StopRun()

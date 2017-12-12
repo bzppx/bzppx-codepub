@@ -3,6 +3,7 @@ package routers
 import (
 	"bzppx-codepub/app/controllers"
 	"net/http"
+
 	"github.com/astaxie/beego"
 )
 
@@ -28,6 +29,7 @@ func init() {
 
 	// todo add router..
 	beego.AutoRouter(&controllers.MainController{})
+	beego.AutoRouter(&controllers.LoginController{})
 
 	beego.ErrorHandler("404", http_404)
 	beego.ErrorHandler("500", http_500)

@@ -1,10 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"os"
+
 	"github.com/astaxie/beego"
 	"github.com/snail007/go-activerecord/mysql"
-	"fmt"
 )
 
 var G *mysql.DBGroup
@@ -35,6 +36,7 @@ func init() {
 	dbTablePrefix := beego.AppConfig.String("db::table_prefix")
 	maxIdle, _ := beego.AppConfig.Int("db::conn_max_idle")
 	maxConn, _ := beego.AppConfig.Int("db::conn_max_connection")
+	G = mysql.NewDBGroup("default")
 	cfg := mysql.NewDBConfigWith(host, port, dbname, user, pass)
 	cfg.SetMaxIdleConns = maxIdle
 	cfg.SetMaxOpenConns = maxConn
