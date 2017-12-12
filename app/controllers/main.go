@@ -1,6 +1,6 @@
 package controllers
 
-import "bzppx/bzppx-codepub/app/business"
+import "bzppx-codepub/app/business"
 
 type MainController struct {
 	BaseController

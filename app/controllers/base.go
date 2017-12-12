@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"bzppx-codepub/app/utils"
 	"encoding/json"
 	"strings"
-	"bzppx/bzppx-codepub/app/utils"
-	"github.com/astaxie/beego"
 	"time"
+
+	"github.com/astaxie/beego"
 )
 
 type BaseController struct {
