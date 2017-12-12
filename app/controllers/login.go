@@ -5,5 +5,5 @@ type LoginController struct {
 }
 
 func (this *LoginController) Index() {
-
+	this.viewLayoutTitle("Login", "login/login", "login")
 }

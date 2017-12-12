@@ -22,7 +22,14 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
-
+	controllerName, actionName := this.GetControllerAndAction()
+	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
+	methodName := strings.ToLower(actionName)
+	if controllerName == "login" {
+		if methodName == "index" {
+			return
+		}
+	}
 	if !this.isLogin() {
 		this.Redirect("/login/index.html", 302)
 		this.StopRun()

@@ -17,7 +17,7 @@ func init() {
 	beego.SetStaticPath("/static/", "static")
 
 	// views path
-	beego.BConfig.WebConfig.ViewsPath = "app/views/"
+	beego.BConfig.WebConfig.ViewsPath = "views/"
 
 	// session
 	beego.BConfig.WebConfig.Session.SessionName = "ssid"
