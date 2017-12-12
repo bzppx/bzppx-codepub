@@ -3,7 +3,6 @@ package routers
 import (
 	"bzppx-codepub/app/controllers"
 	"net/http"
-
 	"github.com/astaxie/beego"
 )
 

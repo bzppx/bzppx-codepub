@@ -1,10 +1,10 @@
 package models
 
 import (
-	"fmt"
 	"os"
 	"github.com/astaxie/beego"
 	"github.com/snail007/go-activerecord/mysql"
+	"fmt"
 )
 
 var G *mysql.DBGroup
@@ -42,7 +42,7 @@ func init() {
 	cfg.TablePrefixSqlIdentifier = "__PREFIX__"
 	err = G.Regist("default", cfg)
 	if err != nil {
-		beego.Error(fmt.Errorf("regist db error:%s,with config : %v", err, cfg))
+		beego.Error(fmt.Errorf("database error:%s,with config : %v", err, cfg))
 		os.Exit(100)
 	}
 }

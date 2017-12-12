@@ -2,9 +2,9 @@ package main
 
 import (
 	_ "bzppx-codepub/app/routers"
-
+	_ "bzppx-codepub/app/models"
 	"github.com/astaxie/beego"
-	_ "github.com/astaxie/beego"
+	"log"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 func initLog() {
 	logConfigs, err := beego.AppConfig.GetSection("log")
 	if err != nil {
-		panic(err)
+		log.Println(err.Error())
 	}
 	for adapter, config := range logConfigs {
 		beego.SetLogger(adapter, config)
