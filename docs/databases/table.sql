@@ -34,7 +34,6 @@ CREATE TABLE `cp_module` (
   `branch` varchar(50) NOT NULL COMMENT '分支',
   `ssh_key` text NOT NULL COMMENT 'ssh key',
   `ssh_key_salt` text NOT NULL COMMENT 'ssh salt',
-  `ssh_password` varchar(50) NOT NULL COMMENT 'ssh 密码',
   `https_username` varchar(50) NOT NULL COMMENT 'https 用户名',
   `https_password` varchar(50) NOT NULL COMMENT 'https 密码',
   `code_path` varchar(200) NOT NULL COMMENT '代码发布目录',

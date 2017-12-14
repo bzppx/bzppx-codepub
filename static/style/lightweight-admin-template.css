@@ -662,9 +662,7 @@ blockquote {
 	width: 20px
 }
 
-.nav__item--active>a {
-	border-left: 3px solid #37a6c4
-}
+
 
 .nav__item>a {
 	background-color: #f2f7f8;
@@ -759,8 +757,51 @@ blockquote {
 
 /**left a**/
 .nav__item>a,.nav,.nav__item--child>a {
-	background-color: #f1f2f3;
+	/*background-color: #f1f2f3;*/
+	background-color: #222d32;
+	color: #e7e7e7;
+	/*background: linear-gradient(to right, #242729 0%, #1e2023 100%);*/
 }
 .header__brand{
 	padding-left:30px;
 }
+
+.nav__item--active>a {
+	border-left: 3px solid #37a6c4;
+	background-color: #0e181c;
+}
+
+.nav__item--child.nav__item--active>a {
+	border-left: 0 solid #37a6c4;
+	background-color: inherit;
+	color: #0096d9;
+}
+
+/*
+ *  STYLE 6
+ */
+
+body::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+	border-radius: 10px;
+}
+
+body::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-image: -webkit-gradient(linear,
+	left bottom,
+	left top,
+	color-stop(0.86, #00bdda),
+	color-stop(0.52, #0178bc),
+	color-stop(0.34, #0178bc));
+}
+
