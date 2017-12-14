@@ -41,6 +41,18 @@
     <nav class="main__nav nav">
 
         <ul class="nav__wrapper">
+
+            <li class="nav__item nav__item--has-child">
+                <a href="#">
+                    <i class="nav__icon fa fa-desktop"></i> 我的模块
+                    <i class="nav__arrow fa fa-angle-down"></i>
+                </a>
+
+                <ul class="nav__wrapper nav__wrapper--child">
+                    <li class="nav__item--child"><a href="typography.html">模块列表</a></li>
+                </ul>
+            </li>
+            {{if .isAdmin }}
             <li class="nav__item nav__item--has-child">
                 <a href="#">
                     <i class="nav__icon fa fa-desktop"></i> 用户管理
@@ -63,16 +75,7 @@
                     <li class="nav__item--child"><a href="cards.html">新增模块</a></li>
                 </ul>
             </li>
-            <li class="nav__item nav__item--has-child">
-                <a href="#">
-                    <i class="nav__icon fa fa-desktop"></i> 我的模块
-                    <i class="nav__arrow fa fa-angle-down"></i>
-                </a>
 
-                <ul class="nav__wrapper nav__wrapper--child">
-                    <li class="nav__item--child"><a href="typography.html">模块列表</a></li>
-                </ul>
-            </li>
             <li class="nav__item nav__item--has-child">
                 <a href="#">
                     <i class="nav__icon fa fa-desktop"></i> 系统管理
@@ -84,6 +87,7 @@
                     <li class="nav__item--child"><a href="typography.html">系统日志</a></li>
                 </ul>
             </li>
+            {{end}}
         </ul>
 
         <div class="footer__wrapper">

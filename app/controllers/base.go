@@ -67,7 +67,7 @@ func (this *BaseController) isAdmin() bool {
 		return false
 	}
 	u := user.(map[string]string)
-	return u["role"] == fmt.Sprintf("%s", models.USER_ROLE_ADMIN)
+	return u["role"] == fmt.Sprintf("%d", models.USER_ROLE_ADMIN) || u["role"] == fmt.Sprintf("%d", models.USER_ROLE_ROOT)
 }
 
 // check is login
