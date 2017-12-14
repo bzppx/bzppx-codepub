@@ -1,104 +1,108 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<title> CodePub </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title> CodePub </title>
+    <link rel="stylesheet" type="text/css" href="/static/css/login.css" />
+    <script type="text/javascript" src="/static/style/jquery.min.js"></script>
 </head>
 
 <body>
 
-<link rel="stylesheet" type="text/css" href="/static/css/login.css" />
-<script type="text/javascript" src="/static/style/jquery.min.js"></script>
-<div class="body-wrap">
-<div id="header">
-</div>
-<div class="login-wrap">
-	<div class="wrap clearfix">
-		<div style="float: left; margin-top: 140px;">
-			<img src="/static/style/brand.png">
-			<h1 style="color: white; font-size: 16px;">一个开源的 GIT 代码发布系统</h1>
-			<br>
-			<h1 style="color: white; font-size: 16px;">地址：https://github.com/bzppx/bzppx-codepub</h1>
-		</div>
-		<div class="form-box fr loginV2"  style="display:block;">
-			<ul class="form-tab clearfix">
-				<li class="tab-li cur"><a href="javascript:;">账号登录</a></li>
-				<li class="tab-li"><a href="javascript:;">其他登录<i class="icon"></i></a></li>
-			</ul>
-			<div class="form-con">
-				<div class="login-normal" style="display:block;">
-					<form method="post">
-						<div class="form-error" style=""><i></i><label class="text"></label></div>
-						<dl class="clearfix">
-							<dt>用户名：</dt>
-							<dd>
-								<input type="text" name="username" class="input-text" />
-								<span class="placeholder">用户名/邮箱</span>
-							</dd>
-						</dl>
-						<dl class="top1 clearfix">
-							<dt>密<em></em>码：</dt>
-							<dd>
-								<input type="password" name="password" class="input-text" />
-								<span class="placeholder">请输入密码</span>
-							</dd>
-						</dl>
-						<dl class="top1 clearfix">
-							<dt>验证码：</dt>
-							<dd>
-								<input type="text" name="captcha" class="input-text"/>
-								<img src="/login/captcha" class="captcha" style="height:35px;margin-left: 100px;margin-bottom: 5px;" title="看不清? 点击换一个">
-								<span class="placeholder">请输入验证码</span>
-							</dd>
-						</dl>
-						<div class="form-remember"></div>
-						<div class="btn-box clearfix">
-							<input class="btn-settlement" id="login-button" type="button" value="登    录">
-						</div>
-					</form>
-				</div>
-				<div class="login-normal" style="display:none;">
-					<form id="nameLoginForm" method="post" autocomplete="off">
-						<div class="form-error" style=""><i></i><label class="text"></label></div>
-						<dl class="clearfix">
-							<dt>用户名：</dt>
-							<dd><input type="text" name="loginName" id="normalUser" class="input-text" autocomplete="off" /><span class="placeholder">用户名/邮箱</span></dd>
-						</dl>
-						<dl class="top1 clearfix">
-							<dt>密<em></em>码：</dt>
-							<dd><input type="password" name="password" id="normalPassword" class="input-text"><span class="placeholder">请输入密码</span></dd>
-						</dl>
-						<div class="form-remember">
-							<!--<input name="rememberName" type="checkbox" id="remUser" class="rem-check" style="display:none;" checked="checked">-->
-							<!--<span class="rem-box rem-box-r memCheck"><input name="rememberMe" type="checkbox" id="remLogin" class="rem-check">三个月之内免登录</span> -->
-						</div>
-						<div class="btn-box clearfix">
-							<input id="normalSubmit" class="btn-settlement" type=submit value="登    录"  tjjj="passport.button.login">
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-	</div>
+
+    <div class="body-wrap">
+        <div id="header">
+        </div>
+        <div class="login-wrap">
+            <div class="wrap clearfix">
+                <div style="float: left; margin-top: 140px;">
+                    <img src="/static/style/brand.png">
+                    <h1 style="color: white; font-size: 16px;">一个开源的 GIT 代码发布系统</h1>
+                    <br>
+                    <h1 style="color: white; font-size: 16px;">地址：https://github.com/bzppx/bzppx-codepub</h1>
+                </div>
+                <div class="form-box fr loginV2" style="display:block;">
+                    <ul class="form-tab clearfix">
+                        <li class="tab-li cur"><a href="javascript:;">账号登录</a></li>
+                        <li class="tab-li"><a href="javascript:;">其他登录<i class="icon"></i></a></li>
+                    </ul>
+                    <div class="form-con">
+                        <div class="login-normal" style="display:block;">
+                            <form method="post">
+                                <div class="form-error" style=""><i></i><label class="text"></label></div>
+                                <dl class="clearfix">
+                                    <dt>用户名：</dt>
+                                    <dd>
+                                        <input type="text" name="username" class="input-text" />
+                                        <span class="placeholder">用户名/邮箱</span>
+                                    </dd>
+                                </dl>
+                                <dl class="top1 clearfix">
+                                    <dt>密<em></em>码：</dt>
+                                    <dd>
+                                        <input type="password" name="password" class="input-text" />
+                                        <span class="placeholder">请输入密码</span>
+                                    </dd>
+                                </dl>
+                                <dl class="top1 clearfix">
+                                    <dt>验证码：</dt>
+                                    <dd>
+                                        <input type="text" name="captcha" class="input-text" />
+                                        <img src="/login/captcha" class="captcha" style="height:35px;margin-left: 100px;margin-bottom: 5px;" title="看不清? 点击换一个">
+                                        <span class="placeholder">请输入验证码</span>
+                                    </dd>
+                                </dl>
+                                <div class="form-remember"></div>
+                                <div class="btn-box clearfix">
+                                    <input class="btn-settlement" id="login-button" type="button" value="登    录">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="login-normal" style="display:none;">
+                            <form id="nameLoginForm" method="post" autocomplete="off">
+                                <div class="form-error" style=""><i></i><label class="text"></label></div>
+                                <dl class="clearfix">
+                                    <dt>用户名：</dt>
+                                    <dd><input type="text" name="loginName" id="normalUser" class="input-text" autocomplete="off" /><span class="placeholder">用户名/邮箱</span></dd>
+                                </dl>
+                                <dl class="top1 clearfix">
+                                    <dt>密<em></em>码：</dt>
+                                    <dd><input type="password" name="password" id="normalPassword" class="input-text"><span class="placeholder">请输入密码</span></dd>
+                                </dl>
+                                <div class="form-remember">
+                                    <!--<input name="rememberName" type="checkbox" id="remUser" class="rem-check" style="display:none;" checked="checked">-->
+                                    <!--<span class="rem-box rem-box-r memCheck"><input name="rememberMe" type="checkbox" id="remLogin" class="rem-check">三个月之内免登录</span> -->
+                                </div>
+                                <div class="btn-box clearfix">
+                                    <input id="normalSubmit" class="btn-settlement" type=submit value="登    录" tjjj="passport.button.login">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/style/login.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(".form-tab li").on("click", function() {
+                var index = $(this).index();
+                $(this).addClass("cur").siblings().removeClass("cur");
+                $(".form-con>div").hide().eq(index).show();
+                if (index == 0) {
+                    $(".form-foot").hide();
+                } else {
+                    $(".form-foot").show();
+                }
+                $(".form-error").hide();
+            });
+        });
+    </script>
+
 </body>
+
 </html>
-<script src="/static/style/login.js"></script>
-<script type="text/javascript">
-	$(function(){
-		$(".form-tab li").on("click",function(){
-			var index = $(this).index();
-			$(this).addClass("cur").siblings().removeClass("cur");
-			$(".form-con>div").hide().eq(index).show();
-			if(index == 0){
-				$(".form-foot").hide();
-			}else{
-				$(".form-foot").show();
-			}
-			$(".form-error").hide();
-		});
-	});
-</script>
