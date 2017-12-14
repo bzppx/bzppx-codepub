@@ -804,4 +804,12 @@ body::-webkit-scrollbar-thumb
 	color-stop(0.52, #0178bc),
 	color-stop(0.34, #0178bc));
 }
-
+.form__group{
+	justify-content:flex-start;
+}
+.form__label{
+	width:auto;
+}
+input.textfield{
+	width:300px;
+}
