@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"bzppx-codepub/app/models"
 	"bzppx-codepub/app/utils"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -26,18 +28,46 @@ func (this *BaseController) Prepare() {
 	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	methodName := strings.ToLower(actionName)
 	if controllerName == "login" {
-		if methodName == "index" {
+		if methodName == "index" || methodName == "logout" || methodName == "captcha" {
 			return
 		}
 	}
 	if !this.isLogin() {
-		this.Redirect("/login/index.html", 302)
+		this.Redirect("/login/index", 302)
 		this.StopRun()
 	}
 	user := this.GetSession("author").(map[string]string)
 	this.Data["loginUser"] = user
 	this.Data["TimeNowYear"] = time.Now().Format("2006")
 	this.Layout = "layout/default.html"
+}
+
+// check is login
+func (this *BaseController) isRoot() bool {
+	if !this.isLogin() {
+		return false
+	}
+	user := this.GetSession("author")
+	//session 失效
+	if user == nil {
+		return false
+	}
+	u := user.(map[string]string)
+	return u["role"] == fmt.Sprintf("%s", models.USER_ROLE_ROOT)
+}
+
+// check is login
+func (this *BaseController) isAdmin() bool {
+	if !this.isLogin() {
+		return false
+	}
+	user := this.GetSession("author")
+	//session 失效
+	if user == nil {
+		return false
+	}
+	u := user.(map[string]string)
+	return u["role"] == fmt.Sprintf("%s", models.USER_ROLE_ADMIN)
 }
 
 // check is login

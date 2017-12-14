@@ -10,6 +10,12 @@ import (
 	"github.com/snail007/go-activerecord/mysql"
 )
 
+const (
+	USER_ROLE_ROOT  = 3
+	USER_ROLE_ADMIN = 2
+	USER_ROLE_USER  = 1
+)
+
 type User struct {
 }
 

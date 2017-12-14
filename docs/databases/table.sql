@@ -1,5 +1,3 @@
--- Adminer 4.2.5 MySQL dump
-
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -92,13 +90,15 @@ CREATE TABLE `cp_user` (
   `mobile` char(13) NOT NULL DEFAULT '' COMMENT '手机号',
   `last_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '最后登录ip',
   `last_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '最后登录时间',
-  `role` tinyint(3) NOT NULL DEFAULT '0' COMMENT '0,普通用户; 1超级管理员; 2管理员',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态，0：正常 -1：删除',
+  `role` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0,普通用户; 1管理员2超级管理员;',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态，0：正常 -1：删除',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
+INSERT INTO `cp_user` (`user_id`, `username`, `given_name`, `password`, `email`, `mobile`, `last_ip`, `last_time`, `role`, `status`, `create_time`, `update_time`) VALUES
+(1,	'root',	'root',	'21232f297a57a5a743894a0e4a801fc3',	'',	'',	'',	'0000-00-00 00:00:00',	0,	0,	'2017-12-14 02:26:40',	'0000-00-00 00:00:00');
 
 DROP TABLE IF EXISTS `cp_user_module`;
 CREATE TABLE `cp_user_module` (
@@ -108,6 +108,3 @@ CREATE TABLE `cp_user_module` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`user_module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块关系表';
-
-
--- 2017-12-12 10:29:25
