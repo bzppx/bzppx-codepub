@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/style/login.css">
+    <link rel="icon" href="/static/style/favicon.ico">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <h1>Welcome</h1>
+
+            <form class="form">
+                <input type="text" name="username" placeholder="用户名">
+                <input type="password" name="password" placeholder="密码">
+                <img src="/login/captcha" class="captcha" title="看不清? 点击换一个">
+                <input type="text" name="captcha" placeholder="验证码">
+                <button type="submit" id="login-button">Login</button>
+            </form>
+        </div>
+
+        <ul class="bg-bubbles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <script src='/static/style/jquery.min.js'></script>
+    <script src="/static/style/login.js"></script>
+</body>
+
+</html>
