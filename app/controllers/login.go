@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/png"
 	"strings"
+	"time"
 
 	"github.com/afocus/captcha"
 	"github.com/astaxie/beego"
@@ -54,7 +55,6 @@ func (this *LoginController) Index() {
 		if user["password"] != password {
 			this.jsonError("账号或密码错误!")
 		}
-		//加载权限列表
 
 		//保存 session
 		this.SetSession("author", user)
@@ -64,6 +64,11 @@ func (this *LoginController) Index() {
 		passport := beego.AppConfig.String("author.passport")
 		//fmt.Println("set cookie " + passportValue)
 		this.Ctx.SetCookie(passport, passportValue, 3600)
+
+		userModel.Update(user["user_id"], map[string]interface{}{
+			"last_time": time.Now().Unix(),
+			"last_ip":   this.getClientIp(),
+		})
 
 		this.jsonSuccess("登录成功", "", "/main/index")
 	} else {
