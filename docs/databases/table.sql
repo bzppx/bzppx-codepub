@@ -1,8 +1,5 @@
--- Adminer 4.2.5 MySQL dump
-
 -- --------------------------------------------
 -- codepub database
--- cp
 -- --------------------------------------------
 
 -- --------------------------------------------
@@ -25,9 +22,9 @@ CREATE TABLE `cp_user` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
--- --------------------------------------
+-- --------------------------------------------
 -- 代码模块表
--- --------------------------------------
+-- --------------------------------------------
 DROP TABLE IF EXISTS `cp_module`;
 CREATE TABLE `cp_module` (
   `module_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块id',
@@ -56,9 +53,9 @@ CREATE TABLE `cp_module` (
   PRIMARY KEY (`module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='代码模块表';
 
--- ------------------------------------------------------------
+-- ---------------------------------------------
 -- 模块组表
--- ------------------------------------------------------------
+-- ---------------------------------------------
 DROP TABLE IF EXISTS `cp_modules`;
 CREATE TABLE `cp_modules` (
   `modules_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '模块组表主键id',
@@ -70,9 +67,9 @@ CREATE TABLE `cp_modules` (
   PRIMARY KEY (`modules_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块组表';
 
--- -----------------------------------------------------------------
+-- ----------------------------------------------
 -- 用户模块对应关系表
--- -----------------------------------------------------------------
+-- ----------------------------------------------
 DROP TABLE IF EXISTS `cp_user_module`;
 CREATE TABLE `cp_user_module` (
   `user_module_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户和模块关系表 id',
@@ -82,9 +79,9 @@ CREATE TABLE `cp_user_module` (
   PRIMARY KEY (`user_module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
 
--- -------------------------------------------------------
+-- ----------------------------------------------
 -- 节点表
--- -------------------------------------------------------
+-- ----------------------------------------------
 DROP TABLE IF EXISTS `cp_node`;
 CREATE TABLE `cp_node` (
   `node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点信息表主键id',
@@ -98,9 +95,9 @@ CREATE TABLE `cp_node` (
   PRIMARY KEY (`node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点信息表';
 
--- ------------------------------------------------------
+-- ----------------------------------------------
 -- 节点组表
--- ------------------------------------------------------
+-- ----------------------------------------------
 DROP TABLE IF EXISTS `cp_nodes`;
 CREATE TABLE `cp_nodes` (
   `nodes_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点组表主键id',
@@ -112,9 +109,9 @@ CREATE TABLE `cp_nodes` (
   PRIMARY KEY (`nodes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点组表';
 
--- --------------------------------------------------------
+-- ------------------------------------------------
 -- 模块节点对应关系表
--- --------------------------------------------------------
+-- ------------------------------------------------
 DROP TABLE IF EXISTS `cp_module_node`;
 CREATE TABLE `cp_module_node` (
   `module_node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
@@ -124,9 +121,9 @@ CREATE TABLE `cp_module_node` (
   PRIMARY KEY (`module_node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块和节点关系表';
 
--- -----------------------------------------------------------
+-- -------------------------------------------------
 -- 发布任务表
--- -----------------------------------------------------------
+-- -------------------------------------------------
 DROP TABLE IF EXISTS `cp_task`;
 CREATE TABLE `cp_task` (
   `task_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务主键 id',
@@ -140,9 +137,9 @@ CREATE TABLE `cp_task` (
   PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='发布任务表';
 
--- -------------------------------------------------------------
+-- -------------------------------------------------
 -- 任务日志表
--- -------------------------------------------------------------
+-- -------------------------------------------------
 DROP TABLE IF EXISTS `cp_task_log`;
 CREATE TABLE `cp_task_log` (
   `task_log_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务日志表主键id',
