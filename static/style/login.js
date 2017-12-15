@@ -1,7 +1,7 @@
 $(function() {
 
     function errorMsg(msg) {
-        $(".error-box h1").text("登录出错："+msg);
+        $(".error-box h1").text("登录出错：" + msg);
         $(".error-box").show();
     }
     var refreshCode = function() {
@@ -32,11 +32,11 @@ $(function() {
         }, function(data) {
             if (data.code) {
                 $(".error-box").hide();
-                $('.welcome-text').show();
-                $('form').fadeOut(500, function() {
+                $('form').slideUp(500, function() {
+                    $('.welcome-text').show().addClass("animated").addClass("bounceInUp");
                     setTimeout(function() {
                         location = data.redirect.url;
-                    }, data.redirect.sleep);
+                    }, data.redirect.sleep * 3);
                 });
             } else {
                 errorMsg(data.message);

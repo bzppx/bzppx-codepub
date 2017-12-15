@@ -7,7 +7,8 @@
     <meta http-equiv="cache-control" content="no-cache">
     <link rel="icon" href="/static/style/favicon.ico">
     <title> CodePub </title>
-    <link rel="stylesheet" type="text/css" href="/static/css/login.css" />
+    <link rel="stylesheet" type="text/css" href="/static/style/animate.css" />
+    <link rel="stylesheet" type="text/css" href="/static/style/login.css" />
     <script type="text/javascript" src="/static/style/jquery.min.js"></script>
 </head>
 
@@ -18,7 +19,7 @@
         <div class="login-wrap">
             <div class="wrap clearfix">
                 <div class="left-box">
-                    <img src="/static/style/brand.png">
+                    <img class="animated bounceInLeft" src="/static/style/brand.png">
                     <h1>一个开源的 GIT 代码发布系统</h1>
                     <br>
                     <button class="btn-settlement" type="button">
@@ -40,19 +41,19 @@
                                 <dl class="clearfix">
                                     <dt>用户名：</dt>
                                     <dd>
-                                        <input type="text" name="username" class="input-text" autocomplete="off" placeholder="用户名/邮箱" />
+                                        <input type="text" name="username" class="input-text" autocomplete="off" placeholder="" />
                                     </dd>
                                 </dl>
                                 <dl class="top1 clearfix">
                                     <dt>密<em></em>码：</dt>
                                     <dd>
-                                        <input type="password" name="password" class="input-text" autocomplete="off" placeholder="请输入密码" />
+                                        <input type="password" name="password" class="input-text" autocomplete="off" placeholder="" />
                                     </dd>
                                 </dl>
                                 <dl class="top1 clearfix" id="captcha-dl">
                                     <dt>验证码：</dt>
                                     <dd>
-                                        <input type="text" name="captcha" class="input-text" autocomplete="off" placeholder="请输入验证码" />
+                                        <input type="text" name="captcha" class="input-text" autocomplete="off" placeholder="" />
                                     </dd>
                                 </dl>
                                 <div class="captcha-box">
@@ -85,7 +86,7 @@
                                 </div>
                             </form>
                         </div>
-                        <h1 class="welcome-text" style="display: none">Welcome</h1>
+                        <h1 class="welcome-text" class="animated" style="display: none">Welcome</h1>
                     </div>
                     <div class="error-box" style="display: none">
                         <h1></h1>
