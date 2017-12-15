@@ -12,3 +12,7 @@ func (this *MainController) Index() {
 func (this *MainController) Default() {
 	this.viewLayoutTitle("首页", "main/default", "page")
 }
+func (this *MainController) Tpl() {
+	typ := this.GetString("type")
+	this.viewLayoutTitle("模板", "main/tpl-"+typ, "page")
+}
