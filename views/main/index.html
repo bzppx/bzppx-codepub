@@ -11,14 +11,17 @@
         <div class="header__account account account--has-login">
             <div class="account__wrapper">
                 <img class="account__img" src="/static/style/irfan-maulana.jpg" />
-                <span class="account__name">Irfan</span>
+                <span class="account__name">root</span>
             </div>
             <i class="account__arrow fa fa-angle-down js--show-dropdown-menu"></i>
 
             <div class="account__menu">
                 <ul class="account__menu-wrapper">
-                    <li class="account__menu-item"><a href="#profil">Profile</a></li>
-                    <li class="account__menu-item"><a href="/login/logout">Logout</a></li>
+                    <li class="account__menu-item"><a href="#profil">
+                        <i class="nav__icon fa fa-x fa-male"></i>我的资料
+                    </a></li>
+                    <li class="account__menu-item"><a href="/login/logout">
+                        <i class="nav__icon fa fa-x fa-sign-out"></i>安全退出</a></li>
                 </ul>
             </div>
 
@@ -41,68 +44,121 @@
     <nav class="main__nav nav">
 
         <ul class="nav__wrapper">
-
             <li class="nav__item nav__item--has-child">
                 <a href="#">
-                    <i class="nav__icon fa fa-desktop"></i> 我的模块
+                    <i class="nav__icon fa fa-user"></i> 个人中心
+                    <i class="nav__arrow fa fa-angle-down"></i>
+                </a>
+                <ul class="nav__wrapper nav__wrapper--child">
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>我的资料</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav__item nav__item--has-child">
+                <a href="#">
+                    <i class="nav__icon fa fa-code-fork"></i> 发布模块
                     <i class="nav__arrow fa fa-angle-down"></i>
                 </a>
 
                 <ul class="nav__wrapper nav__wrapper--child">
-                    <li class="nav__item--child"><a href="typography.html">模块列表</a></li>
+                    <li class="nav__item--child"><a href="typography.html"><i class="nav__icon fa fa-list"></i>模块列表</a></li>
                 </ul>
             </li>
             {{if .isAdmin }}
             <li class="nav__item nav__item--has-child">
                 <a href="#">
-                    <i class="nav__icon fa fa-desktop"></i> 用户管理
+                    <i class="nav__icon fa fa-users"></i> 用户管理
                     <i class="nav__arrow fa fa-angle-down"></i>
                 </a>
-
                 <ul class="nav__wrapper nav__wrapper--child">
-                    <li class="nav__item--child"><a href="typography.html">用户列表</a></li>
-                    <li class="nav__item--child"><a href="/user/create">新增用户</a></li>
+                    <li class="nav__item--child"><a href="/user/create"><i class="nav__icon fa fa-list"></i>添加用户</a></li>
+                    <li class="nav__item--child"><a href="/user/list"><i class="nav__icon fa fa-list"></i>用户列表</a></li>
                 </ul>
             </li>
             <li class="nav__item nav__item--has-child">
                 <a href="#">
-                    <i class="nav__icon fa fa-desktop"></i> 模块管理
+                    <i class="nav__icon fa fa-cube"></i> 模块管理
                     <i class="nav__arrow fa fa-angle-down"></i>
                 </a>
-
                 <ul class="nav__wrapper nav__wrapper--child">
                     <li class="nav__item--child">
-                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>模块列表</a></li>
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>模块组</a>
+                    </li>
                     <li class="nav__item--child">
-                        <a href="cards.html"><i class="nav__icon fa fa-list"></i>新增模块</a></li>
+                        <a href="cards.html"><i class="nav__icon fa fa-list"></i>添加模块</a>
+                    </li>
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>模块列表</a>
+                    </li>
                 </ul>
             </li>
-
             <li class="nav__item nav__item--has-child">
                 <a href="#">
-                    <i class="nav__icon fa fa-desktop"></i> 系统管理
+                    <i class="nav__icon fa fa-crosshairs"></i> 节点管理
                     <i class="nav__arrow fa fa-angle-down"></i>
                 </a>
-
                 <ul class="nav__wrapper nav__wrapper--child">
-                    <li class="nav__item--child"><a href="cards.html">模块配置</a></li>
-                    <li class="nav__item--child"><a href="typography.html">系统日志</a></li>
-                    <li class="nav__item--child"><a href="/main/tpl?type=form">模板-表单</a></li>
-                    <li class="nav__item--child"><a href="/main/tpl?type=table">模板-表格</a></li>
+                    <li class="nav__item--child">
+                        <a href="cards.html"><i class="nav__icon fa fa-list"></i>节点组</a>
+                    </li>
+                    <li class="nav__item--child">
+                        <a href="cards.html"><i class="nav__icon fa fa-list"></i>添加节点</a>
+                    </li>
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>节点列表</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav__item nav__item--has-child">
+                <a href="#">
+                    <i class="nav__icon fa fa-file-text"></i> 日志管理
+                    <i class="nav__arrow fa fa-angle-down"></i>
+                </a>
+                <ul class="nav__wrapper nav__wrapper--child">
+                    <li class="nav__item--child">
+                        <a href="cards.html"><i class="nav__icon fa fa-list"></i>操作日志</a>
+                    </li>
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>任务日志</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav__item nav__item--has-child">
+                <a href="#">
+                    <i class="nav__icon fa fa-bar-chart-o"></i> 发布统计
+                    <i class="nav__arrow fa fa-angle-down"></i>
+                </a>
+                <ul class="nav__wrapper nav__wrapper--child">
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>统计</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav__item nav__item--has-child">
+                <a href="#">
+                    <i class="nav__icon fa fa-gears"></i> 系统管理
+                    <i class="nav__arrow fa fa-angle-down"></i>
+                </a>
+                <ul class="nav__wrapper nav__wrapper--child">
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>封版配置</a>
+                    </li>
+                    <li class="nav__item--child">
+                        <a href="typography.html"><i class="nav__icon fa fa-list"></i>邮件配置</a>
+                    </li>
+                    <li class="nav__item--child"><a href="/main/tpl?type=form"><i class="nav__icon fa fa-list"></i>模板-表单</a></li>
+                    <li class="nav__item--child"><a href="/main/tpl?type=table"><i class="nav__icon fa fa-list"></i>模板-表格</a></li>
                 </ul>
             </li>
             {{end}}
         </ul>
 
         <div class="footer__wrapper">
-
             <div class="footer__text">
                 <!--<span>Crafted with &nbsp;<i class="fa fa-heart-o"></i>&nbsp; by Irfan Maulana</span>-->
             </div>
-
-
         </div>
-
     </nav>
     <article class="main__content content">
         <div class="content__wrapper">

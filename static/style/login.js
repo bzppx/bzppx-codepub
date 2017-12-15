@@ -32,12 +32,12 @@ $(function() {
         }, function(data) {
             if (data.code) {
                 $(".error-box").hide();
+                $('.welcome-text').show();
                 $('form').fadeOut(500, function() {
                     setTimeout(function() {
                         location = data.redirect.url;
                     }, data.redirect.sleep);
                 });
-                $('.welcome-text').show();
             } else {
                 errorMsg(data.message);
                 // alert(data.message);
