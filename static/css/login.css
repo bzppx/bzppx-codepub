@@ -37,8 +37,25 @@ button,
 input,
 select,
 textarea {
-    font: 12px/1.5 tahoma, arial, '΢���ź�';
-    color: #666
+    font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+    color: #f2f7f8;
+}
+
+input::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #fff;
+}
+input:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #fff;
+}
+input::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #fff;
+}
+input::-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #fff;
 }
 
 h1,
@@ -48,7 +65,7 @@ h4,
 h5,
 h6 {
     font-size: 100%;
-    font-weight: 400
+    font-weight: 100;
 }
 
 address,
@@ -231,7 +248,7 @@ a:hover {
 html,
 body {
     /*background-color: #0178bc;*/
-    background-image: url("http://image.kejixun.com/2016/0921/20160921065644457.jpg");
+    background-image: url("../style/bkg.jpg");
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
@@ -296,16 +313,17 @@ body {
     height: 50px;
     line-height: 52px;
     font-size: 18px;
-    color: #999;
+    /*color: #f2f7f8;*/
+    color: #e7e7e7;
     text-decoration: none;
 }
 
 .form-tab .tab-li.cur {
-    border-bottom-color: #0178bc;
+    border-bottom-color: #11accf;
 }
 
 .form-tab .tab-li.cur a {
-    color: #0178bc;
+    color: #11accf;
 }
 
 .form-box .form-con {
@@ -433,7 +451,7 @@ body {
     z-index: 2;
     background: transparent;
     outline: 0 none;
-    color: #333;
+    /*color: #333;*/
 }
 
 .form-box .input-text {
@@ -936,4 +954,69 @@ body {
     font-size: 18px;
     color: #d00;
     text-align: center;
+}
+
+.left-box {
+    float: left;
+    margin-top: 140px;
+}
+
+.left-box h1 {
+    color: #f2f7f8;
+    font-family: "Microsoft YaHei", "MicrosoftJhengHei", STHeiti, MingLiu;
+    font-size: 16px;
+    margin-left: 30px;
+}
+
+.left-box button {
+    width: 180px;
+    margin-left: 40px;
+}
+
+.left-box a {
+    color: #e7e7e7;
+}
+
+#captcha-dl {
+    width: 200px;
+    float: left;
+    top: -2px;
+
+}
+
+#captcha-dl dd {
+    width: 120px;
+}
+
+#captcha-dl input {
+    width: 93px;
+}
+
+.captcha-box {
+    float: left;
+    width: 98px;
+}
+
+.captcha {
+    background-color: #ddd;
+    width: 98px;
+    height:44px;
+}
+
+.error-box {
+    margin-top: 40px;
+    margin-left: 80px;
+    color: #ff3333;
+}
+
+.error-box h1 {
+    font-size: 14px;
+    font-weight:bold;
+}
+
+.welcome-text {
+    font-family: "Consolas", "Menlo", "Courier", monospace;
+    font-size: 40px;
+    margin-left: 100px;
+    margin-top: 80px;
 }
