@@ -33,6 +33,8 @@ func init() {
 	beego.AutoRouter(&controllers.LoginController{})
 	beego.AutoRouter(&controllers.ProfileController{})
 	beego.AutoRouter(&controllers.PublishController{})
+	beego.AutoRouter(&controllers.ModulesController{})
+	beego.AutoRouter(&controllers.ModuleController{})
 	beego.Router("/", &controllers.LoginController{}, "*:Index")
 	beego.ErrorHandler("404", http_404)
 	beego.ErrorHandler("500", http_500)

@@ -30,6 +30,7 @@ CREATE TABLE `cp_module` (
   `module_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块id',
   `user_id` int(11) NOT NULL COMMENT 'user id',
   `modules_id` int(11) NOT NULL COMMENT '模块组 id',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '模块组名称',
   `repository_url` varchar(300) NOT NULL COMMENT 'git 仓库地址 https or ssh',
   `branch` varchar(50) NOT NULL COMMENT '分支',
   `ssh_key` text NOT NULL COMMENT 'ssh key',

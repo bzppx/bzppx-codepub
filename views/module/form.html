@@ -1,0 +1,185 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块名称</label>
+                <div class="col-sm-4">
+                    <input type="text" name="name" class="form-control" placeholder="请输入用户名" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块组</label>
+                <div class="col-sm-4">
+                    <select name="modules_id" class="form-control">
+                        <option value="1">模块组1</option>
+                        <option value="2">模块组2</option>
+                        <option value="3">模块组3</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <span class="text-danger"> * 下拉选择</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 拉取方式 </label>
+                <div class="col-sm-4">
+                    <label class="radio-inline">
+                        <input type="radio" name="radio" value="0" checked="checked"> HTTP
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="radio" value="1"> HTTPS
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="radio" value="2"> SSH
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码仓库 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="input-group1">http://</span>
+                        <input type="text" name="" class="form-control" placeholder="请输入 http 代码仓库地址" aria-describedby="input-group1" required>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <span>通过 js 控制</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码仓库 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">https://</span>
+                        <input type="text" name="" class="form-control" placeholder="请输入 https 代码仓库地址" aria-describedby="input-group1" required>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码仓库 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">ssh://</span>
+                        <input type="text" name="" class="form-control" placeholder="请输入 ssh 代码仓库地址" aria-describedby="input-group1" required>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> ssh key </label>
+                <div class="col-sm-4">
+                    <input type="text" name="ssh_key" class="form-control" placeholder="请输入ssh 配置 key" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> ssh key salt </label>
+                <div class="col-sm-4">
+                    <input type="text" name="ssh_key_salt" class="form-control" placeholder="请输入ssh key salt" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> http username </label>
+                <div class="col-sm-4">
+                    <input type="text" name="https_username" class="form-control" placeholder="请输入 http 配置 username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> http password </label>
+                <div class="col-sm-4">
+                    <input type="text" name="https_password" class="form-control" placeholder="请输入 http 配置 password" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码分支</label>
+                <div class="col-sm-4">
+                    <input type="text" name="branch" class="form-control" placeholder="请输入要发布的代码分支名" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 发布路径</label>
+                <div class="col-sm-4">
+                    <input type="text" name="code_path" class="form-control" placeholder="请输入代码发布路径" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 目录所属用户</label>
+                <div class="col-sm-4">
+                    <input type="text" name="code_dir_user" class="form-control" placeholder="请输入代码目录所属linux用户" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 前置命令 </label>
+                <div class="col-sm-4">
+                    <textarea name="pre_command" class="form-control" rows="6"></textarea><br/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 前置命令执行方式</label>
+                <div class="col-sm-4">
+                    <select name="pre_command_exec_type" class="form-control">
+                        <option value="1">同步执行，遇到错误停止</option>
+                        <option value="2">同步执行，遇到错误继续</option>
+                        <option value="3">异步执行</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 前置命令超时 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input type="text" name="" class="form-control" placeholder="请输入前置命令执行超时时间" aria-describedby="input-group1" required>
+                        <span class="input-group-addon">秒</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 后置命令 </label>
+                <div class="col-sm-4">
+                    <textarea name="post_command" class="form-control" rows="6"></textarea><br/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 后置命令执行方式</label>
+                <div class="col-sm-4">
+                    <select name="post_command_exec_type" class="form-control">
+                        <option value="1">同步执行，遇到错误停止</option>
+                        <option value="2">同步执行，遇到错误继续</option>
+                        <option value="3">异步执行</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 后置命令超时 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input type="text" name="" class="form-control" placeholder="请输入后置命令执行超时时间" aria-describedby="input-group1" required>
+                        <span class="input-group-addon">秒</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 执行命令用户</label>
+                <div class="col-sm-4">
+                    <input type="text" name="exec_user" class="form-control" placeholder="请输入执行命令linux用户" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 备注</label>
+                <div class="col-sm-4">
+                    <input type="text" name="comment" class="form-control" placeholder="请输入备注信息" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" name="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    // 拉取方式控制
+    $(function () {
+        
+    })
+</script>
