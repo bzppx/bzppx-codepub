@@ -170,7 +170,7 @@
     $(function() {
         setInterval(function() {
             var mainheight = $("#main").contents().find("body").height();
-            var minHeight = $(window).height()
+            var minHeight = $(window).height() - 90;
             if (mainheight < minHeight) {
                 mainheight = minHeight
             }

@@ -130,3 +130,7 @@ ul,li {
     margin-left:50%;
     left: -width/2;
 }
+
+#failedBox ul {
+    padding-left: 20px;
+}

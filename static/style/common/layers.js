@@ -6,13 +6,28 @@ var Layers = {
 	skin : 'layui-layer-lan',
 
 	/**
-	 * alert 提示信息框
+	 * success 提示信息框
 	 * @param title
 	 */
-	alert : function (title) {
-		layer.alert(title, {
+	success : function (title) {
+		layer.alert(title+"<br/>", {
+			title: "操作成功",
 			icon: 1,
-			skin: Layers.skin
+			skin: Layers.skin,
+			closeBtn: 0
+		})
+	},
+
+	/**
+	 * error 提示信息框
+	 * @param title
+	 */
+	error : function (title) {
+		layer.alert(title, {
+			title: "操作失败",
+			icon: 2,
+			skin: Layers.skin,
+			closeBtn: 0
 		})
 	},
 
@@ -35,20 +50,24 @@ var Layers = {
 	},
 
 	/**
-	 * iframe 窗
+	 * bind iframe 窗
 	 */
-	iframe: function (title, url, width, height) {
-		height = height||"500px";
-		width = width||"1000px";
-		layer.open({
-			type: 2,
-			skin: Layers.skin,
-			title: title,
-			shadeClose: true,
-			shade : 0.6,
-			maxmin: true,
-			area: [width, height],
-			content: url
-		});
+	bindIframe: function (element, title, url, width, height) {
+		$(element).bind('click', function () {
+			height = height||"500px";
+			width = width||"1000px";
+			url = url|| $(element).attr("data-link");
+			layer.open({
+				type: 2,
+				skin: Layers.skin,
+				title: title,
+				shadeClose: true,
+				shade : 0.6,
+				maxmin: true,
+				area: [width, height],
+				content: url,
+				padding:"10px"
+			});
+		})
 	}
 };
