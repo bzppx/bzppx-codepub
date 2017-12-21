@@ -1,4 +1,7 @@
 $(function() {
+    if (parent != self) {
+        parent.location = location
+    }
 
     function errorMsg(msg) {
         $(".error-box h1").text("登录出错：" + msg);
@@ -46,5 +49,16 @@ $(function() {
             }
         }, "json");
         return
+    });
+    $(".form-tab li").on("click", function() {
+        var index = $(this).index();
+        $(this).addClass("cur").siblings().removeClass("cur");
+        $(".form-con>div").hide().eq(index).show();
+        if (index == 0) {
+            $(".form-foot").hide();
+        } else {
+            $(".form-foot").show();
+        }
+        $(".form-error").hide();
     });
 });

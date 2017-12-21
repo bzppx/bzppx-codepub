@@ -1,40 +1,20 @@
--- --------------------------------------------
--- codepub database
--- --------------------------------------------
+-- Adminer 4.2.5 MySQL dump
 
--- --------------------------------------------
--- 系统用户表
--- --------------------------------------------
-DROP TABLE IF EXISTS `cp_user`;
-CREATE TABLE `cp_user` (
-  `user_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户表主键',
-  `username` varchar(50) NOT NULL DEFAULT '' COMMENT '用户名',
-  `given_name` varchar(50) NOT NULL DEFAULT '' COMMENT '姓名',
-  `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
-  `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `mobile` char(13) NOT NULL DEFAULT '' COMMENT '手机号',
-  `last_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '最后登录ip',
-  `last_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
-  `role` tinyint(3) NOT NULL DEFAULT '0' COMMENT '0,普通用户; 1超级管理员; 2管理员',
-  `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
-  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
--- --------------------------------------------
--- 代码模块表
--- --------------------------------------------
 DROP TABLE IF EXISTS `cp_module`;
 CREATE TABLE `cp_module` (
   `module_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块id',
   `user_id` int(11) NOT NULL COMMENT 'user id',
   `modules_id` int(11) NOT NULL COMMENT '模块组 id',
-  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '模块组名称',
   `repository_url` varchar(300) NOT NULL COMMENT 'git 仓库地址 https or ssh',
   `branch` varchar(50) NOT NULL COMMENT '分支',
-  `ssh_key` text NOT NULL COMMENT 'ssh key',
-  `ssh_key_salt` text NOT NULL COMMENT 'ssh salt',
+  `ssh_key` text NOT NULL COMMENT 'ssh key ',
+  `ssh_key_salt` text NOT NULL COMMENT 'ssh  key salt',
+  `ssh_password` varchar(50) NOT NULL COMMENT 'ssh 密码',
   `https_username` varchar(50) NOT NULL COMMENT 'https 用户名',
   `https_password` varchar(50) NOT NULL COMMENT 'https 密码',
   `code_path` varchar(200) NOT NULL COMMENT '代码发布目录',
@@ -53,9 +33,7 @@ CREATE TABLE `cp_module` (
   PRIMARY KEY (`module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='代码模块表';
 
--- ---------------------------------------------
--- 模块组表
--- ---------------------------------------------
+
 DROP TABLE IF EXISTS `cp_modules`;
 CREATE TABLE `cp_modules` (
   `modules_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '模块组表主键id',
@@ -67,21 +45,17 @@ CREATE TABLE `cp_modules` (
   PRIMARY KEY (`modules_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块组表';
 
--- ----------------------------------------------
--- 用户模块对应关系表
--- ----------------------------------------------
-DROP TABLE IF EXISTS `cp_user_module`;
-CREATE TABLE `cp_user_module` (
-  `user_module_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户和模块关系表 id',
-  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户 id',
-  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块 id',
-  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`user_module_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
 
--- ----------------------------------------------
--- 节点表
--- ----------------------------------------------
+DROP TABLE IF EXISTS `cp_module_node`;
+CREATE TABLE `cp_module_node` (
+  `module_node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
+  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块ID',
+  `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`module_node_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块和节点关系表';
+
+
 DROP TABLE IF EXISTS `cp_node`;
 CREATE TABLE `cp_node` (
   `node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点信息表主键id',
@@ -95,9 +69,7 @@ CREATE TABLE `cp_node` (
   PRIMARY KEY (`node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点信息表';
 
--- ----------------------------------------------
--- 节点组表
--- ----------------------------------------------
+
 DROP TABLE IF EXISTS `cp_nodes`;
 CREATE TABLE `cp_nodes` (
   `nodes_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点组表主键id',
@@ -109,21 +81,17 @@ CREATE TABLE `cp_nodes` (
   PRIMARY KEY (`nodes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点组表';
 
--- ------------------------------------------------
--- 模块节点对应关系表
--- ------------------------------------------------
-DROP TABLE IF EXISTS `cp_module_node`;
-CREATE TABLE `cp_module_node` (
-  `module_node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
-  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块ID',
-  `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`module_node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块和节点关系表';
 
--- -------------------------------------------------
--- 发布任务表
--- -------------------------------------------------
+DROP TABLE IF EXISTS `cp_node_module`;
+CREATE TABLE `cp_node_module` (
+  `node_module_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
+  `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块ID',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`node_module_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点和模块关系表';
+
+
 DROP TABLE IF EXISTS `cp_task`;
 CREATE TABLE `cp_task` (
   `task_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务主键 id',
@@ -137,9 +105,7 @@ CREATE TABLE `cp_task` (
   PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='发布任务表';
 
--- -------------------------------------------------
--- 任务日志表
--- -------------------------------------------------
+
 DROP TABLE IF EXISTS `cp_task_log`;
 CREATE TABLE `cp_task_log` (
   `task_log_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务日志表主键id',
@@ -154,3 +120,34 @@ CREATE TABLE `cp_task_log` (
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`task_log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务日志表';
+
+
+DROP TABLE IF EXISTS `cp_user`;
+CREATE TABLE `cp_user` (
+  `user_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户表主键',
+  `username` varchar(50) NOT NULL DEFAULT '' COMMENT '用户名',
+  `given_name` varchar(50) NOT NULL DEFAULT '' COMMENT '姓名',
+  `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
+  `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
+  `mobile` char(13) NOT NULL DEFAULT '' COMMENT '手机号',
+  `last_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '最后登录ip',
+  `last_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
+  `role` tinyint(3) NOT NULL DEFAULT '0' COMMENT '1,普通用户;  2管理员;3超级管理员;',
+  `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+
+DROP TABLE IF EXISTS `cp_user_module`;
+CREATE TABLE `cp_user_module` (
+  `user_module_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户和模块关系表 id',
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户 id',
+  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块 id',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`user_module_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
+
+
+-- 2017-12-21 09:22:28

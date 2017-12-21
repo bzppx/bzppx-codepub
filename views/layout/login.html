@@ -82,7 +82,7 @@
                                 </dl>
                                 <br><br>
                                 <div class="btn-box clearfix">
-                                    <input id="normalSubmit" class="btn-settlement" type=submit value="登    录" tjjj="passport.button.login">
+                                    <input id="normalSubmit" class="btn-settlement" type="submit" value="登    录" tjjj="passport.button.login">
                                 </div>
                             </form>
                         </div>
@@ -96,22 +96,6 @@
         </div>
     </div>
     <script src="/static/style/login.js"></script>
-    <script type="text/javascript">
-        $(function() {
-            $(".form-tab li").on("click", function() {
-                var index = $(this).index();
-                $(this).addClass("cur").siblings().removeClass("cur");
-                $(".form-con>div").hide().eq(index).show();
-                if (index == 0) {
-                    $(".form-foot").hide();
-                } else {
-                    $(".form-foot").show();
-                }
-                $(".form-error").hide();
-            });
-        });
-    </script>
-
 </body>
 
 </html>

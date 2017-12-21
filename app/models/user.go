@@ -19,6 +19,8 @@ const (
 type User struct {
 }
 
+var UserModel = User{}
+
 func (p *User) GetUserByUserId(userId string) (user map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet

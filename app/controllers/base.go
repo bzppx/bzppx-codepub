@@ -13,6 +13,8 @@ import (
 
 type BaseController struct {
 	beego.Controller
+	UserID string
+	User   map[string]string
 }
 
 type JsonResponse struct {
@@ -37,6 +39,8 @@ func (this *BaseController) Prepare() {
 		this.StopRun()
 	}
 	user := this.GetSession("author").(map[string]string)
+	this.User = user
+	this.UserID = user["user_id"]
 	this.Data["loginUser"] = user
 	this.Data["TimeNowYear"] = time.Now().Format("2006")
 	this.Layout = "layout/default.html"

@@ -3,90 +3,91 @@
  * 依赖 jquery.form.js
  */
 
-var Form  = {
+var Form = {
 
-	/**
-	 * 失败 div
-	 */
-	failedBox : '#failedBox',
+    /**
+     * 失败 div
+     */
+    failedBox: '#failedBox',
 
-	/**
-	 * 是否在弹框中
-	 */
-	inPopup : false,
+    /**
+     * 是否在弹框中
+     */
+    inPopup: false,
 
-	/**
-	 * ajax submit
-	 * @param element
-	 * @param inPopup
-	 * @returns {boolean}
-	 */
-	ajaxSubmit: function (element, inPopup) {
-		
-		if(inPopup) {
-			Form.inPopup = true;
-		}
+    /**
+     * ajax submit
+     * @param element
+     * @param inPopup
+     * @returns {boolean}
+     */
+    ajaxSubmit: function(element, inPopup) {
 
-		/**
-		 * 成功弹出信息
-		 * @param message
-		 * @param data
-		 */
-		function success(message, data) {
-			Layers.success(message)
-		}
+        if (inPopup) {
+            Form.inPopup = true;
+        }
 
-		/**
-		 * 失败信息条
-		 * @param message
-		 * @param data
-		 */
-		function failed(message, data) {
-			var text = [message];
+        /**
+         * 成功弹出信息
+         * @param message
+         * @param data
+         */
+        function success(message, data) {
+            Layers.success(message)
+        }
 
-			$(Form.failedBox).html('');
-			$(Form.failedBox).removeClass('hide');
-			$(Form.failedBox).addClass('alert alert-danger');
-			$(Form.failedBox).append('<a class="close" href="#" onclick="$(this).parent().hide();">×</a>');
-			$(Form.failedBox).append('<strong >操作失败！ </strong>');
-			var ul = $('<ul></ul>');
-			for(var i = 0; i < text.length; i++) {
-				ul.append('<li>'+ text[i] +'</li>');
-			}
-			$(Form.failedBox).append(ul);
-			$(Form.failedBox).show();
-		}
+        /**
+         * 失败信息条
+         * @param message
+         * @param data
+         */
+        function failed(message, data) {
+            var text = [message];
 
-		/**
-		 * response
-		 * @param result
-		 */
-		function response(result) {
-			if(result.code == 0) {
-				failed(result.message, result.data);
-			}
-			if(result.code == 1) {
-				success(result.message, result.data);
-			}
-			if(result.redirect.url) {
-				var sleepTime = result.redirect.sleep||3000;
-				setTimeout(function() {
-					if(Form.inPopup) {
-						parent.location.href = result.redirect.url;
-					} else {
-						location.href = result.redirect.url;
-					}
-				}, sleepTime);
-			}
-		}
+            $(Form.failedBox).html('');
+            $(Form.failedBox).removeClass('hide');
+            $(Form.failedBox).addClass('alert alert-danger');
+            $(Form.failedBox).append('<a class="close" href="#" onclick="$(this).parent().hide();">×</a>');
+            $(Form.failedBox).append('<strong >操作失败！ </strong>');
+            var ul = $('<ul></ul>');
+            for (var i = 0; i < text.length; i++) {
+                ul.append('<li>' + text[i] + '</li>');
+            }
+            $(Form.failedBox).append(ul);
+            $(Form.failedBox).show();
+        }
 
-		var options = {
-			dataType: 'json',
-			success: response
-		};
-		
-		$(element).ajaxSubmit(options);
+        /**
+         * response
+         * @param result
+         */
+        function response(result) {
+            //console.log(result)
+            if (result.code == 0) {
+                failed(result.message, result.data);
+            }
+            if (result.code == 1) {
+                success(result.message, result.data);
+            }
+            if (result.redirect.url) {
+                var sleepTime = result.redirect.sleep || 3000;
+                setTimeout(function() {
+                    if (Form.inPopup) {
+                        parent.location.href = result.redirect.url;
+                    } else {
+                        location.href = result.redirect.url;
+                    }
+                }, sleepTime);
+            }
+        }
 
-		return false;
-	}
+        var options = {
+            dataType: 'json',
+            success: response
+        };
+
+        $(element).ajaxSubmit(options);
+
+        return false;
+    }
 };
