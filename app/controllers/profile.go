@@ -22,7 +22,6 @@ func (this *ProfileController) Password() {
 
 // 个人资料保存
 func (this *ProfileController) Save() {
-	this.jsonError("修改失败")
 	_, err := models.UserModel.Update(this.Data["loginUser"].(map[string]string)["user_id"], map[string]interface{}{
 		"given_name": this.GetString("given_name", ""),
 		"email":      this.GetString("email", ""),
