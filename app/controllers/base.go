@@ -26,31 +26,31 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
-	if this.isLogin() && this.inList(beego.AppConfig.String("guest_access_list")) {
+	if this.isLogin() && this.inAccessList(beego.AppConfig.String("guest_access_list")) {
 		this.Redirect("/main/index", 302)
 		this.StopRun()
 	}
 	if this.isRoot() {
 		//root
-		if !this.inList(beego.AppConfig.String("root_access_list")) {
+		if !this.inAccessList(beego.AppConfig.String("root_access_list")) {
 			this.viewError("此页面无权访问")
 			this.StopRun()
 		}
 	} else if this.isAdmin() {
 		//admin
-		if !this.inList(beego.AppConfig.String("admin_access_list")) {
+		if !this.inAccessList(beego.AppConfig.String("admin_access_list")) {
 			this.viewError("此页面无权访问")
 			this.StopRun()
 		}
 	} else if this.isLogin() {
 		//user
-		if !this.inList(beego.AppConfig.String("user_access_list")) {
+		if !this.inAccessList(beego.AppConfig.String("user_access_list")) {
 			this.viewError("此页面无权访问")
 			this.StopRun()
 		}
 	} else {
 		//guest
-		if this.inList(beego.AppConfig.String("guest_access_list")) {
+		if this.inAccessList(beego.AppConfig.String("guest_access_list")) {
 			return
 		}
 		this.Redirect("/login/index", 302)
@@ -126,14 +126,14 @@ func (this *BaseController) isLogin() bool {
 	//success
 	return true
 }
-func (this *BaseController) inList(listString string) bool {
+func (this *BaseController) inAccessList(accessListString string) bool {
 	controllerName, actionName := this.GetControllerAndAction()
 	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	methodName := strings.ToLower(actionName)
 	if listString == "*/*" {
 		return true
 	}
-	for _, v := range strings.Split(listString, ";") {
+	for _, v := range strings.Split(accessListString, ";") {
 		data := strings.Split(v, "/")
 		if len(data) != 2 {
 			continue
