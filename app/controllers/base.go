@@ -26,15 +26,29 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
-	controllerName, actionName := this.GetControllerAndAction()
-	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
-	methodName := strings.ToLower(actionName)
-	if controllerName == "login" {
-		if methodName == "index" || methodName == "logout" || methodName == "captcha" {
+	if this.isRoot() {
+		//root
+		if !this.inList(beego.AppConfig.String("root_list")) {
+			this.viewError("此页面无权访问")
+			this.StopRun()
+		}
+	} else if this.isAdmin() {
+		//admin
+		if !this.inList(beego.AppConfig.String("admin_list")) {
+			this.viewError("此页面无权访问")
+			this.StopRun()
+		}
+	} else if this.isLogin() {
+		//user
+		if !this.inList(beego.AppConfig.String("user_list")) {
+			this.viewError("此页面无权访问")
+			this.StopRun()
+		}
+	} else {
+		//guest
+		if this.inList(beego.AppConfig.String("guest_list")) {
 			return
 		}
-	}
-	if !this.isLogin() {
 		this.Redirect("/login/index", 302)
 		this.StopRun()
 	}
@@ -107,6 +121,35 @@ func (this *BaseController) isLogin() bool {
 	}
 	//success
 	return true
+}
+func (this *BaseController) inList(listString string) bool {
+	controllerName, actionName := this.GetControllerAndAction()
+	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
+	methodName := strings.ToLower(actionName)
+	if listString == "*/*" {
+		return true
+	}
+	for _, v := range strings.Split(listString, ";") {
+		data := strings.Split(v, "/")
+		if len(data) != 2 {
+			continue
+		}
+		c := strings.ToLower(data[0])
+		m := strings.ToLower(data[1])
+		if c == controllerName {
+			if m == "*" {
+
+				return true
+			}
+			for _, mm := range strings.Split(m, ",") {
+				if methodName == mm {
+					return true
+				}
+			}
+		}
+
+	}
+	return false
 }
 
 // view layout title
