@@ -130,7 +130,7 @@ func (this *BaseController) inAccessList(accessListString string) bool {
 	controllerName, actionName := this.GetControllerAndAction()
 	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	methodName := strings.ToLower(actionName)
-	if listString == "*/*" {
+	if accessListString == "*/*" {
 		return true
 	}
 	for _, v := range strings.Split(accessListString, ";") {
