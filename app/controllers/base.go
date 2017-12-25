@@ -134,15 +134,12 @@ func (this *BaseController) view(viewName string) {
 }
 
 // error view
-func (this *BaseController) viewError(errorMessage string, data ...interface{}) {
+func (this *BaseController) viewError(errorMessage string) {
 	this.Layout = "layout/default.html"
-	errorType := "500"
-	if len(data) > 0 {
-		errorType = data[0].(string)
-	}
-	this.TplName = "error/" + errorType + ".html"
-	this.Data["title"] = "system error"
-	this.Data["errorMessage"] = errorMessage
+
+	this.TplName = "error/error.html"
+	this.Data["title"] = "error"
+	this.Data["message"] = errorMessage
 	this.Render()
 }
 
