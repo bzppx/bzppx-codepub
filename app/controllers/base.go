@@ -183,6 +183,7 @@ func (this *BaseController) viewError(errorMessage string) {
 	this.TplName = "error/error.html"
 	this.Data["title"] = "error"
 	this.Data["message"] = errorMessage
+	this.Data["redirect"] = "/main/index"
 	this.Render()
 }
 
