@@ -26,6 +26,10 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
+	if this.isLogin() && this.inList(beego.AppConfig.String("guest_access_list")) {
+		this.Redirect("/main/index", 302)
+		this.StopRun()
+	}
 	if this.isRoot() {
 		//root
 		if !this.inList(beego.AppConfig.String("root_access_list")) {
