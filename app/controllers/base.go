@@ -28,25 +28,25 @@ type JsonResponse struct {
 func (this *BaseController) Prepare() {
 	if this.isRoot() {
 		//root
-		if !this.inList(beego.AppConfig.String("root_list")) {
+		if !this.inList(beego.AppConfig.String("root_access_list")) {
 			this.viewError("此页面无权访问")
 			this.StopRun()
 		}
 	} else if this.isAdmin() {
 		//admin
-		if !this.inList(beego.AppConfig.String("admin_list")) {
+		if !this.inList(beego.AppConfig.String("admin_access_list")) {
 			this.viewError("此页面无权访问")
 			this.StopRun()
 		}
 	} else if this.isLogin() {
 		//user
-		if !this.inList(beego.AppConfig.String("user_list")) {
+		if !this.inList(beego.AppConfig.String("user_access_list")) {
 			this.viewError("此页面无权访问")
 			this.StopRun()
 		}
 	} else {
 		//guest
-		if this.inList(beego.AppConfig.String("guest_list")) {
+		if this.inList(beego.AppConfig.String("guest_access_list")) {
 			return
 		}
 		this.Redirect("/login/index", 302)
