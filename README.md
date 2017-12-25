@@ -5,4 +5,4 @@
 
 # 系统预览
 ## 登录
-[login](/docs/guide_res/images/login.png)
+![login](/docs/guide_res/images/login.png)
