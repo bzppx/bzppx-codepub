@@ -32,8 +32,29 @@ var Form = {
          * @param message
          * @param data
          */
-        function success(message, data) {
+        function successPopup(message, data) {
             Layers.success(message)
+        }
+
+        /**
+         * 成功信息条
+         * @param message
+         * @param data
+         */
+        function successBox(message, data) {
+            var text = [message];
+
+            $(Form.failedBox).html('');
+            $(Form.failedBox).removeClass();
+            $(Form.failedBox).addClass('alert alert-success');
+            $(Form.failedBox).append('<a class="close" href="#" onclick="$(this).parent().hide();">×</a>');
+            $(Form.failedBox).append('<strong >操作成功！ </strong>');
+            var ul = $('<ul></ul>');
+            for (var i = 0; i < text.length; i++) {
+                ul.append('<li>' + text[i] + '</li>');
+            }
+            $(Form.failedBox).append(ul);
+            $(Form.failedBox).show();
         }
 
         /**
@@ -67,7 +88,7 @@ var Form = {
                 failed(result.message, result.data);
             }
             if (result.code == 1) {
-                success(result.message, result.data);
+                successBox(result.message, result.data);
             }
             if (result.redirect.url) {
                 var sleepTime = result.redirect.sleep || 3000;

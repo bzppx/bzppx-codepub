@@ -22,13 +22,29 @@ func (this *ProfileController) Password() {
 
 // 个人资料保存
 func (this *ProfileController) Save() {
-	this.jsonError("修改失败")
+
+	givenName := this.GetString("given_name", "")
+	email := this.GetString("email", "")
+	mobile := this.GetString("mobile", "")
+
+	if givenName == "" {
+		this.jsonError("姓名不能为空！")
+	}
+	if email == "" {
+		this.jsonError("邮箱不能为空！")
+	}
+	if mobile == "" {
+		this.jsonError("手机号不能为空！")
+	}
+
 	_, err := models.UserModel.Update(this.Data["loginUser"].(map[string]string)["user_id"], map[string]interface{}{
-		"given_name": this.GetString("given_name", ""),
-		"email":      this.GetString("email", ""),
-		"mobile":     this.GetString("mobile", ""),
+		"given_name": givenName,
+		"email":      email,
+		"mobile":     mobile,
 	})
+
 	if err != nil {
+		// todo logger
 		this.jsonError("修改失败")
 	} else {
 		this.jsonSuccess("我的资料修改成功", nil, "/profile/my", 3000)
@@ -38,20 +54,29 @@ func (this *ProfileController) Save() {
 // 修改密码保存
 func (this *ProfileController) SavePassword() {
 
-	p := models.UserModel.EncodePassword(this.GetString("pwd", ""))
+	pwd := this.GetString("pwd", "")
+	pwdNew := this.GetString("pwd_new", "")
+	pwdConfirm := this.GetString("pwd_confirm", "")
+
+	if (pwd == "") || (pwdNew == "") || (pwdConfirm == "") {
+		this.jsonError("密码不能为空！")
+	}
+
+	p := models.UserModel.EncodePassword(pwd)
 	if p != this.User["password"] {
 		this.jsonError("当前密码错误")
 	}
-	pnew := this.GetString("pwd_new", "")
-	if pnew == "" {
-		this.jsonError("新密码不能为空")
+	if pwdConfirm != pwdNew {
+		this.jsonError("确认密码和新密码不一致")
 	}
+
 	_, err := models.UserModel.Update(this.Data["loginUser"].(map[string]string)["user_id"], map[string]interface{}{
-		"password": models.UserModel.EncodePassword(pnew),
+		"password": models.UserModel.EncodePassword(pwdNew),
 	})
+
 	if err != nil {
-		this.jsonError("修改失败")
+		this.jsonError("修改密码失败")
 	} else {
-		this.jsonSuccess("修改成功", nil, "/profile/my", 3000)
+		this.jsonSuccess("修改密码成功", nil, "/profile/my", 3000)
 	}
 }
