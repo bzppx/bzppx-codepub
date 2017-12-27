@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="" type="text" value="" placeholder="用户名/姓名">
+                        <input class="form-control" name="keyword" type="text" value="{{.keyword}}" placeholder="用户名/姓名">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
@@ -32,44 +32,42 @@
             </tr>
             </thead>
             <tbody>
+            {{range $user := .users}}
             <tr>
-                <td class="center">1</td>
-                <td>root</td>
-                <td>root</td>
-                <td>root@codepub.com</td>
-                <td class="center">12587678978</td>
+                <td class="center">{{$user.user_id}}</td>
+                <td>{{$user.username}}</td>
+                <td>{{$user.given_name}}</td>
+                <td>{{$user.email}}</td>
+                <td class="center">{{$user.mobile}}</td>
                 <td class="center">
-                    <label class="text-info">超级管理员</label>
-                </td>
-                <td class="center">
-                    2017-09-08 12:09:18
-                </td>
-                <td class="center">
-                    <a name="edit" class="glyphicon glyphicon-edit" data-link="">修改</a>
-                    <a name="edit" class="glyphicon glyphicon-ok" data-link="">授权</a>
-                    <a onclick="" class="remove glyphicon glyphicon-trash">删除</a>
-                </td>
-            </tr>
-            <tr>
-                <td class="center">2</td>
-                <td>admin</td>
-                <td>admin</td>
-                <td>admin@codepub.com</td>
-                <td class="center">12587678978</td>
-                <td class="center">
+                    {{ if eq $user.role "3" }}
+                    <label class="text-danger">超级管理员</label>
+                    {{else if eq $user.role "2"}}
                     <label class="text-success">管理员</label>
+                    {{else}}
+                    <label class="text-info">普通用户</label>
+                    {{end}}
                 </td>
                 <td class="center">
                     2017-09-08 12:09:18
                 </td>
                 <td class="center">
-                    <a name="edit" class="glyphicon glyphicon-edit" data-link="">修改</a>
-                    <a name="edit" class="glyphicon glyphicon-ok" data-link="">授权</a>
+                    {{if eq $user.username "root"}}
+                    ----
+                    {{else}}
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/user/edit?user_id={{ $user.user_id }}">修改</a>
                     <a onclick="" class="remove glyphicon glyphicon-trash">删除</a>
+                    {{end}}
                 </td>
             </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
-    <div class="panel-footer"></div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
 </div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='edit']")
+</script>

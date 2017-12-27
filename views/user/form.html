@@ -1,40 +1,44 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <br>
-        <form class="form-horizontal" method="post" action="/user/save">
+        <br>{{$user := .user}}
+        <form class="form-horizontal" method="post" action="{{if $user}} /user/modify {{else}} /user/save {{end}}">
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 用户名</label>
                 <div class="col-sm-4">
-                    <input type="text" name="username" class="form-control" placeholder="请输入用户名" required>
+                    <input type="text" name="username" class="form-control" placeholder="请输入用户名" value="{{$user.username}}" {{if $user}} readonly {{else}} {{end}} required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 姓名</label>
                 <div class="col-sm-4">
-                    <input type="text" name="given_name" class="form-control" placeholder="请输入姓名" required>
+                    <input type="text" name="given_name" class="form-control" placeholder="请输入姓名" value="{{$user.given_name}}" required>
                 </div>
             </div>
+            {{if $user}}
+            <input type="hidden" name="user_id" class="form-control" value="{{$user.user_id}}">
+            {{else}}
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 密码</label>
                 <div class="col-sm-4">
                     <input type="password" name="password" class="form-control" placeholder="请输入密码" required>
                 </div>
             </div>
+            {{end}}
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 邮箱</label>
                 <div class="col-sm-4">
-                    <input type="text" name="email" class="form-control" placeholder="请输入邮箱" required>
+                    <input type="text" name="email" class="form-control" placeholder="请输入邮箱" value="{{$user.email}}" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 手机</label>
                 <div class="col-sm-4">
-                    <input type="text" name="mobile" class="form-control" placeholder="请输入手机号" required>
+                    <input type="text" name="mobile" class="form-control" placeholder="请输入手机号" value="{{$user.mobile}}" required>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" onclick="Form.ajaxSubmit(this.form, false);" class="btn btn-primary">保存</button>
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $user}} true {{else}} false {{end}});" class="btn btn-primary">保存</button>
                 </div>
             </div>
         </form>

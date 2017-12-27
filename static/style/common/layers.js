@@ -53,21 +53,23 @@ var Layers = {
 	 * bind iframe 窗
 	 */
 	bindIframe: function (element, title, url, width, height) {
-		$(element).bind('click', function () {
-			height = height||"500px";
-			width = width||"1000px";
-			url = url|| $(element).attr("data-link");
-			layer.open({
-				type: 2,
-				skin: Layers.skin,
-				title: title,
-				shadeClose: true,
-				shade : 0.6,
-				maxmin: true,
-				area: [width, height],
-				content: url,
-				padding:"10px"
-			});
+		$(element).each(function () {
+			$(this).bind('click', function () {
+				height = height||"500px";
+				width = width||"1000px";
+				url = url|| $(this).attr("data-link");
+				layer.open({
+					type: 2,
+					skin: Layers.skin,
+					title: title,
+					shadeClose: true,
+					shade : 0.6,
+					maxmin: true,
+					area: [width, height],
+					content: url,
+					padding:"10px"
+				});
+			})
 		})
 	}
 };

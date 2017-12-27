@@ -181,13 +181,21 @@ func (this *BaseController) view(viewName string) {
 }
 
 // error view
-func (this *BaseController) viewError(errorMessage string) {
+func (this *BaseController) viewError(errorMessage string, data... interface{}) {
 	this.Layout = "layout/default.html"
-
+	redirect := "/"
+	sleep := 2000
+	if len(data) > 0 {
+		redirect = data[0].(string)
+	}
+	if len(data) > 1 {
+		sleep = data[1].(int)
+	}
 	this.TplName = "error/error.html"
 	this.Data["title"] = "error"
 	this.Data["message"] = errorMessage
-	this.Data["redirect"] = "/main/index"
+	this.Data["redirect"] = redirect
+	this.Data["sleep"] = sleep
 	this.Render()
 }
 
@@ -202,7 +210,7 @@ func (this *BaseController) viewTitle(title, viewName string) {
 // return json success
 func (this *BaseController) jsonSuccess(message interface{}, data ...interface{}) {
 	url := ""
-	sleep := 500
+	sleep := 2000
 	var _data interface{}
 	if len(data) > 0 {
 		_data = data[0]
@@ -234,7 +242,7 @@ func (this *BaseController) jsonSuccess(message interface{}, data ...interface{}
 // return json error
 func (this *BaseController) jsonError(message interface{}, data ...interface{}) {
 	url := ""
-	sleep := 500
+	sleep := 2000
 	var _data interface{}
 	if len(data) > 0 {
 		_data = data[0]
@@ -266,4 +274,11 @@ func (this *BaseController) jsonError(message interface{}, data ...interface{}) 
 func (this *BaseController) getClientIp() string {
 	s := strings.Split(this.Ctx.Request.RemoteAddr, ":")
 	return s[0]
+}
+
+// paginator
+func (this *BaseController) SetPaginator(per int, nums int64) *utils.Paginator {
+	p := utils.NewPaginator(this.Ctx.Request, per, nums)
+	this.Data["paginator"] = p
+	return p
 }

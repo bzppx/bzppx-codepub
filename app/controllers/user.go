@@ -72,7 +72,89 @@ func (this *UserController) Save() {
 
 // 用户列表
 func (this *UserController) List() {
+
+	page, _:= this.GetInt("page", 1)
+	keyword := this.GetString("keyword", "")
+
+	number := 20
+	limit := (page - 1) * number
+	var err error
+	var count int64
+	var users []map[string]string
+	if (keyword != "") {
+		count, err = models.UserModel.CountUsersByKeyword(keyword)
+		users, err = models.UserModel.GetUsersByKeywordAndLimit(keyword, limit, number)
+	}else {
+		count, err = models.UserModel.CountUsers()
+		users, err = models.UserModel.GetUsersByLimit(limit, number)
+	}
+	if err != nil {
+		this.viewError(err.Error(), "/user/list")
+	}
+
+	this.Data["users"] = users
+	this.Data["keyword"] = keyword
+	this.SetPaginator(number, count)
 	this.viewLayoutTitle("用户列表", "user/list", "page")
+}
+
+// 修改
+func (this *UserController) Edit() {
+
+	userId := this.GetString("user_id", "")
+	if userId == "" {
+		this.viewError("用户不存在", "/user/list")
+	}
+
+	user, err := models.UserModel.GetUserByUserId(userId)
+	if err != nil {
+		this.viewError("用户不存在", "/user/list")
+	}
+
+	this.Data["user"] = user
+	this.viewLayoutTitle("修改用户", "user/form", "page")
+}
+
+// 修改保存
+func (this *UserController) Modify() {
+
+	userId := strings.Trim(this.GetString("user_id", ""), "")
+	givenName := strings.Trim(this.GetString("given_name", ""), "")
+	email := strings.Trim(this.GetString("email", ""), "")
+	mobile := strings.Trim(this.GetString("mobile", ""), "")
+
+	if givenName == "" {
+		this.jsonError("姓名不能为空！")
+	}
+	if email == "" {
+		this.jsonError("邮箱不能为空！")
+	}
+	if mobile == "" {
+		this.jsonError("手机号不能为空！")
+	}
+
+	user, err := models.UserModel.GetUserByUserId(userId)
+	if err != nil {
+		this.jsonError("用户不存在！")
+	}
+	if len(user) == 0 {
+		this.jsonError("用户不存在！")
+	}
+
+	userValue := map[string]interface{}{
+		"given_name": givenName,
+		"email": email,
+		"mobile": mobile,
+		"create_time": time.Now().Unix(),
+		"update_time": time.Now().Unix(),
+	}
+
+	_, err = models.UserModel.Update(userId, userValue)
+	if err != nil {
+		this.jsonError("修改用户失败！")
+	}else {
+		this.jsonSuccess("修改用户成功", nil, "/user/list")
+	}
 }
 
 func (this *UserController) Default() {

@@ -184,7 +184,7 @@ func (user *User) GetUsersByLimit(limit int, number int) (users []map[string]str
 	return
 }
 
-func (user *User) CountUsers() (count int, err error) {
+func (user *User) CountUsers() (count int64, err error) {
 
 	db := G.DB()
 	var rs *mysql.ResultSet
@@ -192,11 +192,11 @@ func (user *User) CountUsers() (count int, err error) {
 	if err != nil {
 		return
 	}
-	count = utils.NewConvert().StringToInt(rs.Value("total"))
+	count = utils.NewConvert().StringToInt64(rs.Value("total"))
 	return
 }
 
-func (user *User) CountUsersByKeyword(keyword string) (count int, err error) {
+func (user *User) CountUsersByKeyword(keyword string) (count int64, err error) {
 
 	db := G.DB()
 	var rs *mysql.ResultSet
@@ -209,6 +209,6 @@ func (user *User) CountUsersByKeyword(keyword string) (count int, err error) {
 	if err != nil {
 		return
 	}
-	count = utils.NewConvert().StringToInt(rs.Value("total"))
+	count = utils.NewConvert().StringToInt64(rs.Value("total"))
 	return
 }

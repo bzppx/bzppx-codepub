@@ -79,9 +79,5 @@
     <div class="panel-footer"></div>
 </div>
 <script type="text/javascript">
-    $(function () {
-        $("[name='edit']").bind('click', function () {
-            Layers.iframe("修改页面", "/user/add");
-        })
-    })
+    Layers.bindIframe("[name='edit']");
 </script>

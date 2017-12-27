@@ -70,7 +70,7 @@ func (this *LoginController) Index() {
 			"last_ip":   this.getClientIp(),
 		})
 
-		this.jsonSuccess("登录成功", "", "/main/index")
+		this.jsonSuccess("登录成功", "", "/main/index", 500)
 	} else {
 		this.viewLayoutTitle("Login", "login/login", "login")
 	}

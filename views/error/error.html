@@ -19,12 +19,23 @@
                     <h3 align="center">{{.message}}</h3>
                     <hr/>
                     <div align="center">
-                        <a class="btn btn-danger btn-big"  href="{{.redirect}}"> 返回 </a>
+                        <a class="btn btn-danger btn-big" id="err_redirect" href="{{.redirect}}"> 返回 </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+//    var isInPopup = self != top;
+    var isInPopup = $("body").hasClass("layui-layer");
+    var redirect = $('#err_redirect').attr('href') || "/";
+    if(isInPopup) {
+        $("a").click( function () { parent.$.layer.close(); });
+        setTimeout(function(){parent.$.layer.close();}, 2000);
+    } else {
+        setTimeout('(function(uri) {location.href = uri;})(redirect)', 2000);
+    }
+</script>
 </body>
 </html>

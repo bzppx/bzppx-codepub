@@ -134,3 +134,9 @@ ul,li {
 #failedBox ul {
     padding-left: 20px;
 }
+
+.layui-layer-content iframe {
+    padding-top: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
