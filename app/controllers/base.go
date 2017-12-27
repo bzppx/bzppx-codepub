@@ -75,7 +75,7 @@ func (this *BaseController) isRoot() bool {
 		return false
 	}
 	u := user.(map[string]string)
-	return u["role"] == fmt.Sprintf("%s", models.USER_ROLE_ROOT)
+	return u["role"] == fmt.Sprintf("%d", models.USER_ROLE_ROOT)
 }
 
 // check is login
@@ -181,7 +181,7 @@ func (this *BaseController) view(viewName string) {
 }
 
 // error view
-func (this *BaseController) viewError(errorMessage string, data... interface{}) {
+func (this *BaseController) viewError(errorMessage string, data ...interface{}) {
 	this.Layout = "layout/default.html"
 	redirect := "/"
 	sleep := 2000
