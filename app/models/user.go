@@ -14,6 +14,9 @@ const (
 	USER_ROLE_ROOT  = 3
 	USER_ROLE_ADMIN = 2
 	USER_ROLE_USER  = 1
+
+	USER_DELETE = 1
+	USER_NORMAL = 0
 )
 
 type User struct {
@@ -26,6 +29,7 @@ func (p *User) GetUserByUserId(userId string) (user map[string]string, err error
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From("user").Where(map[string]interface{}{
 		"user_id": userId,
+		"is_delete": USER_NORMAL,
 	}))
 	if err != nil {
 		return
@@ -40,6 +44,7 @@ func (p *User) HasSameUsername(userId, username string) (has bool, err error) {
 	rs, err = db.Query(db.AR().From("user").Where(map[string]interface{}{
 		"user_id <>": userId,
 		"username":   username,
+		"is_delete": USER_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -54,6 +59,7 @@ func (p *User) HasUsername(username string) (has bool, err error) {
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From("user").Where(map[string]interface{}{
 		"username": username,
+		"is_delete": USER_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -68,6 +74,7 @@ func (p *User) GetUserByName(username string) (user map[string]string, err error
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From("user").Where(map[string]interface{}{
 		"username": username,
+		"is_delete": USER_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -76,11 +83,11 @@ func (p *User) GetUserByName(username string) (user map[string]string, err error
 	return
 }
 
-//禁用
-func (p *User) Forbidden(userId string) (err error) {
+// 删除
+func (p *User) Delete(userId string) (err error) {
 	db := G.DB()
 	_, err = db.Exec(db.AR().Update("user", map[string]interface{}{
-		"is_forbidden": 1,
+		"is_delete": USER_DELETE,
 	}, map[string]interface{}{
 		"user_id": userId,
 	}))
@@ -94,7 +101,7 @@ func (p *User) Forbidden(userId string) (err error) {
 func (p *User) Review(userId string) (err error) {
 	db := G.DB()
 	_, err = db.Exec(db.AR().Update("user", map[string]interface{}{
-		"is_forbidden": 0,
+		"is_delete": USER_NORMAL,
 	}, map[string]interface{}{
 		"user_id": userId,
 	}))
@@ -104,6 +111,7 @@ func (p *User) Review(userId string) (err error) {
 	return
 }
 
+// 插入
 func (p *User) Insert(user map[string]interface{}) (id int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
@@ -115,11 +123,13 @@ func (p *User) Insert(user map[string]interface{}) (id int64, err error) {
 	return
 }
 
+// 修改
 func (p *User) Update(userId string, user map[string]interface{}) (id int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Exec(db.AR().Update("user", user, map[string]interface{}{
 		"user_id": userId,
+		"is_delete": USER_NORMAL,
 	}))
 	if err != nil {
 		return
@@ -141,6 +151,7 @@ func (p *User) ChangePassword(userId, newpassword, oldpassword string) (err erro
 		"password": p.EncodePassword(newpassword),
 	}, map[string]interface{}{
 		"user_id": userId,
+		"is_delete": USER_NORMAL,
 	}))
 	if err != nil {
 		return
@@ -161,6 +172,7 @@ func (user *User) GetUsersByKeywordAndLimit(keyword string, limit int, number in
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From("user").Where(map[string]interface{}{
 		"username LIKE": "%" + keyword + "%",
+		"is_delete": USER_NORMAL,
 	}).Limit(limit, number))
 	if err != nil {
 		return
@@ -175,7 +187,13 @@ func (user *User) GetUsersByLimit(limit int, number int) (users []map[string]str
 
 	db := G.DB()
 	var rs *mysql.ResultSet
-	rs, err = db.Query(db.AR().From("user").Limit(limit, number))
+	rs, err = db.Query(
+		db.AR().
+			From("user").
+			Where(map[string]interface{}{
+				"is_delete": USER_NORMAL,
+			}).
+			Limit(limit, number))
 	if err != nil {
 		return
 	}
@@ -188,7 +206,13 @@ func (user *User) CountUsers() (count int64, err error) {
 
 	db := G.DB()
 	var rs *mysql.ResultSet
-	rs, err = db.Query(db.AR().Select("count(*) as total").From("user"))
+	rs, err = db.Query(
+		db.AR().
+			Select("count(*) as total").
+			From("user").
+			Where(map[string]interface{}{
+			"is_delete": USER_NORMAL,
+		}))
 	if err != nil {
 		return
 	}
@@ -205,6 +229,7 @@ func (user *User) CountUsersByKeyword(keyword string) (count int64, err error) {
 		From("user").
 		Where(map[string]interface{}{
 			"username LIKE": "%" + keyword + "%",
+			"is_delete": USER_NORMAL,
 		}))
 	if err != nil {
 		return

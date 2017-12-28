@@ -157,6 +157,35 @@ func (this *UserController) Modify() {
 	}
 }
 
+func (this *UserController) Delete() {
+
+	userId := this.GetString("user_id", "")
+
+	if userId == "" {
+		this.jsonError("没有选择用户！")
+	}
+
+	user, err := models.UserModel.GetUserByUserId(userId)
+	if err != nil {
+		this.jsonError("用户不存在！")
+	}
+	if len(user) == 0 {
+		this.jsonError("用户不存在！")
+	}
+
+	userValue := map[string]interface{}{
+		"is_delete": models.USER_DELETE,
+		"update_time": time.Now().Unix(),
+	}
+
+	_, err = models.UserModel.Update(userId, userValue)
+	if err != nil {
+		this.jsonError("删除用户失败！")
+	}
+
+	this.jsonSuccess("删除用户成功", nil, "/user/list")
+}
+
 func (this *UserController) Default() {
 	this.viewLayoutTitle("首页", "main/default", "page")
 }
