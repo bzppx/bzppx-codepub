@@ -49,14 +49,14 @@
                     {{end}}
                 </td>
                 <td class="center">
-                    2017-09-08 12:09:18
+                    {{dateFormat $user.last_time "Y-m-d H:i:s"}}
                 </td>
                 <td class="center">
                     {{if eq $user.username "root"}}
                     ----
                     {{else}}
                     <a name="edit" class="glyphicon glyphicon-edit" data-link="/user/edit?user_id={{ $user.user_id }}">修改</a>
-                    <a onclick="" class="remove glyphicon glyphicon-trash">删除</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/user/delete?user_id={{$user.user_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
                     {{end}}
                 </td>
             </tr>
@@ -69,5 +69,5 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='edit']")
+    Layers.bindIframe("[name='edit']", "修改用户信息")
 </script>

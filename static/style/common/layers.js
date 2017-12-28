@@ -30,29 +30,39 @@ var Layers = {
 			closeBtn: 0
 		})
 	},
+	
+	failedMsg: function (info) {
+		var content = '<h4><i class="glyphicon glyphicon-remove"></i> 操作失败 </h4>';
+		content += info;
+		layer.msg(content, function(){});
+	},
+
+	successMsg: function (info) {
+		var content = '<h4><i class="glyphicon glyphicon-ok"></i> 操作成功 </h4>';
+		content += info;
+		layer.msg(content);
+	},
 
 	/**
 	 * confirm 提示框
 	 * @param title
 	 * @param url
 	 */
-	confirm: function (title) {
+	confirm: function (title, url) {
 		layer.confirm(title, {
-			btn: ['是','否']
+			btn: ['是','否'],
+			skin: Layers.skin
 		}, function() {
-			layer.msg('的确很重要', {icon: 1});
+			Common.ajaxSubmit(url)
 		}, function() {
-			layer.msg('也可以这样', {
-				time: 20000,
-				btn: ['明白了', '知道了']
-			});
+
 		});
 	},
 
 	/**
 	 * bind iframe 窗
 	 */
-	bindIframe: function (element, title, url, width, height) {
+	bindIframe: function (element, title, height, width, url) {
 		$(element).each(function () {
 			$(this).bind('click', function () {
 				height = height||"500px";

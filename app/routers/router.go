@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/astaxie/beego"
+	"bzppx-codepub/app/utils"
 )
 
 func init() {
@@ -38,6 +39,9 @@ func init() {
 	beego.Router("/", &controllers.LoginController{}, "*:Index")
 	beego.ErrorHandler("404", http_404)
 	beego.ErrorHandler("500", http_500)
+
+	// add template func
+	beego.AddFuncMap("dateFormat", utils.NewDate().Format)
 
 }
 
