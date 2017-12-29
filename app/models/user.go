@@ -184,7 +184,7 @@ func (user *User) GetUsersByKeywordAndLimit(keyword string, limit int, number in
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
 		"username LIKE": "%" + keyword + "%",
 		"is_delete": USER_NORMAL,
-	}).Limit(limit, number))
+	}).Limit(limit, number).OrderBy("user_id", "DESC"))
 	if err != nil {
 		return
 	}
@@ -204,7 +204,8 @@ func (user *User) GetUsersByLimit(limit int, number int) (users []map[string]str
 			Where(map[string]interface{}{
 				"is_delete": USER_NORMAL,
 			}).
-			Limit(limit, number))
+			Limit(limit, number).
+			OrderBy("user_id", "DESC"))
 	if err != nil {
 		return
 	}

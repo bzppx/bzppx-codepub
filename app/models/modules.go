@@ -131,7 +131,7 @@ func (modules *Modules) GetModuleGroupsByKeywordAndLimit(keyword string, limit i
 	rs, err = db.Query(db.AR().From(Table_Modules_Name).Where(map[string]interface{}{
 		"name LIKE": "%" + keyword + "%",
 		"is_delete": MODULES_NORMAL,
-	}).Limit(limit, number))
+	}).Limit(limit, number).OrderBy("modules_id", "DESC"))
 	if err != nil {
 		return
 	}
@@ -151,7 +151,8 @@ func (modules *Modules) GetModuleGroupsByLimit(limit int, number int) (moduleGro
 			Where(map[string]interface{}{
 				"is_delete": MODULES_NORMAL,
 			}).
-			Limit(limit, number))
+			Limit(limit, number).
+			OrderBy("modules_id", "DESC"))
 	if err != nil {
 		return
 	}

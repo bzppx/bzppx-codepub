@@ -4,6 +4,7 @@ import (
 	"strings"
 	"bzppx-codepub/app/models"
 	"time"
+	"bzppx-codepub/app/utils"
 )
 
 type ModulesController struct {
@@ -40,10 +41,12 @@ func (this *ModulesController) Save() {
 		"update_time": time.Now().Unix(),
 	}
 
-	_, err = models.ModulesModel.Insert(modulesValue)
+	modulesId, err := models.ModulesModel.Insert(modulesValue)
 	if err != nil {
+		this.RecordLog("添加模块组失败: "+err.Error())
 		this.jsonError("添加模块组失败！")
 	}else {
+		this.RecordLog("添加模块组 "+utils.NewConvert().IntToString(modulesId, 10)+" 成功")
 		this.jsonSuccess("添加模块组成功", nil, "/modules/list")
 	}
 }
@@ -118,8 +121,10 @@ func (this *ModulesController) Modify() {
 
 	_, err = models.ModulesModel.Update(modulesId, modulesValue)
 	if err != nil {
+		this.RecordLog("修改模块组 "+modulesId+" 失败: "+err.Error())
 		this.jsonError("修改模块组失败！")
 	}else {
+		this.RecordLog("修改模块组 "+modulesId+" 成功")
 		this.jsonSuccess("修改模块组成功", nil, "/modules/list")
 	}
 }
@@ -150,8 +155,10 @@ func (this *ModulesController) Delete() {
 
 	_, err = models.ModulesModel.Update(modulesId, modulesValue)
 	if err != nil {
+		this.RecordLog("删除模块组 "+modulesId+" 失败: "+err.Error())
 		this.jsonError("删除模块组失败！")
 	}
 
+	this.RecordLog("修改模块组 "+modulesId+" 成功")
 	this.jsonSuccess("删除模块组成功", nil, "/modules/list")
 }

@@ -3,8 +3,8 @@ package controllers
 import (
 	"strings"
 	"bzppx-codepub/app/models"
-	"log"
 	"time"
+	"bzppx-codepub/app/utils"
 )
 
 type UserController struct {
@@ -13,7 +13,7 @@ type UserController struct {
 
 // 添加用户
 func (this *UserController) Add() {
-	this.viewLayoutTitle("新增用户", "user/form", "page")
+	this.viewLayoutTitle("添加用户", "user/form", "page")
 }
 
 // 保存用户
@@ -62,10 +62,10 @@ func (this *UserController) Save() {
 
 	userId, err := models.UserModel.Insert(userValue)
 	if err != nil {
-		//todo logger
-		log.Println(userId)
+		this.RecordLog("添加用户失败: "+err.Error())
 		this.jsonError("添加用户失败！")
 	}else {
+		this.RecordLog("添加用户 "+utils.NewConvert().IntToString(userId, 10)+" 成功")
 		this.jsonSuccess("添加用户成功", nil, "/user/list")
 	}
 }
@@ -151,8 +151,10 @@ func (this *UserController) Modify() {
 
 	_, err = models.UserModel.Update(userId, userValue)
 	if err != nil {
+		this.RecordLog("修改用户 "+userId+" 失败: "+err.Error())
 		this.jsonError("修改用户失败！")
 	}else {
+		this.RecordLog("修改用户 "+userId+" 成功")
 		this.jsonSuccess("修改用户成功", nil, "/user/list")
 	}
 }
@@ -180,12 +182,10 @@ func (this *UserController) Delete() {
 
 	_, err = models.UserModel.Update(userId, userValue)
 	if err != nil {
+		this.RecordLog("删除用户 "+userId+" 失败: "+err.Error())
 		this.jsonError("删除用户失败！")
 	}
 
+	this.RecordLog("删除用户 "+userId+" 成功")
 	this.jsonSuccess("删除用户成功", nil, "/user/list")
-}
-
-func (this *UserController) Default() {
-	this.viewLayoutTitle("首页", "main/default", "page")
 }

@@ -282,3 +282,33 @@ func (this *BaseController) SetPaginator(per int, nums int64) *utils.Paginator {
 	this.Data["paginator"] = p
 	return p
 }
+
+// insert action log
+func (this *BaseController) RecordLog(message string) {
+	controllerName, actionName := this.GetControllerAndAction()
+	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
+	methodName := strings.ToLower(actionName)
+	userAgent := this.Ctx.Request.UserAgent()
+	referer := this.Ctx.Request.Referer()
+	getParams := this.Ctx.Request.URL.String()
+	this.Ctx.Request.ParseForm()
+	postParamsMap := map[string][]string(this.Ctx.Request.PostForm)
+	postParams, _ := json.Marshal(postParamsMap)
+	user := this.GetSession("author").(map[string]string)
+
+	logValue := map[string]interface{}{
+		"controller": controllerName,
+		"action": methodName,
+		"get": getParams,
+		"post": string(postParams),
+		"message": message,
+		"ip": this.getClientIp(),
+		"user_agent": userAgent,
+		"referer": referer,
+		"user_id": user["user_id"],
+		"username": user["username"],
+		"create_time": time.Now().Unix(),
+	}
+
+	models.LogModel.Insert(logValue)
+}
