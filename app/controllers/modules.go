@@ -159,6 +159,6 @@ func (this *ModulesController) Delete() {
 		this.jsonError("删除模块组失败！")
 	}
 
-	this.RecordLog("修改模块组 "+modulesId+" 成功")
+	this.RecordLog("删除模块组 "+modulesId+" 成功")
 	this.jsonSuccess("删除模块组成功", nil, "/modules/list")
 }

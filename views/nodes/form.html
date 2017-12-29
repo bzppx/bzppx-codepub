@@ -1,0 +1,25 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>{{$nodeGroup := .nodeGroup}}
+        <form class="form-horizontal" method="post" action="{{if $nodeGroup}} /nodes/modify {{else}} /nodes/save {{end}}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 节点组名称 </label>
+                <div class="col-sm-4">
+                    <input type="text" name="name" class="form-control" value="{{$nodeGroup.name}}" placeholder="请输入节点组名称" {{if $nodeGroup}} readonly {{else}} {{end}} required>
+                </div>
+            </div>
+            <input type="hidden" name="nodes_id" class="form-control" value="{{$nodeGroup.nodes_id}}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"> 节点组备注 </label>
+                <div class="col-sm-4">
+                    <input type="text" name="comment" class="form-control" value="{{$nodeGroup.comment}}" placeholder="请输入节点组备注" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $nodeGroup}} true {{else}} false {{end}})" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
