@@ -1,0 +1,63 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 前置命令 </label>
+                <div class="col-sm-4">
+                    <textarea name="pre_command" class="form-control" rows="6"></textarea><br/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 前置命令执行方式</label>
+                <div class="col-sm-4">
+                    <select name="pre_command_exec_type" class="form-control">
+                        <option value="1">同步执行，遇到错误停止</option>
+                        <option value="2">同步执行，遇到错误继续</option>
+                        <option value="3">异步执行</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 前置命令超时 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input type="text" name="" class="form-control" placeholder="请输入前置命令执行超时时间" aria-describedby="input-group1" required>
+                        <span class="input-group-addon">秒</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 后置命令 </label>
+                <div class="col-sm-4">
+                    <textarea name="post_command" class="form-control" rows="6"></textarea><br/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 后置命令执行方式</label>
+                <div class="col-sm-4">
+                    <select name="post_command_exec_type" class="form-control">
+                        <option value="1">同步执行，遇到错误停止</option>
+                        <option value="2">同步执行，遇到错误继续</option>
+                        <option value="3">异步执行</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 后置命令超时 </label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input type="text" name="" class="form-control" placeholder="请输入后置命令执行超时时间" aria-describedby="input-group1" required>
+                        <span class="input-group-addon">秒</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 执行命令用户</label>
+                <div class="col-sm-4">
+                    <input type="text" name="exec_user" class="form-control" placeholder="请输入执行命令linux用户" required>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

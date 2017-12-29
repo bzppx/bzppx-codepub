@@ -1,15 +1,20 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="active"><a href="" data-toggle="tab" aria-controls="">模块组1</a></li>
-            <li><a href="" data-toggle="tab" aria-controls="">模块组2</a></li>
-        </ul>
-    </div>
-    <div class="panel-body">
         <div class="row">
-            <form action="" method="get">
-                <div class="col-md-9">
+            <form action="/module/list" method="get">
+                <div class="col-md-6">
                     <div class="input-group">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">模块组</span>
+                        <select class="form-control" name="website_id">
+                            <option value="">全部</option>
+                            {{range $moduleGroup := .moduleGroups}}
+                            <option value="{{$moduleGroup.modules_id}}">{{$moduleGroup.name}}</option>
+                            {{end}}
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -28,34 +33,51 @@
             <thead>
             <tr>
                 <th class="w13p">模块名</th>
-                <th>代码地址</th>
+                <th>代码仓库</th>
                 <th class="w8p">分支</th>
-                <th class="w15p">发布目录</th>
-                <th class="w15p">备注</th>
-                <th class="w13p">修改时间</th>
-                <th class="w15p">操作</th>
+                <th class="w10p">模块组</th>
+                <th class="w13p">上次发布时间</th>
+                <th class="w20p">操作</th>
             </tr>
             </thead>
             <tbody>
+            {{range $module := .modules}}
             <tr>
-                <td>视频接口</td>
+                <td>{{$module.name}}</td>
                 <td>
-                    <a href="#">ssh://git.code.com/test.git</a>
+                    <a href="#">{{$module.repository_url}}</a>
                 </td>
                 <td class="center">
-                    <label class="text-info">master</label>
+                    <label class="text-info">{{$module.branch}}</label>
                 </td>
-                <td>/www/test</td>
-                <td>备注信息</td>
-                <td class="center">2017-09-08 19:09:09</td>
                 <td class="center">
+                    {{range $moduleGroup := $.moduleGroups}}
+                        {{if eq $moduleGroup.modules_id $module.modules_id}}
+                            <label class="text-success">{{$moduleGroup.name}}</label>
+                        {{end}}
+                    {{end}}
+                </td>
+                <td class="center">
+                    {{if eq $module.last_publish_time "0"}}
+                    {{else}}
+                        {{dateFormat $module.last_publish_time "Y-m-d H:i:s"}}
+                    {{end}}
+                </td>
+                <td class="center">
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/module/edit?module_id={{ $module.module_id }}">修改</a>
                     <a name="publish" class="glyphicon glyphicon-ok-circle" data-link="">发布 </a>
                     <a name="publish" class="glyphicon glyphicon-share-alt" data-link="">回滚 </a>
                     <a name="list" class="glyphicon glyphicon-align-justify" data-link="">历史 </a>
                 </td>
             </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
-    <div class="panel-footer"></div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
 </div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='edit']", "修改用户信息", "550px")
+</script>

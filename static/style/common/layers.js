@@ -68,7 +68,6 @@ var Layers = {
 			width = width||"1000px";
 			$(this).bind('click', function () {
 				var content = url || $(this).attr("data-link");
-				console.log(url);
 				layer.open({
 					type: 2,
 					skin: Layers.skin,

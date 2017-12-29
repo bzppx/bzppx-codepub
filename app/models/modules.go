@@ -161,6 +161,25 @@ func (modules *Modules) GetModuleGroupsByLimit(limit int, number int) (moduleGro
 	return
 }
 
+// 获取所有的模块组
+func (modules *Modules) GetModuleGroups() (moduleGroups []map[string]string, err error) {
+
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(
+		db.AR().
+			From(Table_Modules_Name).
+			Where(map[string]interface{}{
+			"is_delete": MODULES_NORMAL,
+		}))
+	if err != nil {
+		return
+	}
+	moduleGroups = rs.Rows()
+
+	return
+}
+
 // 模块组总数
 func (modules *Modules) CountModuleGroups() (count int64, err error) {
 
