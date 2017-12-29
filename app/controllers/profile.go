@@ -44,9 +44,10 @@ func (this *ProfileController) Save() {
 	})
 
 	if err != nil {
-		// todo logger
+		this.RecordLog("修改个人资料失败："+err.Error())
 		this.jsonError("修改失败")
 	} else {
+		this.RecordLog("修改个人资料成功")
 		this.jsonSuccess("我的资料修改成功", nil, "/profile/my", 3000)
 	}
 }
@@ -74,9 +75,16 @@ func (this *ProfileController) SavePassword() {
 		"password": models.UserModel.EncodePassword(pwdNew),
 	})
 
+	// 阻止日志记录 password
+	this.Ctx.Request.PostForm.Del("pwd")
+	this.Ctx.Request.PostForm.Del("pwd_new")
+	this.Ctx.Request.PostForm.Del("pwd_confirm")
+
 	if err != nil {
+		this.RecordLog("修改密码失败："+err.Error())
 		this.jsonError("修改密码失败")
-	} else {
+	} else {this.RecordLog("修改密码成功")
+		this.RecordLog("修改密码成功")
 		this.jsonSuccess("修改密码成功", nil, "/profile/my", 3000)
 	}
 }

@@ -70,6 +70,8 @@ func (this *LoginController) Index() {
 			"last_ip":   this.getClientIp(),
 		})
 
+		this.Ctx.Request.PostForm.Del("password")
+
 		this.RecordLog("登录成功")
 		this.jsonSuccess("登录成功", "", "/main/index", 500)
 	} else {

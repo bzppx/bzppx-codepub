@@ -64,10 +64,11 @@ var Layers = {
 	 */
 	bindIframe: function (element, title, height, width, url) {
 		$(element).each(function () {
+			height = height||"500px";
+			width = width||"1000px";
 			$(this).bind('click', function () {
-				height = height||"500px";
-				width = width||"1000px";
-				url = url|| $(this).attr("data-link");
+				var content = url || $(this).attr("data-link");
+				console.log(url);
 				layer.open({
 					type: 2,
 					skin: Layers.skin,
@@ -76,7 +77,7 @@ var Layers = {
 					shade : 0.6,
 					maxmin: true,
 					area: [width, height],
-					content: url,
+					content: content,
 					padding:"10px"
 				});
 			})

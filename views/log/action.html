@@ -34,7 +34,7 @@
             <tr>
                 <td class="center">{{$logAction.log_id}}</td>
                 <td>{{$logAction.username}}</td>
-                <td>{{$logAction.message}}</td>
+                <td><a name="info" data-link="/log/actionInfo?log_id={{$logAction.log_id}}">{{$logAction.message}}</a></td>
                 <td>{{$logAction.controller}}/{{$logAction.action}}</td>
                 <td class="center">{{$logAction.ip}}</td>
                 <td class="center">
@@ -50,5 +50,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='edit']", "修改用户信息")
+    $(function () {
+        Layers.bindIframe("[name='info']", "日志详细信息", "350px", "800px")
+    });
 </script>

@@ -140,3 +140,7 @@ ul,li {
     padding-left: 8px;
     padding-right: 8px;
 }
+
+.layui-layer-lan .layui-layer-title {
+    background: linear-gradient(to right, #0178bc 0%, #00bdda 100%);
+}
