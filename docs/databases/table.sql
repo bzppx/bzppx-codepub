@@ -39,7 +39,7 @@ CREATE TABLE `cp_modules` (
   `modules_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '模块组表主键id',
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '模块组名称',
   `comment` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态，0：正常，-1：删除',
+  `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除 0 否 1 是',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`modules_id`)

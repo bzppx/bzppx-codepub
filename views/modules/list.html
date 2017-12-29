@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="" type="text" value="" placeholder="模块组名称">
+                        <input class="form-control" name="keyword" type="text" value="" placeholder="模块组名称">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
@@ -35,19 +35,26 @@
             </tr>
             </thead>
             <tbody>
+            {{range $moduleGroup := .moduleGroups}}
             <tr>
-                <td class="center">1</td>
-                <td>root</td>
-                <td>备注:</td>
-                <td class="center">2017-09-08 12:09:18</td>
-                <td class="center">2017-09-08 12:09:18</td>
+                <td class="center">{{$moduleGroup.modules_id}}</td>
+                <td>{{$moduleGroup.name}}</td>
+                <td>{{$moduleGroup.comment}}</td>
+                <td class="center">{{dateFormat $moduleGroup.create_time "Y-m-d H:i:s"}}</td>
+                <td class="center">{{dateFormat $moduleGroup.update_time "Y-m-d H:i:s"}}</td>
                 <td class="center">
-                    <a name="edit" class="glyphicon glyphicon-edit" data-link="">修改</a>
-                    <a onclick="" class="remove glyphicon glyphicon-trash">删除</a>
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/modules/edit?modules_id={{$moduleGroup.modules_id}}">修改</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/modules/delete?modules_id={{$moduleGroup.modules_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
                 </td>
             </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
-    <div class="panel-footer"></div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
 </div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='edit']", "修改模块组信息")
+</script>

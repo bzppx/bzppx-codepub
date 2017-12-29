@@ -1,22 +1,23 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <br>
-        <form class="form-horizontal" method="post" action="">
+        <br>{{$moduleGroup := .moduleGroup}}
+        <form class="form-horizontal" method="post" action="{{if $moduleGroup}} /modules/modify {{else}} /modules/save {{end}}">
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块组名称 </label>
                 <div class="col-sm-4">
-                    <input type="text" name="name" class="form-control" placeholder="请输入模块组名称" required>
+                    <input type="text" name="name" class="form-control" value="{{$moduleGroup.name}}" placeholder="请输入模块组名称" {{if $moduleGroup}} readonly {{else}} {{end}} required>
                 </div>
             </div>
+            <input type="hidden" name="modules_id" class="form-control" value="{{$moduleGroup.modules_id}}">
             <div class="form-group">
                 <label class="col-sm-2 control-label"> 模块组备注 </label>
                 <div class="col-sm-4">
-                    <input type="text" name="comment" class="form-control" placeholder="请输入模块组备注" required>
+                    <input type="text" name="comment" class="form-control" value="{{$moduleGroup.comment}}" placeholder="请输入模块组备注" required>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" name="submit" class="btn btn-primary">保存</button>
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $moduleGroup}} true {{else}} false {{end}})" class="btn btn-primary">保存</button>
                 </div>
             </div>
         </form>
