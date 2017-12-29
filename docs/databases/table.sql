@@ -82,16 +82,6 @@ CREATE TABLE `cp_nodes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点组表';
 
 
-DROP TABLE IF EXISTS `cp_node_module`;
-CREATE TABLE `cp_node_module` (
-  `node_module_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
-  `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块ID',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`node_module_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点和模块关系表';
-
-
 DROP TABLE IF EXISTS `cp_task`;
 CREATE TABLE `cp_task` (
   `task_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务主键 id',
@@ -132,7 +122,7 @@ CREATE TABLE `cp_user` (
   `mobile` char(13) NOT NULL DEFAULT '' COMMENT '手机号',
   `last_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '最后登录ip',
   `last_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
-  `role` tinyint(3) NOT NULL DEFAULT '1' COMMENT '1,普通用户; 2管理员; 3超级管理员;',
+  `role` tinyint(3) NOT NULL DEFAULT '0' COMMENT '1,普通用户;  2管理员;3超级管理员;',
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
@@ -150,4 +140,4 @@ CREATE TABLE `cp_user_module` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
 
 
--- 2017-12-21 09:22:28
+-- 2017-12-28 09:25:16
