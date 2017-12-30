@@ -45,7 +45,7 @@
             <tr>
                 <td>{{$module.name}}</td>
                 <td>
-                    <a href="#">{{$module.repository_url}}</a>
+                    <a name="info" data-link="/module/info?module_id={{$module.module_id}}">{{$module.repository_url}}</a>
                 </td>
                 <td class="center">
                     <label class="text-info">{{$module.branch}}</label>
@@ -65,6 +65,7 @@
                 </td>
                 <td class="center">
                     <a name="edit" class="glyphicon glyphicon-edit" data-link="/module/edit?module_id={{ $module.module_id }}">修改</a>
+                    <a name="config" class="glyphicon glyphicon-cog" data-link="/module/config?module_id={{ $module.module_id }}">配置</a>
                     <a name="publish" class="glyphicon glyphicon-ok-circle" data-link="">发布 </a>
                     <a name="publish" class="glyphicon glyphicon-share-alt" data-link="">回滚 </a>
                     <a name="list" class="glyphicon glyphicon-align-justify" data-link="">历史 </a>
@@ -79,5 +80,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='edit']", "修改用户信息", "550px")
+    Layers.bindIframe("[name='edit']", "修改模块信息", "550px");
+    Layers.bindIframe("[name='info']", "模块详细信息", "530px");
+    Layers.bindIframe("[name='config']", "模块配置", "530px");
 </script>

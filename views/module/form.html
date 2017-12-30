@@ -5,9 +5,12 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块名称</label>
                 <div class="col-sm-4">
-                    <input type="text" name="name" value="{{$module.name}}" class="form-control" placeholder="请输入模块名称" required>
+                    <input type="text" name="name" value="{{$module.name}}" class="form-control" placeholder="请输入模块名称" {{if $module}} readonly {{else}} {{end}} required>
                 </div>
             </div>
+            {{if $module}}
+            <input type="hidden" name="module_id" value="{{$module.module_id}}">
+            {{end}}
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块组</label>
                 <div class="col-sm-4">
