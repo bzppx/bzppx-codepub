@@ -816,3 +816,7 @@ body::-webkit-scrollbar-thumb
 input.textfield{
 	width:300px;
 }
+
+.content {
+	padding-right: 3px;
+}
