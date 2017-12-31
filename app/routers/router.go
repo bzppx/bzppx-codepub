@@ -4,8 +4,9 @@ import (
 	"bzppx-codepub/app/controllers"
 	"net/http"
 
-	"github.com/astaxie/beego"
 	"bzppx-codepub/app/utils"
+
+	"github.com/astaxie/beego"
 )
 
 func init() {
@@ -38,6 +39,7 @@ func init() {
 	beego.AutoRouter(&controllers.ModuleController{})
 	beego.AutoRouter(&controllers.LogController{})
 	beego.AutoRouter(&controllers.NodesController{})
+	beego.AutoRouter(&controllers.NodeController{})
 	beego.Router("/", &controllers.LoginController{}, "*:Index")
 	beego.ErrorHandler("404", http_404)
 	beego.ErrorHandler("500", http_500)

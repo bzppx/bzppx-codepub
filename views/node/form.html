@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>{{$node := .node}}
+        <form class="form-horizontal" method="post" action="{{if $node}} /node/modify {{else}} /node/save {{end}}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 节点ip </label>
+                <div class="col-sm-4">
+                    <input type="text" name="ip" class="form-control" value="{{$node.ip}}" placeholder="请输入节点ip" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 节点端口 </label>
+                <div class="col-sm-4">
+                    <input type="text" name="port" class="form-control" value="{{$node.port}}" placeholder="请输入节点ip" required>
+                </div>
+            </div>
+            <input type="hidden" name="node_id" class="form-control" value="{{$node.node_id}}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"> 节点备注 </label>
+                <div class="col-sm-4">
+                    <input type="text" name="comment" class="form-control" value="{{$node.comment}}" placeholder="请输入节点备注" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $node}} true {{else}} false {{end}})" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

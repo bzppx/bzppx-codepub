@@ -56,6 +56,15 @@ CREATE TABLE `cp_module_node` (
   PRIMARY KEY (`module_node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块和节点关系表';
 
+DROP TABLE IF EXISTS `cp_node_nodes`;
+CREATE TABLE `cp_node_nodes` (
+  `node_nodes_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和节点组关系表主键',
+  `nodes_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点组ID',
+  `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`module_node_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点和节点组关系表';
+
 
 DROP TABLE IF EXISTS `cp_node`;
 CREATE TABLE `cp_node` (
