@@ -2,7 +2,6 @@ package models
 
 import (
 	"bzppx-codepub/app/utils"
-	"fmt"
 
 	"github.com/snail007/go-activerecord/mysql"
 )
@@ -33,9 +32,7 @@ func (node *Node) GetNodesByLimit(limit int, number int) (nodes []map[string]str
 	if err != nil {
 		return
 	}
-	fmt.Println(rs)
 	nodes = rs.Rows()
-	fmt.Println(nodes)
 	return
 }
 
