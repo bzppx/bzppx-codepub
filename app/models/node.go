@@ -18,6 +18,7 @@ type Node struct {
 
 var NodeModel = Node{}
 
+//分页获取节点
 func (node *Node) GetNodesByLimit(limit int, number int) (nodes []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
@@ -93,5 +94,66 @@ func (node *Node) CountNodesByKeywords(keywords map[string]string) (count int64,
 		return
 	}
 	count = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+// 插入节点
+func (node *Node) Insert(nodeValue map[string]interface{}) (id int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Exec(db.AR().Insert(Table_Node_Name, nodeValue))
+	if err != nil {
+		return
+	}
+	id = rs.LastInsertId
+	return
+}
+
+// 修改节点
+func (node *Node) Update(nodeId string, nodeValue map[string]interface{}) (id int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Exec(db.AR().Update(Table_Node_Name, nodeValue, map[string]interface{}{
+		"node_id":   nodeId,
+		"is_delete": NODE_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+	id = rs.LastInsertId
+	return
+}
+
+// 是否存在节点
+func (node *Node) HasNodeByIpAndPort(ip string, port int) (has bool, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Node_Name).Where(map[string]interface{}{
+		"ip":        ip,
+		"port":      port,
+		"is_delete": NODES_NORMAL,
+	}).Limit(0, 1))
+	if err != nil {
+		return
+	}
+
+	if rs.Len() > 0 {
+		has = true
+	}
+	return
+}
+
+func (node *Node) GetNodeByNodeId(nodeId string) (nodes map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Node_Name).Where(map[string]interface{}{
+		"node_id":   nodeId,
+		"is_delete": NODE_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+
+	nodes = rs.Row()
 	return
 }
