@@ -162,7 +162,7 @@ func (this *NodeController) Modify() {
 func (this *NodeController) Delete() {
 	nodeId := this.GetString("node_id", "")
 
-	if nodesId == "" {
+	if nodeId == "" {
 		this.jsonError("节点不存在！")
 	}
 
@@ -180,11 +180,21 @@ func (this *NodeController) Delete() {
 	}
 
 	_, err = models.NodeModel.Update(nodeId, nodeValue)
+
 	if err != nil {
 		this.RecordLog("删除节点 " + nodeId + " 失败: " + err.Error())
 		this.jsonError("删除节点失败！")
 	}
-
+	err = models.ModuleNodeModel.DeleteModuleNodeByNodeId(nodeId)
+	if err != nil {
+		this.RecordLog("删除模块节点关系，节点ID： " + nodeId + " 失败: " + err.Error())
+		this.jsonError("删除模块节点关系失败！")
+	}
+	err = models.NodeNodesModel.DeleteNodeNodesByNodeId(nodeId)
+	if err != nil {
+		this.RecordLog("删除节点节点组关系，节点ID： " + nodeId + " 失败: " + err.Error())
+		this.jsonError("删除节点节点组关系失败！")
+	}
 	this.RecordLog("删除节点 " + nodeId + " 成功")
 	this.jsonSuccess("删除节点成功", nil, "/node/list")
 }
