@@ -164,3 +164,19 @@ func (node *Node) GetNodeByNodeId(nodeId string) (nodes map[string]string, err e
 	nodes = rs.Row()
 	return
 }
+
+// 通过多个 node_id 获取节点数据
+func (node *Node) GetNodeByNodeIds(nodeIds []string) (nodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Node_Name).Where(map[string]interface{}{
+		"node_id":   nodeIds,
+		"is_delete": NODE_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+
+	nodes = rs.Rows()
+	return
+}

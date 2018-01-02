@@ -66,3 +66,17 @@ func (p *NodeNodes) GetNodeNodesByNodeId(nodeId string) (nodeNodes []map[string]
 	nodeNodes = rs.Rows()
 	return
 }
+
+// 根据 nodes_id 获取节点节点组关系
+func (p *NodeNodes) GetNodeNodesByNodesId(nodesId string) (nodeNodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_NodeNodes_Name).Where(map[string]interface{}{
+		"nodes_id": nodesId,
+	}))
+	if err != nil {
+		return
+	}
+	nodeNodes = rs.Rows()
+	return
+}

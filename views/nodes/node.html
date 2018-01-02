@@ -1,0 +1,55 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <form action="/node/save" method="post">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <select name="node" class="selectpicker show-menu-arrow form-control"
+                                multiple data-live-search="true"
+                                data-max-options="4"
+                                title="选择要导入的节点">
+                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="0">127.0.0.1:8089</option>
+                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">127.0.0.1:8088</option>
+                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">128.0.0.1:8087</option>
+                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">128.0.0.1:8086</option>
+                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">127.0.0.1:8084</option>
+                        </select>
+			            <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary" onclick="Form.ajaxSubmit(this.form, false);"><i class="glyphicon glyphicon-import"></i> 导入 </button>
+			            </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w13p">ID</th>
+                <th class="w13p">节点IP</th>
+                <th class="w8p">端口</th>
+                <th>备注</th>
+                <th class="w15p">修改时间</th>
+                <th class="w15p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $node := .nodes}}
+            <tr>
+                <td class="center">{{$node.node_id}}</td>
+                <td>{{$node.ip}}</td>
+                <td class="center">{{$node.port}}</td>
+                <td>{{$node.comment}}</td>
+                <td class="center">{{dateFormat $node.update_time "Y-m-d H:i:s"}}</td>
+                <td class="center">
+                    <a onclick="Layers.confirm('确定将节点从该节点组移除吗？', '/node/delete?node_id={{$node.node_id}}');" class="remove glyphicon glyphicon-remove">移除 </a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+    </div>
+</div>

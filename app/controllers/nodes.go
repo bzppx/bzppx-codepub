@@ -162,3 +162,39 @@ func (this *NodesController) Delete() {
 	this.RecordLog("删除节点组 "+nodesId+" 成功")
 	this.jsonSuccess("删除节点组成功", nil, "/nodes/list")
 }
+
+// 节点列表
+func (this *NodesController) Node() {
+
+	nodesId := this.GetString("nodes_id", "")
+	if nodesId == "" {
+		this.viewError("节点组不存在", "/nodes/list")
+	}
+
+	nodeGroup, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
+	if err != nil {
+		this.viewError("节点组不存在", "/nodes/list")
+	}
+
+	nodeNodes, err := models.NodeNodesModel.GetNodeNodesByNodesId(nodesId)
+	if err != nil {
+		this.viewError("查找节点错误", "/nodes/list")
+	}
+	if len(nodeNodes) == 0 {
+		this.viewError("该节点组无节点", "/nodes/list")
+	}
+
+	var nodeIds []string
+	for _, nodeNode := range nodeNodes {
+		nodeIds = append(nodeIds, nodeNode["node_id"])
+	}
+
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.viewError("查找节点错误", "/nodes/list")
+	}
+
+	this.Data["nodes"] = nodes
+	this.Data["nodeGroup"] = nodeGroup
+	this.viewLayoutTitle("节点组节点", "nodes/node", "page")
+}
