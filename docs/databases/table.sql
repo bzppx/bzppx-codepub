@@ -5,6 +5,7 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+
 DROP TABLE IF EXISTS `cp_module`;
 CREATE TABLE `cp_module` (
   `module_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块id',
@@ -52,7 +53,7 @@ CREATE TABLE `cp_module_node` (
   `module_node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
   `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块ID',
   `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`module_node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块和节点关系表';
 
@@ -62,7 +63,7 @@ CREATE TABLE `cp_node_nodes` (
   `node_nodes_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和节点组关系表主键',
   `nodes_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点组ID',
   `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`node_nodes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点和节点组关系表';
 
