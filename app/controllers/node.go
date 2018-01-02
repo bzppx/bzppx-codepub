@@ -67,7 +67,7 @@ func (this *NodeController) Save() {
 		this.jsonError("port不正确！")
 	}
 
-	has, err := models.NodeModel.HasNodeByIpAndPort(ip, port)
+	has, err := models.NodeModel.HasNodeByIpAndPort("0", ip, port)
 	if err != nil {
 		this.jsonError("添加节点失败！")
 	}
@@ -134,7 +134,7 @@ func (this *NodeController) Modify() {
 		this.jsonError("port不正确！")
 	}
 
-	has, err := models.NodeModel.HasNodeByIpAndPort(ip, port)
+	has, err := models.NodeModel.HasNodeByIpAndPort(nodeId, ip, port)
 	if err != nil {
 		this.jsonError("添加节点失败！")
 	}
