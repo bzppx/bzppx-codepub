@@ -2,10 +2,7 @@
     <div class="panel-body">
         <div class="row">
             <form action="/node/list" method="get">
-                <div class="col-md-6">
-                    <div class="input-group">
-						 <a href="/node/add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 添加节点 </a>
-                    </div>
+                <div class="col-md-9">
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
@@ -33,7 +30,7 @@
             <tbody>
             {{range $node := .nodes}}
             <tr>
-                <td>{{$node.node_id}}</td>
+                <td class="center">{{$node.node_id}}</td>
                 <td>{{$node.ip}}</td>
                 <td class="center">{{$node.port}}</td>
 				<td class="center">{{dateFormat $node.create_time "Y-m-d H:i:s"}}</td>
@@ -52,5 +49,5 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='edit']", "修改用户信息", "550px")
+    Layers.bindIframe("[name='edit']", "修改节点信息", "420px", "800px")
 </script>
