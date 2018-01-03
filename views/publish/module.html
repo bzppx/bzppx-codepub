@@ -1,8 +1,10 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="active"><a href="" data-toggle="tab" aria-controls="">模块组1</a></li>
-            <li><a href="" data-toggle="tab" aria-controls="">模块组2</a></li>
+        {{$moduleGroups := .moduleGroups}}{{$keywords := .keywords}}{{$modules := .modules}}
+        <ul class="nav nav-tabs">
+            {{range $moduleGroup := $moduleGroups}}
+            <li {{if eq $keywords.modules_id $moduleGroup.modules_id }} class="active" {{end}}><a href="/publish/module?modules_id={{$moduleGroup.modules_id}}" >{{$moduleGroup.name}}</a></li>
+            {{end}}
         </ul>
     </div>
     <div class="panel-body">
@@ -14,7 +16,8 @@
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="" type="text" value="" placeholder="模块名">
+                        <input class="form-control" name="keyword" type="text" value="{{$keywords.keyword}}" placeholder="模块名">
+                        <input name="modules_id" type="hidden" value="{{$keywords.modules_id}}">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
@@ -29,28 +32,35 @@
             <tr>
                 <th class="w13p">模块名</th>
                 <th>代码地址</th>
-                <th class="w15p">发布目录</th>
-                <th class="w15p">备注</th>
-                <th class="w25p">操作</th>
+                <th class="w13p">发布分支</th>
+                <th class="w13p">上一次发布时间</th>
+                <th class="w20p">操作</th>
             </tr>
             </thead>
             <tbody>
+            {{range $module := $modules}}
             <tr>
-                <td>视频接口</td>
+                <td>{{$module.name}}</td>
                 <td>
-                    <a name="code_info" data-link="/publish/info?module_id=1">ssh://git.code.com/test.git</a>
+                    <a name="code_info" data-link="/publish/info?module_id={{$module.module_id}}">{{$module.repository_url}}</a>
                 </td>
-                <td>
-                    <a name="code_dir_info" data-link="#">/www/test</a>
+                <td class="center">
+                    <label class="text-info">{{$module.branch}}</label>
                 </td>
-                <td>备注信息</td>
+                <td class="center">
+                    {{if eq $module.last_publish_time "0"}}
+                    0
+                    {{else}}
+                    {{dateFormat $module.last_publish_time "Y-m-d H:i:s"}}
+                    {{end}}
+                </td>
                 <td class="center">
                     <a name="publish" class="glyphicon glyphicon-ok-circle" data-link="">发布 </a>
                     <a name="publish" class="glyphicon glyphicon-share-alt" data-link="">回滚 </a>
-                    <a name="list" class="glyphicon glyphicon-align-justify" data-link="">历史 </a>
-                    <a name="list" class="glyphicon glyphicon-align-justify" data-link="">节点</a>
+                    <a name="list" class="glyphicon glyphicon-align-justify" data-link="">日志 </a>
                 </td>
             </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
@@ -58,5 +68,5 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='code_info']", "代码配置信息")
+    Layers.bindIframe("[name='code_info']", "模块详细配置")
 </script>

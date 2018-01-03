@@ -1,0 +1,128 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#base" aria-controls="base" role="tab" data-toggle="tab">基本</a></li>
+            <li role="presentation"><a href="#command" aria-controls="command" role="tab" data-toggle="tab">命令</a></li>
+            <li role="presentation"><a href="#node" aria-controls="node" role="tab" data-toggle="tab">节点</a></li>
+        </ul>
+        <br>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="base">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <tbody>{{$module := .module}}{{$moduleGroupName := .moduleGroupName}}
+                        <tr>
+                            <td class="w20p">模块名</td>
+                            <td>{{$module.name}}</td>
+                        </tr>
+                        <tr>
+                            <td class="w20p">模块组</td>
+                            <td>{{$moduleGroupName}}</td>
+                        </tr>
+                        <tr>
+                            <td class="w20p">代码仓库</td>
+                            <td>{{$module.repository_url}}</td>
+                        </tr>
+                        <tr>
+                            <td>代码分支</td>
+                            <td>
+                                <strong>{{$module.branch}}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>发布目录</td>
+                            <td>{{$module.code_path}}</td>
+                        </tr>
+                        <tr>
+                            <td>目录所属用户</td>
+                            <td>{{$module.code_dir_user}}</td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td>{{dateFormat $module.update_time "Y-m-d H:i:s"}}</td>
+                        </tr>
+                        <tr>
+                            <td>上一次发布时间</td>
+                            <td>
+                                {{if eq $module.last_publish_time "0"}}
+                                0
+                                {{else}}
+                                {{dateFormat $module.last_publish_time "Y-m-d H:i:s"}}
+                                {{end}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td>{{$module.comment}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="command">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <tbody>{{$module := .module}}{{$moduleGroupName := .moduleGroupName}}
+                        <tr>
+                            <td class="w20p">前置命令</td>
+                            <td>{{$module.pre_command}}</td>
+                        </tr>
+                        <tr>
+                            <td>前置命令执行方式</td>
+                            <td>{{$module.pre_command_exec_type}}</td>
+                        </tr>
+                        <tr>
+                            <td>前置命令超时</td>
+                            <td>{{$module.pre_command_exec_timeout}}</td>
+                        </tr>
+                        <tr>
+                            <td>后置命令</td>
+                            <td>{{$module.post_command}}</td>
+                        </tr>
+                        <tr>
+                            <td>后置命令执行方式</td>
+                            <td>{{$module.post_command_exec_type}}</td>
+                        </tr>
+                        <tr>
+                            <td>后置命令超时</td>
+                            <td>{{$module.post_command_exec_timeout}}</td>
+                        </tr>
+                        <tr>
+                            <td>执行命令用户</td>
+                            <td>{{$module.exec_user}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="node">
+                <div class="panel panel-default">
+                <div class="table-responsive">{{$nodes := .nodes}}
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="w13p">节点IP</th>
+                            <th class="w8p">端口</th>
+                            <th>备注</th>
+                            <th class="w15p">修改时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{range $node := $nodes}}
+                        <tr>
+                            <td>{{$node.ip}}</td>
+                            <td class="center">{{$node.port}}</td>
+                            <td>{{$node.comment}}</td>
+                            <td class="center">{{dateFormat $node.update_time "Y-m-d H:i:s"}}</td>
+                        </tr>
+                        {{end}}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
