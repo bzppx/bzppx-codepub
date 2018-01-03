@@ -132,7 +132,7 @@ func (this *ModuleController) List() {
 
 	page, _:= this.GetInt("page", 1)
 	modulesId := this.GetString("modules_id", "")
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	keywords := map[string]string {
 		"modules_id": modulesId,
 		"keyword": keyword,

@@ -1,21 +1,20 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
-            <form action="/node/save" method="post">
-                <div class="col-md-4">
+            <form action="/nodes/importNode" method="post">
+                <div class="col-md-4">{{$otherNodes := .otherNodes}}{{$nodeGroup := .nodeGroup}}
                     <div class="input-group">
-                        <select name="node" class="selectpicker show-menu-arrow form-control"
+                        <select name="node_id" class="selectpicker show-menu-arrow form-control"
                                 multiple data-live-search="true"
                                 data-max-options="4"
                                 title="选择要导入的节点">
-                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="0">127.0.0.1:8089</option>
-                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">127.0.0.1:8088</option>
-                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">128.0.0.1:8087</option>
-                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">128.0.0.1:8086</option>
-                            <option title="<span class='label label-success'>127.0.0.1:8089</span>" value="9">127.0.0.1:8084</option>
+                            {{range $otherNode := $otherNodes}}
+                            <option title="<span class='label label-success'>{{$otherNode.ip}}:{{$otherNode.port}}</span>" value="{{$otherNode.node_id}}">节点 {{$otherNode.node_id}}: {{$otherNode.ip}}:{{$otherNode.port}}</option>
+                            {{end}}
                         </select>
+                        <input type="hidden" name="nodes_id" value="{{$nodeGroup.nodes_id}}">
 			            <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary" onclick="Form.ajaxSubmit(this.form, false);"><i class="glyphicon glyphicon-import"></i> 导入 </button>
+                            <button type="button" class="btn btn-primary" onclick="Form.ajaxSubmit(this.form, false);"><i class="glyphicon glyphicon-import"></i> 导入 </button>
 			            </span>
                     </div>
                 </div>
@@ -43,7 +42,7 @@
                 <td>{{$node.comment}}</td>
                 <td class="center">{{dateFormat $node.update_time "Y-m-d H:i:s"}}</td>
                 <td class="center">
-                    <a onclick="Layers.confirm('确定将节点从该节点组移除吗？', '/node/delete?node_id={{$node.node_id}}');" class="remove glyphicon glyphicon-remove">移除 </a>
+                    <a onclick="Layers.confirm('确定将节点从该节点组移除吗？', '/nodes/remove?nodes_id={{$nodeGroup.nodes_id}}&node_id={{$node.node_id}}');" class="remove glyphicon glyphicon-remove">移除 </a>
                 </td>
             </tr>
             {{end}}

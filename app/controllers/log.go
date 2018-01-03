@@ -1,6 +1,9 @@
 package controllers
 
-import "bzppx-codepub/app/models"
+import (
+	"bzppx-codepub/app/models"
+	"strings"
+)
 
 type LogController struct {
 	BaseController
@@ -10,7 +13,7 @@ type LogController struct {
 func (this *LogController) Action() {
 	
 	page, _:= this.GetInt("page", 1)
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	
 	number := 15
 	limit := (page - 1) * number

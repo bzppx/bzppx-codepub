@@ -74,7 +74,7 @@ func (this *UserController) Save() {
 func (this *UserController) List() {
 
 	page, _:= this.GetInt("page", 1)
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 
 	number := 20
 	limit := (page - 1) * number
