@@ -303,7 +303,6 @@ func (this *ModuleController) Modify() {
 	}
 }
 
-
 // 模块详细信息
 func (this *ModuleController) Info() {
 	
@@ -398,4 +397,76 @@ func (this *ModuleController) ConfigSave() {
 	
 	this.RecordLog("模块 " +moduleId+" 配置成功!")
 	this.jsonSuccess("模块配置成功", nil, "/module/list")
+}
+
+// 模块节点列表
+func (this *ModuleController) Node() {
+
+	moduleId := this.GetString("module_id", "")
+	if moduleId == "" {
+		this.viewError("模块不存在", "/module/list")
+	}
+
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.viewError("模块不存在", "/module/list")
+	}
+	if len(module) == 0 {
+		this.viewError("模块不存在", "/module/list")
+	}
+
+	// 查找所有的节点组
+	nodeGroups, err := models.NodesModel.GetNodeGroups()
+	if err != nil {
+		this.viewError("查找节点出错", "/module/list")
+	}
+	// 查找所有的节点节点组关系
+	nodeNodes, err := models.NodeNodesModel.GetNodeNodes()
+	if err != nil {
+		this.viewError("查找节点出错", "/module/list")
+	}
+	//查找所有的节点
+	nodes, err := models.NodeModel.GetNodes()
+	if err != nil {
+		this.viewError("查找节点出错", "/module/list")
+	}
+
+	var moduleNodes []map[string]interface{}
+	for _, nodeGroup := range nodeGroups {
+		moduleNode := map[string]interface{}{
+			"nodes_id": nodeGroup["nodes_id"],
+			"nodes_name": nodeGroup["name"],
+			"nodes": []map[string]string{},
+		}
+		nodeIds := []string{}
+		for _, nodeNode := range nodeNodes {
+			if nodeGroup["nodes_id"] == nodeNode["nodes_id"] {
+				nodeIds = append(nodeIds, nodeNode["node_id"])
+			}
+		}
+		nodeIdsStr := strings.Join(nodeIds, ",")
+		nodeGroupNodes := []map[string]string{}
+		for _, node := range nodes {
+			if strings.Contains(nodeIdsStr, node["node_id"]) {
+				nodeValue := map[string]string{
+					"node_id": node["node_id"],
+					"name": node["name"],
+					"ip": node["ip"],
+					"port": node["port"],
+				}
+				nodeGroupNodes = append(nodeGroupNodes, nodeValue)
+			}
+		}
+		moduleNode["nodes"] = nodeGroupNodes
+		moduleNodes = append(moduleNodes, moduleNode)
+	}
+
+	this.Data["module"] = module
+	this.Data["moduleNodes"] = moduleNodes
+	this.viewLayoutTitle("发布节点", "module/node", "page")
+}
+
+// 模块节点保存
+func (this *ModuleController) NodeSave() {
+
 }

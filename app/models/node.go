@@ -196,3 +196,18 @@ func (node *Node) GetNodeByNotNodeIds(nodeIds []string) (nodes []map[string]stri
 	nodes = rs.Rows()
 	return
 }
+
+// 获取所有的节点
+func (node *Node) GetNodes() (nodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Node_Name).Where(map[string]interface{}{
+		"is_delete": NODE_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+
+	nodes = rs.Rows()
+	return
+}

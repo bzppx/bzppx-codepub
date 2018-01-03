@@ -36,7 +36,7 @@
                 <th>代码仓库</th>
                 <th class="w8p">分支</th>
                 <th class="w10p">模块组</th>
-                <th class="w13p">上次发布时间</th>
+                <th class="w13p">修改时间</th>
                 <th class="w20p">操作</th>
             </tr>
             </thead>
@@ -58,17 +58,16 @@
                     {{end}}
                 </td>
                 <td class="center">
-                    {{if eq $module.last_publish_time "0"}}
+                    {{if eq $module.update_time "0"}}
                     {{else}}
-                        {{dateFormat $module.last_publish_time "Y-m-d H:i:s"}}
+                        {{dateFormat $module.update_time "Y-m-d H:i:s"}}
                     {{end}}
                 </td>
                 <td class="center">
-                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/module/edit?module_id={{ $module.module_id }}">修改</a>
-                    <a name="config" class="glyphicon glyphicon-cog" data-link="/module/config?module_id={{ $module.module_id }}">配置</a>
-                    <a name="publish" class="glyphicon glyphicon-ok-circle" data-link="">发布 </a>
-                    <a name="publish" class="glyphicon glyphicon-share-alt" data-link="">回滚 </a>
-                    <a name="list" class="glyphicon glyphicon-align-justify" data-link="">历史 </a>
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/module/edit?module_id={{$module.module_id}}">修改</a>
+                    <a name="config" class="glyphicon glyphicon-cog" data-link="/module/config?module_id={{$module.module_id}}">配置</a>
+                    <a name="node" class="glyphicon glyphicon-align-justify" data-link="/module/node?module_id={{$module.module_id}}">节点</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/module/delete?module_id={{ $module.module_id }}');" class="remove glyphicon glyphicon-trash">删除</a>
                 </td>
             </tr>
             {{end}}
@@ -83,4 +82,5 @@
     Layers.bindIframe("[name='edit']", "修改模块信息", "550px");
     Layers.bindIframe("[name='info']", "模块详细信息", "530px");
     Layers.bindIframe("[name='config']", "模块配置", "530px");
+    Layers.bindIframe("[name='node']", "模块发布节点", "530px");
 </script>

@@ -1,0 +1,32 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav nav-tabs">{{$moduleNodes := .moduleNodes}}
+            <li class="active"><a href="#">组</a></li>
+            <li><a href="#">列表</a></li>
+        </ul>
+        <form class="form-horizontal" method="post" action="/module/nodeSave">
+            {{range $moduleNode := $moduleNodes}}
+            <div class="w220 inline-group">
+                <h4><span class="label label-default">{{$moduleNode.nodes_name}}</span>
+                <span class="small">
+                    <input name="node_id" type="checkbox" data-type="nodeGroup" value="" onclick="Module.node(this)" />
+                </span>
+                </h4>
+                <ul class="list-group">
+                    {{range $node := $moduleNode.nodes}}
+                    <li class="list-group-item">节点{{$node.node_id}}：{{$node.ip}}:{{$node.port}}
+                        <span class="pull-right">
+                        <input name="node_id" type="checkbox" data-type="node" value="{{$node.node_id}}" onclick="Module.node(this)" />
+                        </span>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+            {{end}}
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="/static/style/module/module.js"></script>
+<script type="text/javascript">
+//    Module.defaults(defaultNodes);
+</script>

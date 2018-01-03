@@ -90,3 +90,15 @@ func (p *NodeNodes) GetNodeNodesByNodesId(nodesId string) (nodeNodes []map[strin
 	nodeNodes = rs.Rows()
 	return
 }
+
+// 所有的节点节点组关系
+func (p *NodeNodes) GetNodeNodes() (nodeNodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_NodeNodes_Name))
+	if err != nil {
+		return
+	}
+	nodeNodes = rs.Rows()
+	return
+}
