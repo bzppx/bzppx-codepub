@@ -32,10 +32,11 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th class="w13p">模块名</th>
+                <th class="w5p">ID</th>
+                <th class="w10p">模块名</th>
                 <th>代码仓库</th>
                 <th class="w8p">分支</th>
-                <th class="w10p">模块组</th>
+                <th class="w8p">模块组</th>
                 <th class="w13p">修改时间</th>
                 <th class="w20p">操作</th>
             </tr>
@@ -43,6 +44,7 @@
             <tbody>
             {{range $module := .modules}}
             <tr>
+                <td class="center">{{$module.module_id}}</td>
                 <td>{{$module.name}}</td>
                 <td>
                     <a name="info" data-link="/module/info?module_id={{$module.module_id}}">{{$module.repository_url}}</a>

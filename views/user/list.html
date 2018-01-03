@@ -56,6 +56,7 @@
                     ----
                     {{else}}
                     <a name="edit" class="glyphicon glyphicon-edit" data-link="/user/edit?user_id={{ $user.user_id }}">修改</a>
+                    <a name="module" class="glyphicon glyphicon-th-list" data-link="/user/module?user_id={{ $user.user_id }}">授权</a>
                     <a onclick="Layers.confirm('确定删除吗？', '/user/delete?user_id={{$user.user_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
                     {{end}}
                 </td>
@@ -69,5 +70,6 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='edit']", "修改用户信息", "450px", "900px")
+    Layers.bindIframe("[name='edit']", "修改用户信息", "450px", "900px");
+    Layers.bindIframe("[name='module']", "用户模块授权", "500px");
 </script>

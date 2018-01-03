@@ -211,3 +211,18 @@ func (module *Module) CountModulesByKeywords(keywords map[string]string) (count 
 	count = utils.NewConvert().StringToInt64(rs.Value("total"))
 	return
 }
+
+// 获取所有的节点
+func (module *Module) GetModules() (modules []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Module_Name).Where(map[string]interface{}{
+		"is_delete": NODE_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+
+	modules = rs.Rows()
+	return
+}

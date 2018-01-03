@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 	"bzppx-codepub/app/utils"
-	"log"
 )
 
 type ModuleController struct {
@@ -33,11 +32,11 @@ func (this *ModuleController) Save() {
 	repositoryUrl := strings.Trim(this.GetString("repository_url", ""), "")
 	sshKey := strings.Trim(this.GetString("ssh_key", ""), "")
 	sshKeySalt := strings.Trim(this.GetString("ssh_key_salt", ""), "")
-	httpsUsername := strings.Trim(this.GetString("https_modulename", ""), "")
+	httpsUsername := strings.Trim(this.GetString("https_username", ""), "")
 	httpsPassword := strings.Trim(this.GetString("https_password", ""), "")
 	branch := strings.Trim(this.GetString("branch", ""), "")
 	codePath := strings.Trim(this.GetString("code_path", ""), "")
-	codeDirUser := strings.Trim(this.GetString("code_dir_module", ""), "")
+	codeDirUser := strings.Trim(this.GetString("code_dir_user", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
 
 	if name == "" {
@@ -99,16 +98,16 @@ func (this *ModuleController) Save() {
 
 	moduleValue := map[string]interface{}{
 		"name": name,
-		"module_id": this.UserID,
+		"user_id": this.UserID,
 		"modules_id": modulesId,
 		"repository_url": repositoryUrl,
 		"branch": branch,
 		"ssh_key": sshKey,
 		"ssh_key_salt": sshKeySalt,
-		"https_modulename": httpsUsername,
+		"https_username": httpsUsername,
 		"https_password": httpsPassword,
 		"code_path": codePath,
-		"code_dir_module": codeDirUser,
+		"code_dir_user": codeDirUser,
 		"comment": comment,
 		"pre_command": "",
 		"post_command": "",
@@ -118,13 +117,12 @@ func (this *ModuleController) Save() {
 
 	moduleId, err := models.ModuleModel.Insert(moduleValue)
 	if err != nil {
-		log.Println(err.Error())
 		this.RecordLog("添加模块失败: "+err.Error())
 		this.jsonError("添加模块失败！")
-	}else {
-		this.RecordLog("添加模块 "+utils.NewConvert().IntToString(moduleId, 10)+" 成功")
-		this.jsonSuccess("添加模块成功", nil, "/module/list")
 	}
+
+	this.RecordLog("添加模块 "+utils.NewConvert().IntToString(moduleId, 10)+" 成功")
+	this.jsonSuccess("添加模块成功, 请继续配置节点", nil, "/module/node?flag=insert&module_id="+utils.NewConvert().IntToString(moduleId, 10))
 }
 
 // 模块列表
@@ -213,11 +211,11 @@ func (this *ModuleController) Modify() {
 	repositoryUrl := strings.Trim(this.GetString("repository_url", ""), "")
 	sshKey := strings.Trim(this.GetString("ssh_key", ""), "")
 	sshKeySalt := strings.Trim(this.GetString("ssh_key_salt", ""), "")
-	httpsUsername := strings.Trim(this.GetString("https_modulename", ""), "")
+	httpsUsername := strings.Trim(this.GetString("https_username", ""), "")
 	httpsPassword := strings.Trim(this.GetString("https_password", ""), "")
 	branch := strings.Trim(this.GetString("branch", ""), "")
 	codePath := strings.Trim(this.GetString("code_path", ""), "")
-	codeDirUser := strings.Trim(this.GetString("code_dir_module", ""), "")
+	codeDirUser := strings.Trim(this.GetString("code_dir_user", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
 	
 	if moduleId == "" {
@@ -283,16 +281,16 @@ func (this *ModuleController) Modify() {
 		"branch": branch,
 		"ssh_key": sshKey,
 		"ssh_key_salt": sshKeySalt,
-		"https_modulename": httpsUsername,
+		"https_username": httpsUsername,
 		"https_password": httpsPassword,
 		"code_path": codePath,
-		"code_dir_module": codeDirUser,
+		"code_dir_user": codeDirUser,
 		"comment": comment,
 		"pre_command": "",
 		"post_command": "",
 		"update_time": time.Now().Unix(),
 	}
-	
+
 	_, err = models.ModuleModel.Update(moduleId, moduleValue)
 	if err != nil {
 		this.RecordLog("修改模块 "+moduleId+" 失败: "+err.Error())
@@ -403,6 +401,8 @@ func (this *ModuleController) ConfigSave() {
 func (this *ModuleController) Node() {
 
 	moduleId := this.GetString("module_id", "")
+	flag := this.GetString("flag", "update")
+
 	if moduleId == "" {
 		this.viewError("模块不存在", "/module/list")
 	}
@@ -468,6 +468,7 @@ func (this *ModuleController) Node() {
 		defaultNodeIds = append(defaultNodeIds, defaultModuleNode["node_id"])
 	}
 
+	this.Data["flag"] = flag
 	this.Data["module"] = module
 	this.Data["moduleNodes"] = moduleNodes
 	this.Data["defaultNodeIds"] = strings.Join(defaultNodeIds, ",")
@@ -511,7 +512,13 @@ func (this *ModuleController) NodeSave() {
 		}
 	}
 
-	this.jsonSuccess("修改节点成功", nil,)
+	if isCheck == "1" {
+		this.RecordLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 成功")
+	}else {
+		this.RecordLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 成功")
+	}
+
+	this.jsonSuccess("修改节点成功", nil)
 }
 
 // 删除节点

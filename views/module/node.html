@@ -1,10 +1,11 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <!--<ul class="nav nav-tabs">-->
-            <!--<li class="active"><a href="#">组</a></li>-->
-            <!--<li><a href="#">列表</a></li>-->
-        <!--</ul>-->
+        <ul class="nav">
+            <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 模块节点配置</strong></h5>
+            <hr>
+        </ul>
         {{$moduleNodes := .moduleNodes}}{{$module := .module}}{{$defaultNodeIds := .defaultNodeIds}}
+        {{$flag := .flag}}
         <form class="form-horizontal" method="post" action="/module/nodeSave">
             {{range $moduleNode := $moduleNodes}}
             <div class="w230 inline-group">
@@ -22,6 +23,13 @@
                     </li>
                     {{end}}
                 </ul>
+            </div>
+            {{end}}
+            {{if eq $flag "insert"}}
+            <div class="form-group">
+                <div class="col-md-8" style="margin-left:10px;">
+                    <a type="button" href="/module/list" class="btn btn-success">完成</a>
+                </div>
             </div>
             {{end}}
             <input type="hidden" name="module_id" value="{{$module.module_id}}">
