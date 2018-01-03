@@ -55,7 +55,7 @@ func (this *NodesController) Save() {
 func (this *NodesController) List() {
 
 	page, _:= this.GetInt("page", 1)
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 
 	number := 20
 	limit := (page - 1) * number
@@ -161,4 +161,108 @@ func (this *NodesController) Delete() {
 
 	this.RecordLog("删除节点组 "+nodesId+" 成功")
 	this.jsonSuccess("删除节点组成功", nil, "/nodes/list")
+}
+
+// 节点列表
+func (this *NodesController) Node() {
+
+	nodesId := this.GetString("nodes_id", "")
+	if nodesId == "" {
+		this.viewError("节点组不存在", "/nodes/list")
+	}
+
+	nodeGroup, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
+	if err != nil {
+		this.viewError("节点组不存在", "/nodes/list")
+	}
+
+	// 查找该节点组下的节点
+	nodeNodes, err := models.NodeNodesModel.GetNodeNodesByNodesId(nodesId)
+	if err != nil {
+		this.viewError("查找节点错误", "/nodes/list")
+	}
+	if len(nodeNodes) == 0 {
+		this.viewError("该节点组无节点", "/nodes/list")
+	}
+	var nodeIds []string
+	for _, nodeNode := range nodeNodes {
+		nodeIds = append(nodeIds, nodeNode["node_id"])
+	}
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.viewError("查找节点错误", "/nodes/list")
+	}
+
+	// 查找除 nodeIds 外的节点
+	otherNodes, err := models.NodeModel.GetNodeByNotNodeIds(nodeIds)
+	if err != nil {
+		this.viewError("查找节点错误", "/nodes/list")
+	}
+
+	this.Data["nodes"] = nodes
+	this.Data["otherNodes"] = otherNodes
+	this.Data["nodeGroup"] = nodeGroup
+	this.viewLayoutTitle("节点组节点", "nodes/node", "page")
+}
+
+// 导入节点
+func (this *NodesController) ImportNode() {
+
+	nodesId := this.GetString("nodes_id", "")
+	nodeIds := this.GetStrings("node_id", []string{})
+
+	if nodesId == "" {
+		this.jsonError("节点组不存在！")
+	}
+	if len(nodeIds) == 0 {
+		this.jsonError("请选择节点！")
+	}
+	nodeGroup, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
+	if err != nil {
+		this.jsonError("节点组不存在！")
+	}
+	if len(nodeGroup) == 0 {
+		this.jsonError("节点组不存在！")
+	}
+
+	var insertValues []map[string]interface{}
+	for _, nodeId := range nodeIds {
+		insertValue := map[string]interface{}{
+			"node_id": nodeId,
+			"nodes_id": nodesId,
+			"create_time": time.Now().Unix(),
+		}
+		insertValues = append(insertValues, insertValue)
+	}
+	_, err = models.NodeNodesModel.InsertBatch(insertValues)
+	if err != nil {
+		this.RecordLog("节点组导入节点失败: " + err.Error())
+		this.jsonError("导入节点失败！")
+	}
+
+	this.RecordLog("节点组 "+nodesId+" 导入节点 "+strings.Join(nodeIds, ",")+" 成功" )
+	this.jsonSuccess("导入节点成功！", nil, "/nodes/node?nodes_id="+nodesId)
+}
+
+// 导入节点
+func (this *NodesController) Remove() {
+
+	nodesId := this.GetString("nodes_id", "")
+	nodeId := this.GetString("node_id", "")
+
+	if nodesId == "" {
+		this.jsonError("节点组不存在！")
+	}
+	if nodeId == "" {
+		this.jsonError("节点不存在！")
+	}
+
+	err := models.NodeNodesModel.DeleteByNodeIdAndNodesId(nodeId, nodesId)
+	if err != nil {
+		this.RecordLog("移除节点组 "+nodesId+" 下节点 "+nodeId+" 失败：" + err.Error())
+		this.jsonError("移除节点失败！")
+	}
+
+	this.RecordLog("移除节点组 "+nodesId+" 下节点 "+nodeId+" 成功" )
+	this.jsonSuccess("移除节点成功！", nil, "/nodes/node?nodes_id="+nodesId)
 }

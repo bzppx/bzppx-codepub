@@ -55,7 +55,7 @@ func (this *ModulesController) Save() {
 func (this *ModulesController) List() {
 
 	page, _:= this.GetInt("page", 1)
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 
 	number := 20
 	limit := (page - 1) * number

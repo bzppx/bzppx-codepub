@@ -198,3 +198,17 @@ func (nodes *Nodes) CountNodeGroupsByKeyword(keyword string) (count int64, err e
 	count = utils.NewConvert().StringToInt64(rs.Value("total"))
 	return
 }
+
+// 获取所有的节点组
+func (p *Nodes) GetNodeGroups() (nodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Nodes_Name).Where(map[string]interface{}{
+		"is_delete": NODES_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+	nodes = rs.Rows()
+	return
+}
