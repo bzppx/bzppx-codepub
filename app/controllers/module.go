@@ -33,11 +33,11 @@ func (this *ModuleController) Save() {
 	repositoryUrl := strings.Trim(this.GetString("repository_url", ""), "")
 	sshKey := strings.Trim(this.GetString("ssh_key", ""), "")
 	sshKeySalt := strings.Trim(this.GetString("ssh_key_salt", ""), "")
-	httpsUsername := strings.Trim(this.GetString("https_username", ""), "")
+	httpsUsername := strings.Trim(this.GetString("https_modulename", ""), "")
 	httpsPassword := strings.Trim(this.GetString("https_password", ""), "")
 	branch := strings.Trim(this.GetString("branch", ""), "")
 	codePath := strings.Trim(this.GetString("code_path", ""), "")
-	codeDirUser := strings.Trim(this.GetString("code_dir_user", ""), "")
+	codeDirUser := strings.Trim(this.GetString("code_dir_module", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
 
 	if name == "" {
@@ -99,16 +99,16 @@ func (this *ModuleController) Save() {
 
 	moduleValue := map[string]interface{}{
 		"name": name,
-		"user_id": this.UserID,
+		"module_id": this.UserID,
 		"modules_id": modulesId,
 		"repository_url": repositoryUrl,
 		"branch": branch,
 		"ssh_key": sshKey,
 		"ssh_key_salt": sshKeySalt,
-		"https_username": httpsUsername,
+		"https_modulename": httpsUsername,
 		"https_password": httpsPassword,
 		"code_path": codePath,
-		"code_dir_user": codeDirUser,
+		"code_dir_module": codeDirUser,
 		"comment": comment,
 		"pre_command": "",
 		"post_command": "",
@@ -213,11 +213,11 @@ func (this *ModuleController) Modify() {
 	repositoryUrl := strings.Trim(this.GetString("repository_url", ""), "")
 	sshKey := strings.Trim(this.GetString("ssh_key", ""), "")
 	sshKeySalt := strings.Trim(this.GetString("ssh_key_salt", ""), "")
-	httpsUsername := strings.Trim(this.GetString("https_username", ""), "")
+	httpsUsername := strings.Trim(this.GetString("https_modulename", ""), "")
 	httpsPassword := strings.Trim(this.GetString("https_password", ""), "")
 	branch := strings.Trim(this.GetString("branch", ""), "")
 	codePath := strings.Trim(this.GetString("code_path", ""), "")
-	codeDirUser := strings.Trim(this.GetString("code_dir_user", ""), "")
+	codeDirUser := strings.Trim(this.GetString("code_dir_module", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
 	
 	if moduleId == "" {
@@ -283,10 +283,10 @@ func (this *ModuleController) Modify() {
 		"branch": branch,
 		"ssh_key": sshKey,
 		"ssh_key_salt": sshKeySalt,
-		"https_username": httpsUsername,
+		"https_modulename": httpsUsername,
 		"https_password": httpsPassword,
 		"code_path": codePath,
-		"code_dir_user": codeDirUser,
+		"code_dir_module": codeDirUser,
 		"comment": comment,
 		"pre_command": "",
 		"post_command": "",
@@ -366,7 +366,7 @@ func (this *ModuleController) ConfigSave() {
 	postCommand := strings.Trim(this.GetString("post_command", ""), "")
 	postCommandExecType := strings.Trim(this.GetString("post_command_exec_type", ""), "")
 	postCommandExecTimeout := strings.Trim(this.GetString("post_command_exec_timeout", ""), "")
-	execUser := strings.Trim(this.GetString("exec_user", ""), "")
+	execUser := strings.Trim(this.GetString("exec_module", ""), "")
 	if moduleId == "" {
 		this.viewError("模块不存在", "/module/list")
 	}
@@ -385,7 +385,7 @@ func (this *ModuleController) ConfigSave() {
 		"post_command": postCommand,
 		"post_command_exec_type": postCommandExecType,
 		"post_command_exec_timeout": postCommandExecTimeout,
-		"exec_user": execUser,
+		"exec_module": execUser,
 		"update_time": time.Now().Unix(),
 	}
 	
@@ -461,12 +461,95 @@ func (this *ModuleController) Node() {
 		moduleNodes = append(moduleNodes, moduleNode)
 	}
 
+	//查找默认的节点
+	defaultModuleNodes, _ := models.ModuleNodeModel.GetModuleNodeByModuleId(moduleId)
+	var defaultNodeIds = []string{}
+	for _, defaultModuleNode := range defaultModuleNodes {
+		defaultNodeIds = append(defaultNodeIds, defaultModuleNode["node_id"])
+	}
+
 	this.Data["module"] = module
 	this.Data["moduleNodes"] = moduleNodes
-	this.viewLayoutTitle("发布节点", "module/node", "page")
+	this.Data["defaultNodeIds"] = strings.Join(defaultNodeIds, ",")
+	this.viewLayoutTitle("模块节点", "module/node", "page")
 }
 
 // 模块节点保存
 func (this *ModuleController) NodeSave() {
+	moduleId := this.GetString("module_id", "")
+	nodeIdsStr := this.GetString("node_ids")
+	isCheck := this.GetString("is_check", "")
 
+	if moduleId == "" {
+		this.jsonError("模块不存在")
+	}
+	if nodeIdsStr == "" {
+		this.jsonError("没有选择节点")
+	}
+
+	nodeIds := strings.Split(nodeIdsStr, ",")
+	// 先删除
+	err := models.ModuleNodeModel.DeleteByModuleIdNodeIds(moduleId, nodeIds)
+	if err != nil {
+		this.RecordLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 失败")
+		this.jsonError("修改模块节点失败！")
+	}
+	if isCheck == "1" {
+		var insertValues []map[string]interface{}
+		for _, nodeId := range nodeIds {
+			insertValue := map[string]interface{}{
+				"node_id": nodeId,
+				"module_id": moduleId,
+				"create_time": time.Now().Unix(),
+			}
+			insertValues = append(insertValues, insertValue)
+		}
+		_, err = models.ModuleNodeModel.InsertBatch(insertValues)
+		if err != nil {
+			this.RecordLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 失败")
+			this.jsonError("修改模块节点失败！")
+		}
+	}
+
+	this.jsonSuccess("修改节点成功", nil,)
+}
+
+// 删除节点
+func (this *ModuleController) Delete() {
+
+	moduleId := this.GetString("module_id", "")
+	
+	if moduleId == "" {
+		this.jsonError("没有选择模块！")
+	}
+	
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.jsonError("模块不存在！")
+	}
+	if len(module) == 0 {
+		this.jsonError("模块不存在！")
+	}
+
+	// 删除模块节点关系
+	err = models.ModuleNodeModel.DeleteByModuleId(moduleId)
+	if err != nil {
+		this.RecordLog("删除模块 "+moduleId+" 删除模块节点关系失败: "+err.Error())
+		this.jsonError("删除模块失败！")
+	}
+
+	// 删除模块
+	moduleValue := map[string]interface{}{
+		"is_delete": models.MODULE_DELETE,
+		"update_time": time.Now().Unix(),
+	}
+	_, err = models.ModuleModel.Update(moduleId, moduleValue)
+	if err != nil {
+		this.RecordLog("删除模块 "+moduleId+" 失败: "+err.Error())
+		this.jsonError("删除模块失败！")
+	}
+
+
+	this.RecordLog("删除模块 "+moduleId+" 成功")
+	this.jsonSuccess("删除模块成功", nil, "/module/list")
 }
