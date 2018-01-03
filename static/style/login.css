@@ -1028,3 +1028,8 @@ body {
 input {
     border-bottom: #007fd0 solid thin;
 }
+
+body,
+html {
+    overflow: hidden;
+}
