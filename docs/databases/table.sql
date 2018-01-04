@@ -151,6 +151,18 @@ CREATE TABLE `cp_user_module` (
   PRIMARY KEY (`user_module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
 
+
+CREATE TABLE IF NOT EXISTS `cp_configure` (
+  `configure_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '配置表主键Id',
+  `key` char(50) NOT NULL COMMENT '配置键',
+  `value` text NOT NULL COMMENT '配置值',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
+  `is_delete` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
+  PRIMARY KEY (`configure_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='配置表';
+
+
 -- ----------------------------------------------------------
 -- 行为日志表
 -- ----------------------------------------------------------

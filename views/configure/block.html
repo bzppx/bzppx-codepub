@@ -1,0 +1,59 @@
+<link href="/static/style/time/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>
+        <form class="form-horizontal" method="post" action="/configure/addBlock">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 封板提示文本： </label>
+                <div class="col-sm-4">
+                    <textarea name="block_message" class="form-control" rows="6">{{.block.block_message}}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+				<input type="hidden" name="default_block_is_enable" value="{{.block.block_is_enable}}">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 封板开关： </label>
+                <div class="col-sm-4">
+                    <label class="radio-inline">
+                        <input type="radio" name="block_is_enable" value="0"> 开
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="block_is_enable" value="1"> 关
+                    </label>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 封板开始时间： </label>
+                <div class="col-sm-4">
+                    <input value="{{.block.block_start_time}}" readonly type="text" name="block_start_time" class="form-control time" placeholder="请选择开始时间" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 封板结束时间： </label>
+                <div class="col-sm-4">
+                    <input value="{{.block.block_end_time}}" readonly type="text" name="block_end_time" class="form-control time" placeholder="请选择结束时间" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, false)" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/style/time/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/style/time/time.js"></script>
+<script type="text/javascript" src="/static/style/time/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script>
+	$(function(){
+		var block_is_enable = $('input[name=default_block_is_enable]').val()
+		if (block_is_enable == 1) {
+			$('input[name=block_is_enable]').eq(1).prop('checked', true)
+		} else {
+			$('input[name=block_is_enable]').eq(0).prop('checked', true)
+		}
+	})
+</script>
