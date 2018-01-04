@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bzppx-codepub/app/models"
+	"strings"
 )
 
 type ProfileController struct {
@@ -23,9 +24,9 @@ func (this *ProfileController) Password() {
 // 个人资料保存
 func (this *ProfileController) Save() {
 
-	givenName := this.GetString("given_name", "")
-	email := this.GetString("email", "")
-	mobile := this.GetString("mobile", "")
+	givenName := strings.Trim(this.GetString("given_name", ""), "")
+	email := strings.Trim(this.GetString("email", "") ,"")
+	mobile := strings.Trim(this.GetString("mobile", ""), "")
 
 	if givenName == "" {
 		this.jsonError("姓名不能为空！")
@@ -55,9 +56,9 @@ func (this *ProfileController) Save() {
 // 修改密码保存
 func (this *ProfileController) SavePassword() {
 
-	pwd := this.GetString("pwd", "")
-	pwdNew := this.GetString("pwd_new", "")
-	pwdConfirm := this.GetString("pwd_confirm", "")
+	pwd := strings.Trim(this.GetString("pwd", ""), "")
+	pwdNew := strings.Trim(this.GetString("pwd_new", ""), "")
+	pwdConfirm := strings.Trim(this.GetString("pwd_confirm", ""), "")
 
 	if (pwd == "") || (pwdNew == "") || (pwdConfirm == "") {
 		this.jsonError("密码不能为空！")

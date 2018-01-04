@@ -32,6 +32,21 @@ func (p *Modules) GetModuleGroupByModulesId(modulesId string) (modules map[strin
 	return
 }
 
+// 根据 modules_ids 获取模块组
+func (p *Modules) GetModuleGroupByModulesIds(modulesId []string) (modules []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Modules_Name).Where(map[string]interface{}{
+		"modules_id": modulesId,
+		"is_delete": MODULES_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+	modules = rs.Rows()
+	return
+}
+
 // 模块组名称是否存在
 func (p *Modules) HasSameModulesName(modulesId, name string) (has bool, err error) {
 	db := G.DB()

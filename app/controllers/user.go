@@ -74,7 +74,7 @@ func (this *UserController) Save() {
 func (this *UserController) List() {
 
 	page, _:= this.GetInt("page", 1)
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 
 	number := 20
 	limit := (page - 1) * number
@@ -188,4 +188,111 @@ func (this *UserController) Delete() {
 
 	this.RecordLog("删除用户 "+userId+" 成功")
 	this.jsonSuccess("删除用户成功", nil, "/user/list")
+}
+
+// 用户用户列表
+func (this *UserController) Module() {
+	
+	userId := this.GetString("user_id", "")
+	if userId == "" {
+		this.viewError("用户不存在", "/user/list")
+	}
+	
+	user, err := models.UserModel.GetUserByUserId(userId)
+	if err != nil {
+		this.viewError("用户不存在", "/user/list")
+	}
+	if len(user) == 0 {
+		this.viewError("用户不存在", "/user/list")
+	}
+	
+	// 查找所有的模块组
+	moduleGroups, err := models.ModulesModel.GetModuleGroups()
+	if err != nil {
+		this.viewError("查找模块出错", "/user/list")
+	}
+	//查找所有的模块
+	modules, err := models.ModuleModel.GetModules()
+	if err != nil {
+		this.viewError("查找模块出错", "/user/list")
+	}
+	
+	var userModules []map[string]interface{}
+	for _, moduleGroup := range moduleGroups {
+		userModule := map[string]interface{}{
+			"modules_id": moduleGroup["modules_id"],
+			"modules_name": moduleGroup["name"],
+			"modules": []map[string]string{},
+		}
+		moduleGroupModules := []map[string]string{}
+		for _, module := range modules {
+			if module["modules_id"] == moduleGroup["modules_id"] {
+				moduleValue := map[string]string{
+					"module_id": module["module_id"],
+					"name": module["name"],
+				}
+				moduleGroupModules = append(moduleGroupModules, moduleValue)
+			}
+		}
+		userModule["modules"] = moduleGroupModules
+		userModules = append(userModules, userModule)
+	}
+	
+	//查找该用户默认的模块
+	defaultUserModules, _ := models.UserModuleModel.GetUserModuleByUserId(userId)
+	var defaultModuleIds = []string{}
+	for _, defaultUserModule := range defaultUserModules {
+		defaultModuleIds = append(defaultModuleIds, defaultUserModule["module_id"])
+	}
+	
+	this.Data["user"] = user
+	this.Data["userModules"] = userModules
+	this.Data["defaultModuleIds"] = strings.Join(defaultModuleIds, ",")
+	this.viewLayoutTitle("用户模块", "user/module", "page")
+}
+
+// 用户用户保存
+func (this *UserController) ModuleSave() {
+	userId := this.GetString("user_id", "")
+	moduleIdsStr := this.GetString("module_ids")
+	isCheck := this.GetString("is_check", "")
+	
+	if userId == "" {
+		this.jsonError("用户不存在")
+	}
+	if moduleIdsStr == "" {
+		this.jsonError("没有选择模块")
+	}
+	
+	moduleIds := strings.Split(moduleIdsStr, ",")
+	// 先删除
+	err := models.UserModuleModel.DeleteByUserIdModuleIds(userId, moduleIds)
+	if err != nil {
+		this.RecordLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 失败")
+		this.jsonError("修改用户模块失败！")
+	}
+	if isCheck == "1" {
+		var insertValues []map[string]interface{}
+		for _, moduleId := range moduleIds {
+			insertValue := map[string]interface{}{
+				"module_id": moduleId,
+				"user_id": userId,
+				"create_time": time.Now().Unix(),
+			}
+			insertValues = append(insertValues, insertValue)
+		}
+		_, err = models.UserModuleModel.InsertBatch(insertValues)
+		if err != nil {
+			this.RecordLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 失败")
+			this.jsonError("修改用户模块失败！")
+		}
+	}
+
+	if isCheck == "1" {
+		this.RecordLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 成功")
+	}else {
+		this.RecordLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 成功")
+	}
+
+	this.jsonSuccess("修改节点成功", nil)
 }

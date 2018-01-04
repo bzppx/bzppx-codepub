@@ -27,6 +27,16 @@ func (p *NodeNodes) DeleteNodeNodesByNodeId(nodeId string) (err error) {
 	return
 }
 
+// 根据 node_id 和 nodes_id 删除关系
+func (p *NodeNodes) DeleteByNodeIdAndNodesId(nodeId string, nodesId string) (err error) {
+	db := G.DB()
+	_, err = db.Exec(db.AR().Delete(Table_NodeNodes_Name, map[string]interface{}{
+		"node_id": nodeId,
+		"nodes_id": nodesId,
+	}))
+	return
+}
+
 // 批量插入
 func (n *NodeNodes) InsertBatch(insertValues []map[string]interface{}) (id int64, err error) {
 
@@ -74,6 +84,18 @@ func (p *NodeNodes) GetNodeNodesByNodesId(nodesId string) (nodeNodes []map[strin
 	rs, err = db.Query(db.AR().From(Table_NodeNodes_Name).Where(map[string]interface{}{
 		"nodes_id": nodesId,
 	}))
+	if err != nil {
+		return
+	}
+	nodeNodes = rs.Rows()
+	return
+}
+
+// 所有的节点节点组关系
+func (p *NodeNodes) GetNodeNodes() (nodeNodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_NodeNodes_Name))
 	if err != nil {
 		return
 	}

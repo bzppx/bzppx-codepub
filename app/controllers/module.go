@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 	"bzppx-codepub/app/utils"
-	"log"
 )
 
 type ModuleController struct {
@@ -118,13 +117,12 @@ func (this *ModuleController) Save() {
 
 	moduleId, err := models.ModuleModel.Insert(moduleValue)
 	if err != nil {
-		log.Println(err.Error())
 		this.RecordLog("添加模块失败: "+err.Error())
 		this.jsonError("添加模块失败！")
-	}else {
-		this.RecordLog("添加模块 "+utils.NewConvert().IntToString(moduleId, 10)+" 成功")
-		this.jsonSuccess("添加模块成功", nil, "/module/list")
 	}
+
+	this.RecordLog("添加模块 "+utils.NewConvert().IntToString(moduleId, 10)+" 成功")
+	this.jsonSuccess("添加模块成功, 请继续配置节点", nil, "/module/node?flag=insert&module_id="+utils.NewConvert().IntToString(moduleId, 10))
 }
 
 // 模块列表
@@ -132,7 +130,7 @@ func (this *ModuleController) List() {
 
 	page, _:= this.GetInt("page", 1)
 	modulesId := this.GetString("modules_id", "")
-	keyword := this.GetString("keyword", "")
+	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	keywords := map[string]string {
 		"modules_id": modulesId,
 		"keyword": keyword,
@@ -292,7 +290,7 @@ func (this *ModuleController) Modify() {
 		"post_command": "",
 		"update_time": time.Now().Unix(),
 	}
-	
+
 	_, err = models.ModuleModel.Update(moduleId, moduleValue)
 	if err != nil {
 		this.RecordLog("修改模块 "+moduleId+" 失败: "+err.Error())
@@ -302,7 +300,6 @@ func (this *ModuleController) Modify() {
 		this.jsonSuccess("修改模块成功", nil, "/module/list")
 	}
 }
-
 
 // 模块详细信息
 func (this *ModuleController) Info() {
@@ -367,7 +364,7 @@ func (this *ModuleController) ConfigSave() {
 	postCommand := strings.Trim(this.GetString("post_command", ""), "")
 	postCommandExecType := strings.Trim(this.GetString("post_command_exec_type", ""), "")
 	postCommandExecTimeout := strings.Trim(this.GetString("post_command_exec_timeout", ""), "")
-	execUser := strings.Trim(this.GetString("exec_user", ""), "")
+	execUser := strings.Trim(this.GetString("exec_module", ""), "")
 	if moduleId == "" {
 		this.viewError("模块不存在", "/module/list")
 	}
@@ -386,7 +383,7 @@ func (this *ModuleController) ConfigSave() {
 		"post_command": postCommand,
 		"post_command_exec_type": postCommandExecType,
 		"post_command_exec_timeout": postCommandExecTimeout,
-		"exec_user": execUser,
+		"exec_module": execUser,
 		"update_time": time.Now().Unix(),
 	}
 	
@@ -398,4 +395,168 @@ func (this *ModuleController) ConfigSave() {
 	
 	this.RecordLog("模块 " +moduleId+" 配置成功!")
 	this.jsonSuccess("模块配置成功", nil, "/module/list")
+}
+
+// 模块节点列表
+func (this *ModuleController) Node() {
+
+	moduleId := this.GetString("module_id", "")
+	flag := this.GetString("flag", "update")
+
+	if moduleId == "" {
+		this.viewError("模块不存在", "/module/list")
+	}
+
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.viewError("模块不存在", "/module/list")
+	}
+	if len(module) == 0 {
+		this.viewError("模块不存在", "/module/list")
+	}
+
+	// 查找所有的节点组
+	nodeGroups, err := models.NodesModel.GetNodeGroups()
+	if err != nil {
+		this.viewError("查找节点出错", "/module/list")
+	}
+	// 查找所有的节点节点组关系
+	nodeNodes, err := models.NodeNodesModel.GetNodeNodes()
+	if err != nil {
+		this.viewError("查找节点出错", "/module/list")
+	}
+	//查找所有的节点
+	nodes, err := models.NodeModel.GetNodes()
+	if err != nil {
+		this.viewError("查找节点出错", "/module/list")
+	}
+
+	var moduleNodes []map[string]interface{}
+	for _, nodeGroup := range nodeGroups {
+		moduleNode := map[string]interface{}{
+			"nodes_id": nodeGroup["nodes_id"],
+			"nodes_name": nodeGroup["name"],
+			"nodes": []map[string]string{},
+		}
+		nodeIds := []string{}
+		for _, nodeNode := range nodeNodes {
+			if nodeGroup["nodes_id"] == nodeNode["nodes_id"] {
+				nodeIds = append(nodeIds, nodeNode["node_id"])
+			}
+		}
+		nodeIdsStr := strings.Join(nodeIds, ",")
+		nodeGroupNodes := []map[string]string{}
+		for _, node := range nodes {
+			if strings.Contains(nodeIdsStr, node["node_id"]) {
+				nodeValue := map[string]string{
+					"node_id": node["node_id"],
+					"name": node["name"],
+					"ip": node["ip"],
+					"port": node["port"],
+				}
+				nodeGroupNodes = append(nodeGroupNodes, nodeValue)
+			}
+		}
+		moduleNode["nodes"] = nodeGroupNodes
+		moduleNodes = append(moduleNodes, moduleNode)
+	}
+
+	//查找默认的节点
+	defaultModuleNodes, _ := models.ModuleNodeModel.GetModuleNodeByModuleId(moduleId)
+	var defaultNodeIds = []string{}
+	for _, defaultModuleNode := range defaultModuleNodes {
+		defaultNodeIds = append(defaultNodeIds, defaultModuleNode["node_id"])
+	}
+
+	this.Data["flag"] = flag
+	this.Data["module"] = module
+	this.Data["moduleNodes"] = moduleNodes
+	this.Data["defaultNodeIds"] = strings.Join(defaultNodeIds, ",")
+	this.viewLayoutTitle("模块节点", "module/node", "page")
+}
+
+// 模块节点保存
+func (this *ModuleController) NodeSave() {
+	moduleId := this.GetString("module_id", "")
+	nodeIdsStr := this.GetString("node_ids")
+	isCheck := this.GetString("is_check", "")
+
+	if moduleId == "" {
+		this.jsonError("模块不存在")
+	}
+	if nodeIdsStr == "" {
+		this.jsonError("没有选择节点")
+	}
+
+	nodeIds := strings.Split(nodeIdsStr, ",")
+	// 先删除
+	err := models.ModuleNodeModel.DeleteByModuleIdNodeIds(moduleId, nodeIds)
+	if err != nil {
+		this.RecordLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 失败")
+		this.jsonError("修改模块节点失败！")
+	}
+	if isCheck == "1" {
+		var insertValues []map[string]interface{}
+		for _, nodeId := range nodeIds {
+			insertValue := map[string]interface{}{
+				"node_id": nodeId,
+				"module_id": moduleId,
+				"create_time": time.Now().Unix(),
+			}
+			insertValues = append(insertValues, insertValue)
+		}
+		_, err = models.ModuleNodeModel.InsertBatch(insertValues)
+		if err != nil {
+			this.RecordLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 失败")
+			this.jsonError("修改模块节点失败！")
+		}
+	}
+
+	if isCheck == "1" {
+		this.RecordLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 成功")
+	}else {
+		this.RecordLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 成功")
+	}
+
+	this.jsonSuccess("修改节点成功", nil)
+}
+
+// 删除节点
+func (this *ModuleController) Delete() {
+
+	moduleId := this.GetString("module_id", "")
+	
+	if moduleId == "" {
+		this.jsonError("没有选择模块！")
+	}
+	
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.jsonError("模块不存在！")
+	}
+	if len(module) == 0 {
+		this.jsonError("模块不存在！")
+	}
+
+	// 删除模块节点关系
+	err = models.ModuleNodeModel.DeleteByModuleId(moduleId)
+	if err != nil {
+		this.RecordLog("删除模块 "+moduleId+" 删除模块节点关系失败: "+err.Error())
+		this.jsonError("删除模块失败！")
+	}
+
+	// 删除模块
+	moduleValue := map[string]interface{}{
+		"is_delete": models.MODULE_DELETE,
+		"update_time": time.Now().Unix(),
+	}
+	_, err = models.ModuleModel.Update(moduleId, moduleValue)
+	if err != nil {
+		this.RecordLog("删除模块 "+moduleId+" 失败: "+err.Error())
+		this.jsonError("删除模块失败！")
+	}
+
+
+	this.RecordLog("删除模块 "+moduleId+" 成功")
+	this.jsonSuccess("删除模块成功", nil, "/module/list")
 }

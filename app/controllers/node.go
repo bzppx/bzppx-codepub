@@ -29,7 +29,7 @@ func (this *NodeController) Add() {
 func (this *NodeController) List() {
 
 	page, _ := this.GetInt("page", 1)
-	ip := this.GetString("ip", "")
+	ip := strings.Trim(this.GetString("ip", ""), "")
 	keywords := map[string]string{
 		"ip": ip,
 	}

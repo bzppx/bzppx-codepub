@@ -48,12 +48,12 @@ var Form = {
             $(Form.failedBox).removeClass();
             $(Form.failedBox).addClass('alert alert-success');
             $(Form.failedBox).append('<a class="close" href="#" onclick="$(this).parent().hide();">×</a>');
-            $(Form.failedBox).append('<strong >操作成功！ </strong>');
-            var ul = $('<ul></ul>');
-            for (var i = 0; i < text.length; i++) {
-                ul.append('<li>' + text[i] + '</li>');
-            }
-            $(Form.failedBox).append(ul);
+            $(Form.failedBox).append('<strong><i class="glyphicon glyphicon-ok-circle"></i> 操作成功：</strong>');
+            // var ul = $('<ul></ul>');
+            // for (var i = 0; i < text.length; i++) {
+            //     ul.append('<li>' + text[i] + '</li>');
+            // }
+            $(Form.failedBox).append(message);
             $(Form.failedBox).show();
         }
 
@@ -69,12 +69,12 @@ var Form = {
             $(Form.failedBox).removeClass('hide');
             $(Form.failedBox).addClass('alert alert-danger');
             $(Form.failedBox).append('<a class="close" href="#" onclick="$(this).parent().hide();">×</a>');
-            $(Form.failedBox).append('<strong >操作失败！ </strong>');
-            var ul = $('<ul></ul>');
-            for (var i = 0; i < text.length; i++) {
-                ul.append('<li>' + text[i] + '</li>');
-            }
-            $(Form.failedBox).append(ul);
+            $(Form.failedBox).append('<strong><i class="glyphicon glyphicon-remove-circle"></i> 操作失败：</strong>');
+            // var ul = $('<ul></ul>');
+            // for (var i = 0; i < text.length; i++) {
+            //     ul.append('<li>' + text[i] + '</li>');
+            // }
+            $(Form.failedBox).append(message);
             $(Form.failedBox).show();
         }
 
