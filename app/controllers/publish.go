@@ -14,21 +14,21 @@ func (this *PublishController) Module() {
 
 	userId := this.UserID
 	modulesId := this.GetString("modules_id", "")
-	page, _:= this.GetInt("page", 1)
+	page, _ := this.GetInt("page", 1)
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
-	keywords := map[string]string {
+	keywords := map[string]string{
 		"modules_id": modulesId,
-		"keyword": keyword,
+		"keyword":    keyword,
 	}
 
 	var err error
 	var moduleGroups []map[string]string
-	if (this.isAdmin() || this.isRoot()) {
+	if this.isAdmin() || this.isRoot() {
 		moduleGroups, err = models.ModulesModel.GetModuleGroups()
 		if err != nil {
 			this.viewError("查找模块出错")
 		}
-	}else {
+	} else {
 		userModules, err := models.UserModuleModel.GetUserModuleByUserId(userId)
 		if err != nil {
 			this.viewError("查找模块出错")
@@ -58,10 +58,10 @@ func (this *PublishController) Module() {
 	limit := (page - 1) * number
 	var count int64
 	var modules []map[string]string
-	if (len(keywords) > 0) {
+	if len(keywords) > 0 {
 		count, err = models.ModuleModel.CountModulesByKeywords(keywords)
 		modules, err = models.ModuleModel.GetModulesByKeywordsAndLimit(keywords, limit, number)
-	}else {
+	} else {
 		count, err = models.ModuleModel.CountModules()
 		modules, err = models.ModuleModel.GetModulesByLimit(limit, number)
 	}
@@ -91,7 +91,7 @@ func (this *PublishController) Info() {
 	if len(module) == 0 {
 		this.viewError("模块不存在", "/publish/module")
 	}
-	moduleGroups, err := models.ModulesModel.GetModuleGroups();
+	moduleGroups, err := models.ModulesModel.GetModuleGroups()
 	if err != nil {
 		this.viewError("获取模块组错误", "/publish/module")
 	}
@@ -122,4 +122,3 @@ func (this *PublishController) Info() {
 
 	this.viewLayoutTitle("模块详细信息", "publish/info", "page")
 }
-

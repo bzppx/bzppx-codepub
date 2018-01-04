@@ -12,12 +12,12 @@ type ConfigureController struct {
 	BaseController
 }
 
-//封板配置
+//封版配置
 func (this *ConfigureController) Block() {
 
 	block, err := models.ConfigureModel.GetBlock()
 	if err != nil {
-		this.viewError("获取模块组错误", "configure/block")
+		this.viewError("获取封版信息错误", "configure/block")
 	}
 	startTime := utils.NewConvert().StringToInt64(block["block_start_time"])
 	endTime := utils.NewConvert().StringToInt64(block["block_end_time"])
@@ -26,10 +26,10 @@ func (this *ConfigureController) Block() {
 	block["block_end_time"] = time.Unix(endTime, 0).Format(timePattern)
 
 	this.Data["block"] = block
-	this.viewLayoutTitle("封板配置", "configure/block", "page")
+	this.viewLayoutTitle("封版配置", "configure/block", "page")
 }
 
-//添加封板配置
+//添加封版配置
 func (this *ConfigureController) AddBlock() {
 
 	blockMessage := strings.Trim(this.GetString("block_message", ""), "")
@@ -38,16 +38,16 @@ func (this *ConfigureController) AddBlock() {
 	blockEndTime := strings.Trim(this.GetString("block_end_time", ""), "")
 
 	if blockIsEnable == "0" && blockMessage == "" {
-		this.jsonError("封板提示文本不能为空")
+		this.jsonError("封版提示文本不能为空")
 	}
 	if blockIsEnable == "" {
-		this.jsonError("请选择封板开关")
+		this.jsonError("请选择封版开关")
 	}
 	if blockEndTime == "" {
-		this.jsonError("请选择封板开始时间")
+		this.jsonError("请选择封版开始时间")
 	}
 	if blockStartTime == "" {
-		this.jsonError("请选择封板结束时间")
+		this.jsonError("请选择封版结束时间")
 	}
 
 	timePattern := "2006-01-02 15:04"
@@ -73,31 +73,31 @@ func (this *ConfigureController) AddBlock() {
 	blockValue[0] = map[string]interface{}{
 		"key":         "block_message",
 		"value":       blockMessage,
-		"update_time": time.Now().Format("2006-01-02 15:04:05"),
+		"update_time": time.Now().Unix(),
 	}
 	blockValue[1] = map[string]interface{}{
 		"key":         "block_is_enable",
 		"value":       blockIsEnable,
-		"update_time": time.Now().Format("2006-01-02 15:04:05"),
+		"update_time": time.Now().Unix(),
 	}
 	blockValue[2] = map[string]interface{}{
 		"key":         "block_start_time",
 		"value":       blockStartTime,
-		"update_time": time.Now().Format("2006-01-02 15:04:05"),
+		"update_time": time.Now().Unix(),
 	}
 	blockValue[3] = map[string]interface{}{
 		"key":         "block_end_time",
 		"value":       blockEndTime,
-		"update_time": time.Now().Format("2006-01-02 15:04:05"),
+		"update_time": time.Now().Unix(),
 	}
 
 	err = models.ConfigureModel.InsertBlock(blockValue)
 	if err != nil {
 		log.Println(err.Error())
-		this.RecordLog("封板信息修改失败：" + err.Error())
-		this.jsonError("封板信息修改失败！")
+		this.RecordLog("封版信息修改失败：" + err.Error())
+		this.jsonError("封版信息修改失败！")
 	} else {
-		this.RecordLog("封板信息修改成功")
-		this.jsonSuccess("封板信息修改成功", nil, "/configure/block")
+		this.RecordLog("封版信息修改成功")
+		this.jsonSuccess("封版信息修改成功", nil, "/configure/block")
 	}
 }

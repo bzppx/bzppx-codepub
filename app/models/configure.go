@@ -16,6 +16,7 @@ type Configure struct {
 
 var ConfigureModel = Configure{}
 
+// 获取封版信息
 func (config *Configure) GetBlock() (block map[string]string, err error) {
 	db := G.DB()
 	keys := []string{"block_message", "block_is_enable", "block_start_time", "block_end_time"}
@@ -37,10 +38,13 @@ func (config *Configure) GetBlock() (block map[string]string, err error) {
 	return
 }
 
+// 修改封版信息
 func (config *Configure) InsertBlock(blockValue []map[string]interface{}) (err error) {
 	db := G.DB()
 	where := []string{"key", "key", "key", "key"}
-	_, err = db.Exec(db.AR().UpdateBatch(Table_Configure_Name, blockValue, where))
+	_, err = db.Exec(db.AR().Where(map[string]interface{}{
+		"is_delete": CONFIGURE_NORMAL,
+	}).UpdateBatch(Table_Configure_Name, blockValue, where))
 
 	return
 }
