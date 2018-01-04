@@ -37,7 +37,7 @@ func (this *ConfigureController) AddBlock() {
 	blockStartTime := strings.Trim(this.GetString("block_start_time", ""), "")
 	blockEndTime := strings.Trim(this.GetString("block_end_time", ""), "")
 
-	if blockMessage == "" {
+	if blockIsEnable == "0" && blockMessage == "" {
 		this.jsonError("封板提示文本不能为空")
 	}
 	if blockIsEnable == "" {
