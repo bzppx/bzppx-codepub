@@ -169,20 +169,22 @@
     </nav>
     <article class="main__content content">
         <div class="content__wrapper">
-            <iframe id="main" name="main" src="/main/default" scrolling="yes" style="overflow-y:auto;border:none;" frameborder="yes" width="100%" height="100%"></iframe>
+            <iframe id="main" name="main" src="/main/default" scrolling="yes" style="overflow-y:auto;border:none;" frameborder="yes" width="100%"></iframe>
         </div>
     </article>
 </main>
 <script type="text/javascript">
     $(function() {
         setInterval(function() {
-            var mainheight = $("#main").contents().find("body").height();
-            var minHeight = $(window).height() - 95;
-            if (mainheight < minHeight) {
-                mainheight = minHeight
-            }
-            $("#main").height(mainheight);
+            // var mainheight = $("#main").contents().find("body").height();
+            // var minHeight = $(window).height() - 95;
+            // if (mainheight < minHeight) {
+            //     mainheight = minHeight
+            // }
+            // $("#main").height(mainheight);
+            $("#main").height($(window).height() - 22);
         }, 200);
+
         $(".nav__item--child>a").click(function() {
             $("#main").attr("src", this.href);
             $(".nav__item--child").removeClass("nav__item--active")
