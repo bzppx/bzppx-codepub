@@ -151,7 +151,7 @@ CREATE TABLE `cp_user_module` (
   PRIMARY KEY (`user_module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
 
-
+DROP TABLE IF EXISTS `cp_configure`;
 CREATE TABLE IF NOT EXISTS `cp_configure` (
   `configure_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '配置表主键Id',
   `key` char(50) NOT NULL COMMENT '配置键',

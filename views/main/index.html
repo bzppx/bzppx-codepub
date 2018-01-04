@@ -18,7 +18,7 @@
             <div class="account__menu">
                 <ul class="account__menu-wrapper">
                     <li class="account__menu-item">
-                        <a href="/profile/my">
+                        <a href="/profile/my" target="main">
                             <i class="nav__icon fa fa-x fa-male"></i>我的资料
                         </a>
                     </li>
@@ -55,10 +55,10 @@
                 </a>
                 <ul class="nav__wrapper nav__wrapper--child">
                     <li class="nav__item--child">
-                        <a href="/profile/my"><i class="nav__icon fa fa-list"></i>我的资料</a>
+                        <a href="/profile/my" target="main"><i class="nav__icon fa fa-list"></i>我的资料</a>
                     </li>
                     <li class="nav__item--child">
-                        <a href="/profile/password"><i class="nav__icon fa fa-list"></i>修改密码</a>
+                        <a href="/profile/password" target="main"><i class="nav__icon fa fa-list"></i>修改密码</a>
                     </li>
                 </ul>
             </li>
@@ -169,20 +169,22 @@
     </nav>
     <article class="main__content content">
         <div class="content__wrapper">
-            <iframe id="main" name="main" src="/main/default" scrolling="yes" style="overflow-y:auto;border:none;" frameborder="yes" width="100%" height="100%"></iframe>
+            <iframe id="main" name="main" src="/main/default" scrolling="yes" style="overflow-y:auto;border:none;" frameborder="yes" width="100%"></iframe>
         </div>
     </article>
 </main>
 <script type="text/javascript">
     $(function() {
         setInterval(function() {
-            var mainheight = $("#main").contents().find("body").height();
-            var minHeight = $(window).height() - 95;
-            if (mainheight < minHeight) {
-                mainheight = minHeight
-            }
-            $("#main").height(mainheight);
+            // var mainheight = $("#main").contents().find("body").height();
+            // var minHeight = $(window).height() - 95;
+            // if (mainheight < minHeight) {
+            //     mainheight = minHeight
+            // }
+            // $("#main").height(mainheight);
+            $("#main").height($(window).height() - 22);
         }, 200);
+
         $(".nav__item--child>a").click(function() {
             $("#main").attr("src", this.href);
             $(".nav__item--child").removeClass("nav__item--active")
