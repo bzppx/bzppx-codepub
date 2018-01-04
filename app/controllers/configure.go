@@ -29,6 +29,7 @@ func (this *ConfigureController) Block() {
 	this.viewLayoutTitle("封板配置", "configure/block", "page")
 }
 
+//添加封板配置
 func (this *ConfigureController) AddBlock() {
 
 	blockMessage := strings.Trim(this.GetString("block_message", ""), "")
@@ -93,7 +94,7 @@ func (this *ConfigureController) AddBlock() {
 	err = models.ConfigureModel.InsertBlock(blockValue)
 	if err != nil {
 		log.Println(err.Error())
-		this.RecordLog("封板信息修改失败：: " + err.Error())
+		this.RecordLog("封板信息修改失败：" + err.Error())
 		this.jsonError("封板信息修改失败！")
 	} else {
 		this.RecordLog("封板信息修改成功")

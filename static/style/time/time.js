@@ -4,7 +4,6 @@ $(function(){
 		minView: 2,
 		language: 'zh-CN',
 		autoclose: true,
-		
     });
 	
 	$(".time").datetimepicker({
@@ -12,6 +11,5 @@ $(function(){
 		minView: 0,
 		language: 'zh-CN',
 		autoclose: true,
-		
     });
 })
