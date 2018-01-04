@@ -161,10 +161,6 @@ CREATE TABLE IF NOT EXISTS `cp_configure` (
   `is_delete` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
   PRIMARY KEY (`configure_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='配置表';
-INSERT INTO `cp_configure` VALUES ('1', 'block_message', '', '2018-01-03 16:30:34', '0000-00-00 00:00:00', '0');
-INSERT INTO `cp_configure` VALUES ('2', 'block_is_enable', '', '2018-01-03 16:30:58', '0000-00-00 00:00:00', '0');
-INSERT INTO `cp_configure` VALUES ('3', 'block_start_time', '', '2018-01-03 16:31:14', '0000-00-00 00:00:00', '0');
-INSERT INTO `cp_configure` VALUES ('4', 'block_end_time', '', '2018-01-03 16:31:17', '0000-00-00 00:00:00', '0');
 
 
 -- ----------------------------------------------------------
