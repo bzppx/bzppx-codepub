@@ -1,0 +1,7 @@
+<div class="panel panel-default">
+    <div class="panel-body">{{$notice := .notice}}
+    <h3 class="center">{{$notice.title}}</h3>
+        <hr>
+        {{str2html $notice.content}}
+    </div>
+</div>

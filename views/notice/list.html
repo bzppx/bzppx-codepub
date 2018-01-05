@@ -1,0 +1,56 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <form action="" method="get">
+                <div class="col-md-9">
+                    <div class="input-group">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input class="form-control" name="keyword" type="text" value="{{.keyword}}" placeholder="标题/内容">
+				            <span class="input-group-btn">
+				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+				            </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w8p">ID</th>
+                <th>标题</th>
+                <th class="w13p">创建时间</th>
+                <th class="w13p">修改时间</th>
+                <th class="w15p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $notice := .notices}}
+            <tr>
+                <td class="center">{{$notice.notice_id}}</td>
+                <td><a name="info" data-link="/notice/info?notice_id={{$notice.notice_id}}">{{$notice.title}}</a></td>
+                <td class="center">
+                    {{dateFormat $notice.create_time "Y-m-d H:i:s"}}
+                </td>
+                <td class="center">
+                    {{dateFormat $notice.update_time "Y-m-d H:i:s"}}
+                </td>
+                <td class="center">
+                    <a onclick="Layers.confirm('确定删除吗？', '/notice/delete?notice_id={{$notice.notice_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
+</div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='info']", "公告详细信息", "500px");
+</script>

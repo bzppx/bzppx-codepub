@@ -1,0 +1,47 @@
+<script src="/static/style/summernote/summernote.js"></script>
+<script src="/static/style/summernote/lang/summernote-zh-CN.min.js"></script>
+<link rel="stylesheet" href="/static/style/summernote/summernote.css">
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>{{$notice := .notice}}
+        <form class="form-horizontal" method="post" action="{{if $notice}} /notice/modify {{else}} /notice/save {{end}}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 标题</label>
+                <div class="col-sm-6">
+                    <input type="text" name="title" class="form-control" placeholder="请输入公告标题" value="{{$notice.title}}" required>
+                </div>
+            </div>
+            <input type="hidden" name="notice_id" value="{{$notice.notice_id}}"/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 内容</label>
+                <div class="col-sm-8">
+                    <textarea  id="editor" name="content">{{$notice.content}}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $notice}} true {{else}} false {{end}});" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#editor').summernote({
+        lang: 'zh-CN',
+        height: 320,
+        minHeight: null,
+        maxHeight: null,
+        focus: true,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+</script>

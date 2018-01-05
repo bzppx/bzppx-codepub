@@ -166,7 +166,7 @@ DROP TABLE IF EXISTS `cp_notice`;
 CREATE TABLE IF NOT EXISTS `cp_notice` (
   `notice_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '公告id',
   `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户 id',
-  `username` int(10) NOT NULL DEFAULT '0' COMMENT '用户名',
+  `username` varchar(50) NOT NULL DEFAULT '' COMMENT '用户名',
   `title` char(50) NOT NULL COMMENT '标题',
   `content` text NOT NULL COMMENT '内容',
   `is_delete` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
