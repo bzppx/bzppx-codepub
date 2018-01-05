@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bzppx-codepub/app/models"
+	"fmt"
 	"strings"
 )
 
@@ -69,6 +70,15 @@ func (this *PublishController) Module() {
 		this.viewError("查找模块出错")
 	}
 
+	//判断是否封版
+	isBlock, block, err := models.ConfigureModel.CheckIsBlock()
+	if err != nil {
+		this.viewError("获取封版配置出错")
+	}
+	fmt.Println(isBlock)
+
+	this.Data["isBlock"] = isBlock
+	this.Data["block"] = block
 	this.Data["modules"] = modules
 	this.Data["keywords"] = keywords
 	this.Data["moduleGroups"] = moduleGroups

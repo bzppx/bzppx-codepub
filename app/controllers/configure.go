@@ -117,6 +117,7 @@ func (this *ConfigureController) AddBlock() {
 	}
 }
 
+//邮件配置
 func (this *ConfigureController) Email() {
 	email, err := models.ConfigureModel.GetEmail()
 	if err != nil {
@@ -126,18 +127,25 @@ func (this *ConfigureController) Email() {
 	this.viewLayoutTitle("邮件配置", "configure/email", "page")
 }
 
+//添加邮件配置
 func (this *ConfigureController) AddEmailConfig() {
+
 	emailHost := strings.Trim(this.GetString("email_host", ""), "")
 	emailPort := strings.Trim(this.GetString("email_port", ""), "")
 	emailUsername := strings.Trim(this.GetString("email_username", ""), "")
 	emailPassword := strings.Trim(this.GetString("email_password", ""), "")
 	emailFrom := strings.Trim(this.GetString("email_from", ""), "")
 	emailIsSsl := strings.Trim(this.GetString("email_is_ssl", ""), "")
+	emailCcList := strings.Trim(this.GetString("email_cc_list", ""), "")
+	intEmailPort := utils.NewConvert().StringToInt(emailPort)
 	if emailHost == "" {
 		this.jsonError("邮箱smtp地址不能为空")
 	}
 	if emailPort == "" {
 		this.jsonError("邮箱smtp端口不能为空")
+	}
+	if intEmailPort > 65535 || intEmailPort < 1 {
+		this.jsonError("邮箱smtp端口填写不正确")
 	}
 	if emailUsername == "" {
 		this.jsonError("邮箱用户名不能为空")
@@ -148,8 +156,11 @@ func (this *ConfigureController) AddEmailConfig() {
 	if emailIsSsl == "" {
 		this.jsonError("请选择是否使用ssl")
 	}
+	if emailCcList == "" {
+		this.jsonError("邮件抄送人列表不能为空")
+	}
 
-	blockValue := make([]map[string]interface{}, 6)
+	blockValue := make([]map[string]interface{}, 7)
 	blockValue[0] = map[string]interface{}{
 		"key":         "email_host",
 		"value":       emailHost,
@@ -180,6 +191,11 @@ func (this *ConfigureController) AddEmailConfig() {
 		"value":       emailIsSsl,
 		"update_time": time.Now().Unix(),
 	}
+	blockValue[6] = map[string]interface{}{
+		"key":         "email_cc_list",
+		"value":       emailCcList,
+		"update_time": time.Now().Unix(),
+	}
 
 	err := models.ConfigureModel.InsertEmailConfig(blockValue)
 	if err != nil {
@@ -189,23 +205,5 @@ func (this *ConfigureController) AddEmailConfig() {
 	} else {
 		this.RecordLog("邮箱信息修改成功")
 		this.jsonSuccess("邮箱信息修改成功", nil, "/configure/email")
-	}
-}
-
-func (this *ConfigureController) AddCcList() {
-	emailCcList := strings.Trim(this.GetString("email_cc_list", ""), "")
-	if emailCcList == "" {
-		this.jsonError("邮件抄送人列表不能为空")
-	}
-	ccList := make(map[string]interface{})
-	ccList["value"] = emailCcList
-	err := models.ConfigureModel.InsertCcList(ccList)
-	if err != nil {
-		log.Println(err.Error())
-		this.RecordLog("发版抄送列表修改失败：" + err.Error())
-		this.jsonError("发版抄送列表修改失败！")
-	} else {
-		this.RecordLog("发版抄送列表修改成功")
-		this.jsonSuccess("发版抄送列表修改成功", nil, "/configure/email")
 	}
 }

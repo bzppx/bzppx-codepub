@@ -1,6 +1,9 @@
 package models
 
 import (
+	"bzppx-codepub/app/utils"
+	"time"
+
 	"github.com/snail007/go-activerecord/mysql"
 )
 
@@ -72,7 +75,7 @@ func (config *Configure) GetEmail() (email map[string]string, err error) {
 
 func (config *Configure) InsertEmailConfig(emailValue []map[string]interface{}) (err error) {
 	db := G.DB()
-	where := []string{"key", "key", "key", "key", "key", "key"}
+	where := []string{"key", "key", "key", "key", "key", "key", "key"}
 	_, err = db.Exec(db.AR().Where(map[string]interface{}{
 		"is_delete": CONFIGURE_NORMAL,
 	}).UpdateBatch(Table_Configure_Name, emailValue, where))
@@ -80,12 +83,23 @@ func (config *Configure) InsertEmailConfig(emailValue []map[string]interface{}) 
 	return
 }
 
-func (config *Configure) InsertCcList(ccList map[string]interface{}) (err error) {
-	db := G.DB()
-	_, err = db.Exec(db.AR().Update(Table_Configure_Name, ccList, map[string]interface{}{
-		"is_delete": CONFIGURE_NORMAL,
-		"key":       "email_cc_list",
-	}))
+func (config *Configure) CheckIsBlock() (isBlock bool, block map[string]string, err error) {
 
+	block, err = config.GetBlock()
+	if err != nil {
+		return
+	}
+	if block["block_is_enable"] == "1" {
+		isBlock = false
+		return
+	}
+	blockStartTime := utils.NewConvert().StringToInt64(block["block_start_time"])
+	blockEndTime := utils.NewConvert().StringToInt64(block["block_end_time"])
+	now := time.Now().Unix()
+	if now > blockEndTime || now < blockStartTime {
+		isBlock = false
+	} else {
+		isBlock = true
+	}
 	return
 }

@@ -1,4 +1,10 @@
 <div class="panel panel-default">
+	{{if .isBlock}}
+	<div id="failedBox" style="margin-bottom: 10px" class="alert alert-danger">
+		<a class="close" href="#" onclick="$(this).parent().hide();">×</a>
+		<strong><i class="glyphicon glyphicon-remove-circle"></i> {{.block.block_message}} </strong>
+	</div>
+	{{end}}
     <div class="panel-body">
         {{$moduleGroups := .moduleGroups}}{{$keywords := .keywords}}{{$modules := .modules}}
         <ul class="nav nav-tabs">
@@ -55,8 +61,10 @@
                     {{end}}
                 </td>
                 <td class="center">
+					{{if not .isBlock}}
                     <a name="publish" class="glyphicon glyphicon-ok-circle" data-link="">发布 </a>
                     <a name="publish" class="glyphicon glyphicon-share-alt" data-link="">回滚 </a>
+					{{end}}
                     <a name="list" class="glyphicon glyphicon-align-justify" data-link="">日志 </a>
                 </td>
             </tr>

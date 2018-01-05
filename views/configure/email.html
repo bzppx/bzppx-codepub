@@ -49,19 +49,15 @@
                     </label>
                 </div>
             </div>
-			<div class="form-group">
+            <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" onclick="Form.ajaxSubmit(this.form, false)" class="btn btn-primary">保存</button>
-				<button type="button" onclick="" class="btn btn-primary">发送测试邮件</button>
-            </div>
-        </form>
-    </div>
-	<div class="panel-body">
-        <br>
-        <form class="form-horizontal" method="post" action="/configure/addCcList">
-			<div class="form-group">
-                <label class="col-sm-4 control-label"> 发版抄送列表 </label>
-            </div>
+                    <button type="button" onclick="" class="btn btn-primary">发送邮件</button>
+                </div>
+            </div><br>
+            <ul class="nav">
+                <h5><strong>发版抄送列表</strong></h5>
+                <hr>
+            </ul>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 邮件抄送人列表： </label>
                 <div class="col-sm-4">
@@ -81,8 +77,13 @@
 </div>
 <script>
 	$(function(){
-		{{if(.email.email_is_ss)}}
-		$('select[name=email_is_ssl]').val("{{.email.email_is_ssl}}")
+		{{if(.email.email_is_ssl)}}
+        var isSsl = "{{.email.email_is_ssl}}"
+		$('input[name=email_is_ssl]').each(function(){
+            if($(this).val() == isSsl) {
+                $(this).prop('checked', true)
+            }
+        })
 		{{end}}
 	})
 </script>
