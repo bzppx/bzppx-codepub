@@ -179,15 +179,9 @@
 </main>
 <script type="text/javascript">
     $(function() {
-        setInterval(function() {
-            // var mainheight = $("#main").contents().find("body").height();
-            // var minHeight = $(window).height() - 95;
-            // if (mainheight < minHeight) {
-            //     mainheight = minHeight
-            // }
-            // $("#main").height(mainheight);
-            $("#main").height($(window).height() - 22);
-        }, 200);
+        window.onload = window.onresize = function() {
+            $("#main").height($(window).height() - 22).css("padding-bottom", "50px");
+        };
 
         $(".nav__item--child>a").click(function() {
             $("#main").attr("src", this.href);
