@@ -43,7 +43,8 @@ func (this *LoginController) Index() {
 		}
 		user, err := userModel.GetUserByName(name)
 		if err != nil {
-			this.jsonError(err)
+			this.ErrorLog("查找用户失败："+err.Error())
+			this.jsonError("账号不存在！")
 			return
 		}
 		if len(user) == 0 {
@@ -72,7 +73,7 @@ func (this *LoginController) Index() {
 
 		this.Ctx.Request.PostForm.Del("password")
 
-		this.RecordLog("登录成功")
+		this.InfoLog("登录成功")
 		this.jsonSuccess("登录成功", "", "/main/index", 500)
 	} else {
 		this.viewLayoutTitle("Login", "login/login", "login")
@@ -81,7 +82,7 @@ func (this *LoginController) Index() {
 
 //logout
 func (this *LoginController) Logout() {
-	this.RecordLog("退出成功")
+	this.InfoLog("退出成功")
 	passport := beego.AppConfig.String("author.passport")
 	this.Ctx.SetCookie(passport, "")
 	this.SetSession("author", "")

@@ -284,7 +284,7 @@ func (this *BaseController) SetPaginator(per int, nums int64) *utils.Paginator {
 }
 
 // insert action log
-func (this *BaseController) RecordLog(message string) {
+func (this *BaseController) RecordLog(message string, level int) {
 	controllerName, actionName := this.GetControllerAndAction()
 	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	methodName := strings.ToLower(actionName)
@@ -297,6 +297,7 @@ func (this *BaseController) RecordLog(message string) {
 	user := this.GetSession("author").(map[string]string)
 
 	logValue := map[string]interface{}{
+		"level": level,
 		"controller": controllerName,
 		"action": methodName,
 		"get": getParams,
@@ -311,4 +312,20 @@ func (this *BaseController) RecordLog(message string) {
 	}
 
 	models.LogModel.Insert(logValue)
+}
+
+func (this *BaseController) ErrorLog(message string)  {
+	this.RecordLog(message, models.Log_Level_Error)
+}
+
+func (this *BaseController) WarningLog(message string)  {
+	this.RecordLog(message, models.Log_Level_Warning)
+}
+
+func (this *BaseController) InfoLog(message string)  {
+	this.RecordLog(message, models.Log_Level_Info)
+}
+
+func (this *BaseController) DebugLog(message string)  {
+	this.RecordLog(message, models.Log_Level_Debug)
 }

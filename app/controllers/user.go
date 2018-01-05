@@ -43,6 +43,7 @@ func (this *UserController) Save() {
 
 	user, err := models.UserModel.GetUserByName(username)
 	if err != nil {
+		this.ErrorLog("查找用户名 "+username+" 失败: "+err.Error())
 		this.jsonError("添加用户失败！")
 	}
 	if len(user) > 0 {
@@ -62,10 +63,10 @@ func (this *UserController) Save() {
 
 	userId, err := models.UserModel.Insert(userValue)
 	if err != nil {
-		this.RecordLog("添加用户失败: "+err.Error())
+		this.ErrorLog("添加用户失败: "+err.Error())
 		this.jsonError("添加用户失败！")
 	}else {
-		this.RecordLog("添加用户 "+utils.NewConvert().IntToString(userId, 10)+" 成功")
+		this.InfoLog("添加用户 "+utils.NewConvert().IntToString(userId, 10)+" 成功")
 		this.jsonSuccess("添加用户成功", nil, "/user/list")
 	}
 }
@@ -151,10 +152,10 @@ func (this *UserController) Modify() {
 
 	_, err = models.UserModel.Update(userId, userValue)
 	if err != nil {
-		this.RecordLog("修改用户 "+userId+" 失败: "+err.Error())
+		this.ErrorLog("修改用户 "+userId+" 失败: "+err.Error())
 		this.jsonError("修改用户失败！")
 	}else {
-		this.RecordLog("修改用户 "+userId+" 成功")
+		this.InfoLog("修改用户 "+userId+" 成功")
 		this.jsonSuccess("修改用户成功", nil, "/user/list")
 	}
 }
@@ -182,11 +183,11 @@ func (this *UserController) Delete() {
 
 	_, err = models.UserModel.Update(userId, userValue)
 	if err != nil {
-		this.RecordLog("删除用户 "+userId+" 失败: "+err.Error())
+		this.ErrorLog("删除用户 "+userId+" 失败: "+err.Error())
 		this.jsonError("删除用户失败！")
 	}
 
-	this.RecordLog("删除用户 "+userId+" 成功")
+	this.InfoLog("删除用户 "+userId+" 成功")
 	this.jsonSuccess("删除用户成功", nil, "/user/list")
 }
 
@@ -268,7 +269,7 @@ func (this *UserController) ModuleSave() {
 	// 先删除
 	err := models.UserModuleModel.DeleteByUserIdModuleIds(userId, moduleIds)
 	if err != nil {
-		this.RecordLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 失败")
+		this.ErrorLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 失败")
 		this.jsonError("修改用户模块失败！")
 	}
 	if isCheck == "1" {
@@ -283,15 +284,15 @@ func (this *UserController) ModuleSave() {
 		}
 		_, err = models.UserModuleModel.InsertBatch(insertValues)
 		if err != nil {
-			this.RecordLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 失败")
+			this.InfoLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 失败")
 			this.jsonError("修改用户模块失败！")
 		}
 	}
 
 	if isCheck == "1" {
-		this.RecordLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 成功")
+		this.InfoLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 成功")
 	}else {
-		this.RecordLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 成功")
+		this.InfoLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 成功")
 	}
 
 	this.jsonSuccess("修改节点成功", nil)

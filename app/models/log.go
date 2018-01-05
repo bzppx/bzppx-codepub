@@ -5,6 +5,17 @@ import (
 	"github.com/snail007/go-activerecord/mysql"
 )
 
+const (
+	Log_Level_Emegergency = iota
+	Log_Level_Alaert
+	Log_Level_Critical
+	Log_Level_Error
+	Log_Level_Warning
+	Log_Level_Notice
+	Log_Level_Info
+	Log_Level_Debug
+)
+
 const Table_Log_Name = "log"
 
 type Log struct {
