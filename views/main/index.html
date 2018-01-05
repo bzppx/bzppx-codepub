@@ -178,23 +178,36 @@
     </article>
 </main>
 <script type="text/javascript">
+    window.onload = window.onresize = function() {
+        $("#main").height($(window).height() - 22).css("padding-bottom", "50px");
+    };
     $(function() {
-        setInterval(function() {
-            // var mainheight = $("#main").contents().find("body").height();
-            // var minHeight = $(window).height() - 95;
-            // if (mainheight < minHeight) {
-            //     mainheight = minHeight
-            // }
-            // $("#main").height(mainheight);
-            $("#main").height($(window).height() - 22);
-        }, 200);
+        $(".nav__item--child>a").each(function() {
+            var hash = location.hash;
+            var aurl = parseUrl(this.href);
+            var ahash = "#" + aurl.pathname + (aurl.search ? '?' + aurl.search : '');
+            if (hash == ahash) {
+                $(this).parent().parent().click();
+                $("#main").attr("src", this.href);
+                $(".nav__item--child").removeClass("nav__item--active")
+                $(this).parent().addClass("nav__item--active");
+            }
+        });
 
         $(".nav__item--child>a").click(function() {
             $("#main").attr("src", this.href);
             $(".nav__item--child").removeClass("nav__item--active")
-            $(this).parent().addClass("nav__item--active")
+            $(this).parent().addClass("nav__item--active");
+            var url = parseUrl(this.href);
+            var hash = url.pathname + (url.search ? '?' + url.search : '');
+            location.hash = "#" + hash;
             return false;
         });
 
+        function parseUrl(url) {
+            var a = document.createElement('a');
+            a.href = url;
+            return a;
+        }
     });
 </script>

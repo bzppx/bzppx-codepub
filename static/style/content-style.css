@@ -396,3 +396,7 @@ body::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.86, #00bdda), color-stop(0.52, #0178bc), color-stop(0.34, #0178bc));
 }
+
+textarea {
+    resize: none;
+}
