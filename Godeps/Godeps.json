@@ -7,6 +7,10 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/afocus/captcha",
+			"Rev": "6d694b359d1a516aa04d30efe3ffe5d1361b63ef"
+		},
+		{
 			"ImportPath": "github.com/astaxie/beego",
 			"Comment": "v1.8.3-1-g9d06b28",
 			"Rev": "9d06b288f30e6a4491d5aa8b8b985842d68a6930"
@@ -57,8 +61,31 @@
 			"Rev": "05e0dd455a0aadb9c34b8d6d4243dd25f08f6078"
 		},
 		{
+			"ImportPath": "github.com/golang/freetype",
+			"Comment": "release-137-ge2365df",
+			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+		},
+		{
+			"ImportPath": "github.com/golang/freetype/raster",
+			"Comment": "release-137-ge2365df",
+			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+		},
+		{
+			"ImportPath": "github.com/golang/freetype/truetype",
+			"Comment": "release-137-ge2365df",
+			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+		},
+		{
 			"ImportPath": "github.com/snail007/go-activerecord/mysql",
 			"Rev": "53722debe43d3b9ecd00fa4b23966d16ae1f8bb9"
+		},
+		{
+			"ImportPath": "golang.org/x/image/font",
+			"Rev": "12117c17ca67ffa1ce22e9409f3b0b0a93ac08c7"
+		},
+		{
+			"ImportPath": "golang.org/x/image/math/fixed",
+			"Rev": "12117c17ca67ffa1ce22e9409f3b0b0a93ac08c7"
 		}
 	]
 }
