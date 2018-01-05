@@ -27,11 +27,13 @@ func (this *PublishController) Module() {
 	if this.isAdmin() || this.isRoot() {
 		moduleGroups, err = models.ModulesModel.GetModuleGroups()
 		if err != nil {
+			this.ErrorLog("查找模块组失败: "+err.Error())
 			this.viewError("查找模块出错")
 		}
 	} else {
 		userModules, err := models.UserModuleModel.GetUserModuleByUserId(userId)
 		if err != nil {
+			this.ErrorLog("查找用户 "+userId+" 模块失败: "+err.Error())
 			this.viewError("查找模块出错")
 		}
 		moduleIds := []string{}
@@ -40,6 +42,7 @@ func (this *PublishController) Module() {
 		}
 		modules, err := models.ModuleModel.GetModuleByModuleIds(moduleIds)
 		if err != nil {
+			this.ErrorLog("查找模块失败: "+err.Error())
 			this.viewError("查找模块出错")
 		}
 		modulesIds := []string{}
@@ -48,6 +51,7 @@ func (this *PublishController) Module() {
 		}
 		moduleGroups, err = models.ModulesModel.GetModuleGroupByModulesIds(modulesIds)
 		if err != nil {
+			this.ErrorLog("查找用户组失败: "+err.Error())
 			this.viewError("查找模块出错")
 		}
 	}
@@ -67,6 +71,7 @@ func (this *PublishController) Module() {
 		modules, err = models.ModuleModel.GetModulesByLimit(limit, number)
 	}
 	if err != nil {
+		this.ErrorLog("查找用户模块列表失败: "+err.Error())
 		this.viewError("查找模块出错")
 	}
 
@@ -96,6 +101,7 @@ func (this *PublishController) Info() {
 
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.viewError("模块不存在", "/publish/module")
 	}
 	if len(module) == 0 {
@@ -103,6 +109,7 @@ func (this *PublishController) Info() {
 	}
 	moduleGroups, err := models.ModulesModel.GetModuleGroups()
 	if err != nil {
+		this.ErrorLog("查找模块组失败: "+err.Error())
 		this.viewError("获取模块组错误", "/publish/module")
 	}
 	moduleGroupName := ""
@@ -115,6 +122,7 @@ func (this *PublishController) Info() {
 	// 查找该模块的节点
 	moduleNodes, err := models.ModuleNodeModel.GetModuleNodeByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 节点关系失败: "+err.Error())
 		this.viewError("查找模块信息出错")
 	}
 	var nodeIds []string
@@ -123,6 +131,7 @@ func (this *PublishController) Info() {
 	}
 	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
 	if err != nil {
+		this.ErrorLog("查找模块失败: "+err.Error())
 		this.viewError("查找模块信息出错")
 	}
 

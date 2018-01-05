@@ -28,6 +28,7 @@ func (this *ModulesController) Save() {
 
 	moduleGroup, err := models.ModulesModel.HasModulesName(name)
 	if err != nil {
+		this.ErrorLog("查找模块组 "+name+" 失败："+err.Error())
 		this.jsonError("添加模块组失败！")
 	}
 	if moduleGroup {
@@ -43,10 +44,10 @@ func (this *ModulesController) Save() {
 
 	modulesId, err := models.ModulesModel.Insert(modulesValue)
 	if err != nil {
-		this.RecordLog("添加模块组失败: "+err.Error())
+		this.ErrorLog("添加模块组失败: "+err.Error())
 		this.jsonError("添加模块组失败！")
 	}else {
-		this.RecordLog("添加模块组 "+utils.NewConvert().IntToString(modulesId, 10)+" 成功")
+		this.InfoLog("添加模块组 "+utils.NewConvert().IntToString(modulesId, 10)+" 成功")
 		this.jsonSuccess("添加模块组成功", nil, "/modules/list")
 	}
 }
@@ -70,7 +71,8 @@ func (this *ModulesController) List() {
 		moduleGroups, err = models.ModulesModel.GetModuleGroupsByLimit(limit, number)
 	}
 	if err != nil {
-		this.viewError(err.Error(), "/modules/list")
+		this.ErrorLog("查找模块组列表失败："+err.Error())
+		this.viewError("查找模块组列表失败", "/modules/list")
 	}
 
 	this.Data["moduleGroups"] = moduleGroups
@@ -89,6 +91,7 @@ func (this *ModulesController) Edit() {
 
 	moduleGroup, err := models.ModulesModel.GetModuleGroupByModulesId(modulesId)
 	if err != nil {
+		this.ErrorLog("查找模块组 "+modulesId+" 失败："+err.Error())
 		this.viewError("模块组不存在", "/modules/list")
 	}
 
@@ -108,6 +111,7 @@ func (this *ModulesController) Modify() {
 
 	modules, err := models.ModulesModel.GetModuleGroupByModulesId(modulesId)
 	if err != nil {
+		this.ErrorLog("查找模块组 "+modulesId+" 失败："+err.Error())
 		this.jsonError("模块组不存在！")
 	}
 	if len(modules) == 0 {
@@ -121,10 +125,10 @@ func (this *ModulesController) Modify() {
 
 	_, err = models.ModulesModel.Update(modulesId, modulesValue)
 	if err != nil {
-		this.RecordLog("修改模块组 "+modulesId+" 失败: "+err.Error())
+		this.ErrorLog("修改模块组 "+modulesId+" 失败: "+err.Error())
 		this.jsonError("修改模块组失败！")
 	}else {
-		this.RecordLog("修改模块组 "+modulesId+" 成功")
+		this.InfoLog("修改模块组 "+modulesId+" 成功")
 		this.jsonSuccess("修改模块组成功", nil, "/modules/list")
 	}
 }
@@ -140,6 +144,7 @@ func (this *ModulesController) Delete() {
 
 	modules, err := models.ModulesModel.GetModuleGroupByModulesId(modulesId)
 	if err != nil {
+		this.ErrorLog("查找模块组 "+modulesId+" 失败："+err.Error())
 		this.jsonError("模块组不存在！")
 	}
 	if len(modules) == 0 {
@@ -155,10 +160,10 @@ func (this *ModulesController) Delete() {
 
 	_, err = models.ModulesModel.Update(modulesId, modulesValue)
 	if err != nil {
-		this.RecordLog("删除模块组 "+modulesId+" 失败: "+err.Error())
+		this.ErrorLog("删除模块组 "+modulesId+" 失败: "+err.Error())
 		this.jsonError("删除模块组失败！")
 	}
 
-	this.RecordLog("删除模块组 "+modulesId+" 成功")
+	this.InfoLog("删除模块组 "+modulesId+" 成功")
 	this.jsonSuccess("删除模块组成功", nil, "/modules/list")
 }

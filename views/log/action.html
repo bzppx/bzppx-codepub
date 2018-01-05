@@ -21,10 +21,11 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th class="w5p">ID</th>
-                <th class="w10p">帐号</th>
-                <th class="w40p">描述</th>
-                <th class="w20p">动作</th>
+                <th class="w7p">ID</th>
+                <th class="w10p">级别</th>
+                <th class="w9p">帐号</th>
+                <th>描述</th>
+                <th class="w15p">动作</th>
                 <th class="w10p">IP</th>
                 <th class="w15p">时间</th>
             </tr>
@@ -33,7 +34,13 @@
             {{range $logAction := .logActions}}
             <tr>
                 <td class="center">{{$logAction.log_id}}</td>
-                <td>{{$logAction.username}}</td>
+                <td class="center">
+                    {{if eq $logAction.level "3"}}<span class="label label-danger">ERROR</span>{{end}}
+                    {{if eq $logAction.level "4"}}<span class="label label-warning">WARNING</span>{{end}}
+                    {{if eq $logAction.level "6"}}<span class="label label-info">INFO</span>{{end}}
+                    {{if eq $logAction.level "7"}}<span class="label label-debug">DEBUG</span>{{end}}
+                </td>
+                <td class="center">{{$logAction.username}}</td>
                 <td><a name="info" data-link="/log/actionInfo?log_id={{$logAction.log_id}}">{{$logAction.message}}</a></td>
                 <td>{{$logAction.controller}}/{{$logAction.action}}</td>
                 <td class="center">{{$logAction.ip}}</td>

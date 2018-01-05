@@ -89,7 +89,7 @@ func (this *ModuleController) Save() {
 
 	module, err := models.ModuleModel.GetModuleByName(name)
 	if err != nil {
-		this.RecordLog("添加模块失败: "+err.Error())
+		this.ErrorLog("添加模块查找模块名是否存在失败: "+err.Error())
 		this.jsonError("添加模块失败！")
 	}
 	if len(module) > 0 {
@@ -117,11 +117,11 @@ func (this *ModuleController) Save() {
 
 	moduleId, err := models.ModuleModel.Insert(moduleValue)
 	if err != nil {
-		this.RecordLog("添加模块失败: "+err.Error())
+		this.ErrorLog("添加模块插入数据失败: "+err.Error())
 		this.jsonError("添加模块失败！")
 	}
 
-	this.RecordLog("添加模块 "+utils.NewConvert().IntToString(moduleId, 10)+" 成功")
+	this.InfoLog("添加模块 "+utils.NewConvert().IntToString(moduleId, 10)+" 成功")
 	this.jsonSuccess("添加模块成功, 请继续配置节点", nil, "/module/node?flag=insert&module_id="+utils.NewConvert().IntToString(moduleId, 10))
 }
 
@@ -149,12 +149,14 @@ func (this *ModuleController) List() {
 		modules, err = models.ModuleModel.GetModulesByLimit(limit, number)
 	}
 	if err != nil {
-		this.viewError(err.Error(), "/module/list")
+		this.ErrorLog("模块列表查找模块数据失败: "+err.Error())
+		this.viewError("查找模块失败", "/module/list")
 	}
 
 	moduleGroups, err := models.ModulesModel.GetModuleGroups();
 	if err != nil {
-		this.viewError("获取模块组错误", "module/list")
+		this.ErrorLog("模块列表查找模块组数据失败: "+err.Error())
+		this.viewError("查找模块失败", "module/list")
 	}
 
 	this.Data["modules"] = modules
@@ -193,6 +195,7 @@ func (this *ModuleController) Edit() {
 
 	moduleGroups, err := models.ModulesModel.GetModuleGroups();
 	if err != nil {
+		this.ErrorLog("获取模块组数据失败: "+err.Error())
 		this.viewError("获取模块组错误", "/module/list")
 	}
 
@@ -268,7 +271,7 @@ func (this *ModuleController) Modify() {
 	
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
-		this.RecordLog("查找模块 "+moduleId+" 失败: "+err.Error())
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.jsonError("模块不存在！")
 	}
 	if len(module) == 0 {
@@ -293,10 +296,10 @@ func (this *ModuleController) Modify() {
 
 	_, err = models.ModuleModel.Update(moduleId, moduleValue)
 	if err != nil {
-		this.RecordLog("修改模块 "+moduleId+" 失败: "+err.Error())
+		this.ErrorLog("修改模块 "+moduleId+" 失败: "+err.Error())
 		this.jsonError("修改模块失败！")
 	}else {
-		this.RecordLog("修改模块 "+moduleId+" 成功")
+		this.InfoLog("修改模块 "+moduleId+" 成功")
 		this.jsonSuccess("修改模块成功", nil, "/module/list")
 	}
 }
@@ -311,6 +314,7 @@ func (this *ModuleController) Info() {
 	
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.viewError("模块不存在", "/module/list")
 	}
 	if len(module) == 0 {
@@ -319,6 +323,7 @@ func (this *ModuleController) Info() {
 	
 	moduleGroups, err := models.ModulesModel.GetModuleGroups();
 	if err != nil {
+		this.ErrorLog("查找模块组失败: "+err.Error())
 		this.viewError("获取模块组错误", "/module/list")
 	}
 	
@@ -344,6 +349,7 @@ func (this *ModuleController) Config() {
 	
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.viewError("模块不存在", "/module/list")
 	}
 	if len(module) == 0 {
@@ -370,6 +376,7 @@ func (this *ModuleController) ConfigSave() {
 	}
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.jsonError("模块不存在")
 	}
 	if len(module) == 0 {
@@ -389,11 +396,11 @@ func (this *ModuleController) ConfigSave() {
 	
 	_, err = models.ModuleModel.Update(moduleId, configValue)
 	if err != nil {
-		this.RecordLog("模块 "+moduleId+" 失败: "+err.Error())
+		this.ErrorLog("模块 "+moduleId+" 配置失败: "+err.Error())
 		this.jsonError("模块配置失败!")
 	}
 	
-	this.RecordLog("模块 " +moduleId+" 配置成功!")
+	this.InfoLog("模块 " +moduleId+" 配置成功!")
 	this.jsonSuccess("模块配置成功", nil, "/module/list")
 }
 
@@ -409,6 +416,7 @@ func (this *ModuleController) Node() {
 
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.viewError("模块不存在", "/module/list")
 	}
 	if len(module) == 0 {
@@ -418,16 +426,19 @@ func (this *ModuleController) Node() {
 	// 查找所有的节点组
 	nodeGroups, err := models.NodesModel.GetNodeGroups()
 	if err != nil {
+		this.ErrorLog("查找所有的节点组失败: "+err.Error())
 		this.viewError("查找节点出错", "/module/list")
 	}
 	// 查找所有的节点节点组关系
 	nodeNodes, err := models.NodeNodesModel.GetNodeNodes()
 	if err != nil {
+		this.ErrorLog("查找所有的节点节点组关系失败: "+err.Error())
 		this.viewError("查找节点出错", "/module/list")
 	}
 	//查找所有的节点
 	nodes, err := models.NodeModel.GetNodes()
 	if err != nil {
+		this.ErrorLog("查找所有的节点失败: "+err.Error())
 		this.viewError("查找节点出错", "/module/list")
 	}
 
@@ -492,7 +503,7 @@ func (this *ModuleController) NodeSave() {
 	// 先删除
 	err := models.ModuleNodeModel.DeleteByModuleIdNodeIds(moduleId, nodeIds)
 	if err != nil {
-		this.RecordLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 失败")
+		this.ErrorLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 失败")
 		this.jsonError("修改模块节点失败！")
 	}
 	if isCheck == "1" {
@@ -507,15 +518,15 @@ func (this *ModuleController) NodeSave() {
 		}
 		_, err = models.ModuleNodeModel.InsertBatch(insertValues)
 		if err != nil {
-			this.RecordLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 失败")
+			this.ErrorLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 失败")
 			this.jsonError("修改模块节点失败！")
 		}
 	}
 
 	if isCheck == "1" {
-		this.RecordLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 成功")
+		this.InfoLog("修改模块 "+moduleId+" 添加节点"+strings.Join(nodeIds, ",")+" 成功")
 	}else {
-		this.RecordLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 成功")
+		this.InfoLog("修改模块 "+moduleId+" 删除节点"+strings.Join(nodeIds, ",")+" 成功")
 	}
 
 	this.jsonSuccess("修改节点成功", nil)
@@ -532,6 +543,7 @@ func (this *ModuleController) Delete() {
 	
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
+		this.ErrorLog("查找模块 "+moduleId+" 失败: "+err.Error())
 		this.jsonError("模块不存在！")
 	}
 	if len(module) == 0 {
@@ -541,7 +553,7 @@ func (this *ModuleController) Delete() {
 	// 删除模块节点关系
 	err = models.ModuleNodeModel.DeleteByModuleId(moduleId)
 	if err != nil {
-		this.RecordLog("删除模块 "+moduleId+" 删除模块节点关系失败: "+err.Error())
+		this.ErrorLog("删除模块 "+moduleId+" 删除模块节点关系失败: "+err.Error())
 		this.jsonError("删除模块失败！")
 	}
 
@@ -552,11 +564,11 @@ func (this *ModuleController) Delete() {
 	}
 	_, err = models.ModuleModel.Update(moduleId, moduleValue)
 	if err != nil {
-		this.RecordLog("删除模块 "+moduleId+" 失败: "+err.Error())
+		this.ErrorLog("删除模块 "+moduleId+" 失败: "+err.Error())
 		this.jsonError("删除模块失败！")
 	}
 
 
-	this.RecordLog("删除模块 "+moduleId+" 成功")
+	this.InfoLog("删除模块 "+moduleId+" 成功")
 	this.jsonSuccess("删除模块成功", nil, "/module/list")
 }

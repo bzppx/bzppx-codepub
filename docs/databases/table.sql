@@ -162,6 +162,18 @@ CREATE TABLE IF NOT EXISTS `cp_configure` (
   PRIMARY KEY (`configure_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='配置表';
 
+DROP TABLE IF EXISTS `cp_notice`;
+CREATE TABLE IF NOT EXISTS `cp_notice` (
+  `notice_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '公告id',
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户 id',
+  `username` int(10) NOT NULL DEFAULT '0' COMMENT '用户名',
+  `title` char(50) NOT NULL COMMENT '标题',
+  `content` text NOT NULL COMMENT '内容',
+  `is_delete` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`notice_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='公告信息表';
 
 -- ----------------------------------------------------------
 -- 行为日志表
@@ -169,6 +181,7 @@ CREATE TABLE IF NOT EXISTS `cp_configure` (
 DROP TABLE IF EXISTS `cp_log`;
 CREATE TABLE `cp_log` (
   `log_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '日志id',
+  `level` tinyint(3) NOT NULL DEFAULT '6' COMMENT '日志级别',
   `controller` char(100) NOT NULL DEFAULT '' COMMENT '控制器',
   `action` char(100) NOT NULL DEFAULT '' COMMENT '动作',
   `get` text NOT NULL COMMENT 'get参数',

@@ -17,7 +17,7 @@ func (this *NodeController) Add() {
 
 	nodeGroups, err := models.NodesModel.GetNodeGroups();
 	if err != nil {
-		this.RecordLog("获取节点组失败："+err.Error())
+		this.ErrorLog("获取节点组失败："+err.Error())
 		this.viewError("获取节点组失败！", "/node/list")
 	}
 
@@ -80,6 +80,7 @@ func (this *NodeController) Save() {
 
 	has, err := models.NodeModel.HasNodeByIpAndPort("0", ip, port)
 	if err != nil {
+		this.ErrorLog("查找节点失败："+err.Error())
 		this.jsonError("添加节点失败！")
 	}
 	if has {
@@ -96,10 +97,10 @@ func (this *NodeController) Save() {
 
 	nodeId, err := models.NodeModel.Insert(nodeValue)
 	if err != nil {
-		this.RecordLog("添加节点失败: " + err.Error())
+		this.ErrorLog("添加节点失败: " + err.Error())
 		this.jsonError("添加节点失败！")
 	}
-	this.RecordLog("保存节点 " + utils.NewConvert().IntToString(nodeId, 10) + " 成功")
+	this.InfoLog("保存节点 " + utils.NewConvert().IntToString(nodeId, 10) + " 成功")
 
 	// 绑定节点组和几点关系
 	var insertValues []map[string]interface{}
@@ -113,11 +114,11 @@ func (this *NodeController) Save() {
 	}
 	_, err = models.NodeNodesModel.InsertBatch(insertValues)
 	if err != nil {
-		this.RecordLog("添加节点绑定节点节点组关系失败: " + err.Error())
+		this.ErrorLog("添加节点绑定节点节点组关系失败: " + err.Error())
 		this.jsonError("添加节点失败！")
 	}
 
-	this.RecordLog("添加节点绑定节点节点组关系成功")
+	this.InfoLog("添加节点绑定节点节点组关系成功")
 	this.jsonSuccess("添加节点成功", nil, "/node/list")
 }
 
@@ -131,18 +132,19 @@ func (this *NodeController) Edit() {
 
 	node, err := models.NodeModel.GetNodeByNodeId(nodeId)
 	if err != nil {
+		this.ErrorLog("查找节点 "+nodeId+" 失败："+err.Error())
 		this.viewError("节点不存在", "/node/list")
 	}
 
 	nodeGroups, err := models.NodesModel.GetNodeGroups();
 	if err != nil {
-		this.RecordLog("获取节点组失败："+err.Error())
+		this.ErrorLog("获取节点组失败："+err.Error())
 		this.viewError("获取节点组失败！", "/node/list")
 	}
 
 	nodeNodes, err := models.NodeNodesModel.GetNodeNodesByNodeId(nodeId)
 	if err != nil {
-		this.RecordLog("获取节点节点组关系失败："+err.Error())
+		this.ErrorLog("获取节点 "+nodeId+" 节点组关系失败："+err.Error())
 		this.viewError("获取节点节点组关系失败！", "/node/list")
 	}
 
@@ -196,6 +198,7 @@ func (this *NodeController) Modify() {
 
 	has, err := models.NodeModel.HasNodeByIpAndPort(nodeId, ip, port)
 	if err != nil {
+		this.ErrorLog("查找节点 "+nodeId+" 是否存在失败："+err.Error())
 		this.jsonError("添加节点失败！")
 	}
 	if has {
@@ -211,14 +214,14 @@ func (this *NodeController) Modify() {
 
 	_, err = models.NodeModel.Update(nodeId, nodeValue)
 	if err != nil {
-		this.RecordLog("修改节点 " + nodeId + " 失败: " + err.Error())
+		this.ErrorLog("修改节点 " + nodeId + " 失败: " + err.Error())
 		this.jsonError("修改节点失败！")
 	}
 	// 重新绑定节点组和几点关系
 	// 先删除
 	err = models.NodeNodesModel.DeleteNodeNodesByNodeId(nodeId)
 	if err != nil {
-		this.RecordLog("删除节点 " + nodeId + " 与节点组对应关系失败: " + err.Error())
+		this.InfoLog("删除节点 " + nodeId + " 与节点组对应关系失败: " + err.Error())
 		this.jsonError("修改节点失败！")
 	}
 	var insertValues []map[string]interface{}
@@ -232,11 +235,11 @@ func (this *NodeController) Modify() {
 	}
 	_, err = models.NodeNodesModel.InsertBatch(insertValues)
 	if err != nil {
-		this.RecordLog("修改节点绑定节点节点组关系失败: " + err.Error())
+		this.ErrorLog("修改节点绑定节点节点组关系失败: " + err.Error())
 		this.jsonError("修改节点失败！")
 	}
 
-	this.RecordLog("修改节点 " + nodeId + " 成功")
+	this.InfoLog("修改节点 " + nodeId + " 成功")
 	this.jsonSuccess("修改节点成功", nil, "/node/list")
 
 }
@@ -250,6 +253,7 @@ func (this *NodeController) Delete() {
 
 	node, err := models.NodeModel.GetNodeByNodeId(nodeId)
 	if err != nil {
+		this.ErrorLog("查找节点 "+nodeId+" 失败: " + err.Error())
 		this.jsonError("节点不存在！")
 	}
 	if len(node) == 0 {
@@ -264,19 +268,19 @@ func (this *NodeController) Delete() {
 	_, err = models.NodeModel.Update(nodeId, nodeValue)
 
 	if err != nil {
-		this.RecordLog("删除节点 " + nodeId + " 失败: " + err.Error())
+		this.ErrorLog("删除节点 " + nodeId + " 失败: " + err.Error())
 		this.jsonError("删除节点失败！")
 	}
 	err = models.ModuleNodeModel.DeleteModuleNodeByNodeId(nodeId)
 	if err != nil {
-		this.RecordLog("删除模块节点关系，节点ID： " + nodeId + " 失败: " + err.Error())
+		this.ErrorLog("删除模块节点关系，节点ID： " + nodeId + " 失败: " + err.Error())
 		this.jsonError("删除模块节点关系失败！")
 	}
 	err = models.NodeNodesModel.DeleteNodeNodesByNodeNodesId(nodeId)
 	if err != nil {
-		this.RecordLog("删除节点节点组关系，节点ID： " + nodeId + " 失败: " + err.Error())
+		this.ErrorLog("删除节点节点组关系，节点ID： " + nodeId + " 失败: " + err.Error())
 		this.jsonError("删除节点节点组关系失败！")
 	}
-	this.RecordLog("删除节点 " + nodeId + " 成功")
+	this.InfoLog("删除节点 " + nodeId + " 成功")
 	this.jsonSuccess("删除节点成功", nil, "/node/list")
 }

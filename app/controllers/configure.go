@@ -108,13 +108,12 @@ func (this *ConfigureController) AddBlock() {
 
 	err := models.ConfigureModel.InsertBlock(blockValue)
 	if err != nil {
-		log.Println(err.Error())
-		this.RecordLog("封版信息修改失败：" + err.Error())
+		this.ErrorLog("封版信息修改失败：" + err.Error())
 		this.jsonError("封版信息修改失败！")
-	} else {
-		this.RecordLog("封版信息修改成功")
-		this.jsonSuccess("封版信息修改成功", nil, "/configure/block")
 	}
+
+	this.InfoLog("封版信息修改成功")
+	this.jsonSuccess("封版信息修改成功", nil, "/configure/block")
 }
 
 //邮件配置
@@ -199,11 +198,10 @@ func (this *ConfigureController) AddEmailConfig() {
 
 	err := models.ConfigureModel.InsertEmailConfig(blockValue)
 	if err != nil {
-		log.Println(err.Error())
-		this.RecordLog("邮箱信息修改失败：" + err.Error())
+		this.ErrorLog("邮箱信息修改失败：" + err.Error())
 		this.jsonError("邮箱信息修改失败！")
 	} else {
-		this.RecordLog("邮箱信息修改成功")
+		this.InfoLog("邮箱信息修改成功")
 		this.jsonSuccess("邮箱信息修改成功", nil, "/configure/email")
 	}
 }
