@@ -1,7 +1,7 @@
 <div class="panel panel-default">
-	{{if .isBlock}}
+	{{$isBlock := .isBlock}}
+	{{if $isBlock}}
 	<div id="failedBox" style="margin-bottom: 10px" class="alert alert-danger">
-		<a class="close" href="#" onclick="$(this).parent().hide();">×</a>
 		<strong><i class="glyphicon glyphicon-remove-circle"></i> {{.block.block_message}} </strong>
 	</div>
 	{{end}}
@@ -61,7 +61,7 @@
                     {{end}}
                 </td>
                 <td class="center">
-					{{if not .isBlock}}
+					{{if not $isBlock}}
                     <a name="publish" class="glyphicon glyphicon-ok-circle" data-link="">发布 </a>
                     <a name="publish" class="glyphicon glyphicon-share-alt" data-link="">回滚 </a>
 					{{end}}
