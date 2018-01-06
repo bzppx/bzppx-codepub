@@ -1,12 +1,6 @@
 <div class="panel panel-default">
-	{{$isBlock := .isBlock}}
-	{{if $isBlock}}
-	<div id="failedBox" style="margin-bottom: 10px" class="alert alert-danger">
-		<strong><i class="glyphicon glyphicon-remove-circle"></i> {{.block.block_message}} </strong>
-	</div>
-	{{end}}
     <div class="panel-body">
-        {{$moduleGroups := .moduleGroups}}{{$keywords := .keywords}}{{$modules := .modules}}
+        {{$moduleGroups := .moduleGroups}}{{$keywords := .keywords}}{{$modules := .modules}}{{$isBlock := .isBlock}}
         <ul class="nav nav-tabs">
             {{range $moduleGroup := $moduleGroups}}
             <li {{if eq $keywords.modules_id $moduleGroup.modules_id }} class="active" {{end}}><a href="/publish/module?modules_id={{$moduleGroup.modules_id}}" >{{$moduleGroup.name}}</a></li>
@@ -76,5 +70,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='code_info']", "模块详细配置")
+    {{if $isBlock}}
+    Common.warningBox("#failedBox", {{ .block.block_message }});
+    {{end}}
+    Layers.bindIframe("[name='code_info']", "模块详细配置");
 </script>
