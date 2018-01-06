@@ -101,7 +101,6 @@ CREATE TABLE `cp_task` (
   `sha1_id` varchar(200) NOT NULL DEFAULT '' COMMENT 'git commit id',
   `comment` text NOT NULL COMMENT '发布备注',
   `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
-  `is_published` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否已经发布:0否，1是',
   `publish_time` int(11) NOT NULL DEFAULT '0' COMMENT '发布时间',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`task_id`)
@@ -112,11 +111,10 @@ DROP TABLE IF EXISTS `cp_task_log`;
 CREATE TABLE `cp_task_log` (
   `task_log_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务日志表主键id',
   `task_id` int(10) NOT NULL DEFAULT '0' COMMENT '任务 id',
-  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户 id',
-  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块 id',
-  `response` text NOT NULL COMMENT '客户端返回的结果 json 数据',
-  `is_success` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否发布成功:1成功，2失败',
-  `is_published` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否发布过：0未发布过，1发布过',
+  `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点 id',
+  `result` text NOT NULL COMMENT '执行结果',
+  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '节点状态 0 创建，1开始执行，2执行完成',
+  `is_success` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否发布成功:0 失败 1成功',
   `rollback_id` varchar(100) NOT NULL DEFAULT '' COMMENT '回滚用的sha1_id',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
