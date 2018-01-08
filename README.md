@@ -1,5 +1,5 @@
 
-![brand](/docs/guide_res/images/brand.png)
+![brand](/docs/guide_res/images/brand.png)   
 暴走皮皮虾之代码发布系统,是现代的持续集成的发布系统,由后台管理系统和agent两部分组成,一个运行着的agent就是一个节点,本系统并不是造轮子,是"鸟枪"到"大炮"的创新,对"前朝遗老"的革命.
 
 [![stable](https://img.shields.io/badge/stable-stable-green.svg)](https://github.com/bzppx/bzppx-codepub/) [![license](https://img.shields.io/github/license/bzppx/bzppx-codepub.svg?style=plastic)]() [![download_count](https://img.shields.io/github/downloads/bzppx/bzppx-codepub/total.svg?style=plastic)](https://github.com/bzppx/bzppx-codepub/releases) [![download](https://img.shields.io/github/release/bzppx/bzppx-codepub.svg?style=plastic)](https://github.com/bzppx/bzppx-codepub/releases)   
