@@ -115,7 +115,7 @@ CREATE TABLE `cp_task_log` (
   `result` text NOT NULL COMMENT '执行结果',
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '节点状态 0 创建，1开始执行，2执行完成',
   `is_success` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否发布成功:0 失败 1成功',
-  `rollback_id` varchar(100) NOT NULL DEFAULT '' COMMENT '回滚用的sha1_id',
+  `commit_id` varchar(100) NOT NULL DEFAULT '' COMMENT '发布成功的sha1_id',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`task_log_id`)
