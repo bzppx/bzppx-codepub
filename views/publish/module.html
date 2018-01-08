@@ -71,7 +71,7 @@
 </div>
 <script type="text/javascript">
     {{if $isBlock}}
-    Common.warningBox("#failedBox", {{ .block.block_message }});
+    Common.warningBox("#failedBox", '{{ .block.block_message }}，封版时间为：{{dateFormat .block.block_start_time "Y-m-d H:i:s"}}至{{dateFormat .block.block_end_time "Y-m-d H:i:s"}}');
     {{end}}
     Layers.bindIframe("[name='code_info']", "模块详细配置");
 </script>
