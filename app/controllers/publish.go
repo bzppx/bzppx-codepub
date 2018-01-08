@@ -75,9 +75,15 @@ func (this *PublishController) Module() {
 	}
 
 	//判断是否封版
-	isBlock, block, err := models.ConfigureModel.CheckIsBlock()
-	if err != nil {
-		this.viewError("获取封版配置出错")
+	var isBlock bool
+	block := make(map[string]string)
+	if this.isRoot() || this.isAdmin() {
+		isBlock = false
+	} else {
+		isBlock, block, err = models.ConfigureModel.CheckIsBlock()
+		if err != nil {
+			this.viewError("获取封版配置出错")
+		}
 	}
 
 	this.Data["isBlock"] = isBlock

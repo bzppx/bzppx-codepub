@@ -204,3 +204,18 @@ func (this *ConfigureController) AddEmailConfig() {
 		this.jsonSuccess("邮箱信息修改成功", nil, "/configure/email")
 	}
 }
+
+//测试邮件发送
+func (this *ConfigureController) SendTestEmail() {
+	email, err := models.ConfigureModel.GetEmail()
+	if err != nil {
+		this.jsonError("获取邮件配置错误！")
+	}
+	err = utils.NewEmail().SendEmail(email, "测试邮件", "", "测试邮件")
+	if err != nil {
+		this.ErrorLog("发送测试邮件失败：" + err.Error())
+		this.jsonError("发送测试邮件失败！")
+	} else {
+		this.jsonSuccess("发送测试邮件成功！")
+	}
+}
