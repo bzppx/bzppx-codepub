@@ -33,7 +33,7 @@ func (t *TaskLog) GetTaskLogByTaskLogId(taskLogId string) (tasLogs map[string]st
 }
 
 // 根据 task_id 获取任务日志
-func (t *TaskLog) GetTaskLogByTaskId(taskId string) (tasLogs map[string]string, err error) {
+func (t *TaskLog) GetTaskLogByTaskId(taskId string) (tasLogs []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
@@ -42,12 +42,12 @@ func (t *TaskLog) GetTaskLogByTaskId(taskId string) (tasLogs map[string]string, 
 	if err != nil {
 		return
 	}
-	tasLogs = rs.Row()
+	tasLogs = rs.Rows()
 	return
 }
 
 // 根据状态获取任务日志
-func (t *TaskLog) GetTaskLogByStatus(status int) (tasLogs map[string]string, err error) {
+func (t *TaskLog) GetTaskLogByStatus(status int) (tasLogs []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
@@ -56,12 +56,12 @@ func (t *TaskLog) GetTaskLogByStatus(status int) (tasLogs map[string]string, err
 	if err != nil {
 		return
 	}
-	tasLogs = rs.Row()
+	tasLogs = rs.Rows()
 	return
 }
 
 // 根据 is_success 获取任务日志
-func (t *TaskLog) GetTaskLogBySuccess(isSuccess int) (tasLogs map[string]string, err error) {
+func (t *TaskLog) GetTaskLogBySuccess(isSuccess int) (tasLogs []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
@@ -70,7 +70,7 @@ func (t *TaskLog) GetTaskLogBySuccess(isSuccess int) (tasLogs map[string]string,
 	if err != nil {
 		return
 	}
-	tasLogs = rs.Row()
+	tasLogs = rs.Rows()
 	return
 }
 

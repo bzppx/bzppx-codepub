@@ -15,8 +15,8 @@ type GitRemote struct {
 }
 
 // 获取 commit id
-func (this *GitRemote) GetCommitId(address string, args map[string]interface{}) (string) {
-	reply, err := this.Call(address, Rpc_Git_Method_GetCommitId, args)
+func (this *GitRemote) GetCommitId(ip string, port string, args map[string]interface{}) (string) {
+	reply, err := this.Call(ip, port, Rpc_Git_Method_GetCommitId, args)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -25,8 +25,8 @@ func (this *GitRemote) GetCommitId(address string, args map[string]interface{}) 
 }
 
 // 发布
-func (this *GitRemote) Publish(address string, args map[string]interface{}) {
-	reply, err := this.Call(address, Rpc_Git_Method_Publish, args)
+func (this *GitRemote) Publish(ip string, port string, args map[string]interface{}) {
+	reply, err := this.Call(ip, port, Rpc_Git_Method_Publish, args)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -39,6 +39,6 @@ func (this *GitRemote) Rollback() {
 }
 
 // 获取节点执行结果
-func (this *GitRemote) GetResults(address string, args map[string]interface{}) {
+func (this *GitRemote) GetResults(ip string, port string, args map[string]interface{}) {
 
 }

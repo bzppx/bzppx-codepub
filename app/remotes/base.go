@@ -10,9 +10,10 @@ type BaseRemote struct {
 
 }
 
-func (b *BaseRemote) Call(address string, method string, args map[string]interface{}) (reply interface{}, err error) {
+func (b *BaseRemote) Call(ip string, port string, method string, args map[string]interface{}) (reply interface{}, err error) {
+	address := ip + ":" +port
 	if address == "" {
-		return nil, errors.New("codepub connect agent error: address is not empty!")
+		return nil, errors.New("codepub connect agent error: ip:port is not empty!")
 	}
 	if method == "" {
 		return nil, errors.New("codepub connect agent error: method is not empty!")
