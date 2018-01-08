@@ -51,7 +51,7 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" onclick="email.sendTestEmail()" class="btn btn-primary">发送邮件</button>
+                    <button type="button" onclick="email.sendTestEmail()" class="btn btn-primary">测试发送</button>
                 </div>
             </div><br>
             <ul class="nav">
@@ -87,13 +87,19 @@
 		{{end}}
 	})
 	
+	var sendEmailLock = false
 	var email = {
 		sendTestEmail: function (){
-			 $.ajax({
+			if (sendEmailLock) {
+				return 
+			}
+			var index = layer.load(1, {time: 10*1000})
+			sendEmailLock = true
+			$.ajax({
 		        type: "POST",
 		        cache: false,
 		        url: "/configure/sendTestEmail",
-		        data:"",
+		        data:$("form").serialize(),
 		        dataType: 'json',
 		        success: function (response) {
 		            if(response.code == 0) {
@@ -101,7 +107,14 @@
 					} else {
 						Common.successBox("#failedBox", response.message)
 					}
-		        }
+					sendEmailLock = false
+		        },
+				error: function(){
+					Common.errorBox("#failedBox", "ajax请求出错")
+				},
+				complete: function() {
+                    layer.close(index);
+                },
 		    });
 		}
 	}

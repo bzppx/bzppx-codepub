@@ -3,6 +3,7 @@ package controllers
 import (
 	"bzppx-codepub/app/models"
 	"bzppx-codepub/app/utils"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -207,11 +208,48 @@ func (this *ConfigureController) AddEmailConfig() {
 
 //测试邮件发送
 func (this *ConfigureController) SendTestEmail() {
-	email, err := models.ConfigureModel.GetEmail()
-	if err != nil {
-		this.jsonError("获取邮件配置错误！")
+
+	emailParam := make(map[string]string, 7)
+	emailParam["email_host"] = strings.Trim(this.GetString("email_host", ""), "")
+	emailParam["email_port"] = strings.Trim(this.GetString("email_port", ""), "")
+	emailParam["email_username"] = strings.Trim(this.GetString("email_username", ""), "")
+	emailParam["email_password"] = strings.Trim(this.GetString("email_password", ""), "")
+	emailParam["email_from"] = strings.Trim(this.GetString("email_from", ""), "")
+	emailParam["email_is_ssl"] = strings.Trim(this.GetString("email_is_ssl", ""), "")
+	emailParam["email_cc_list"] = strings.Trim(this.GetString("email_cc_list", ""), "")
+	intEmailPort := utils.NewConvert().StringToInt(emailParam["email_port"])
+	if emailParam["email_host"] == "" {
+		this.jsonError("邮箱smtp地址不能为空")
 	}
-	err = utils.NewEmail().SendEmail(email, "测试邮件", "", "测试邮件")
+	if emailParam["email_port"] == "" {
+		this.jsonError("邮箱smtp端口不能为空")
+	}
+	if intEmailPort > 65535 || intEmailPort < 1 {
+		this.jsonError("邮箱smtp端口填写不正确")
+	}
+	if emailParam["email_username"] == "" {
+		this.jsonError("邮箱用户名不能为空")
+	}
+	if emailParam["email_password"] == "" {
+		this.jsonError("邮箱密码不能为空")
+	}
+	if emailParam["email_is_ssl"] == "" {
+		this.jsonError("请选择是否使用ssl")
+	}
+	if emailParam["email_cc_list"] == "" {
+		this.jsonError("邮件抄送人列表不能为空")
+	}
+
+	var err error
+	emailChan := make(chan error, 1)
+	go func() {
+		emailChan <- utils.NewEmail().SendEmail(emailParam, "测试邮件", "", "测试邮件")
+	}()
+	select {
+	case err = <-emailChan:
+	case <-time.After(time.Second * 10):
+		err = fmt.Errorf("send email timeout")
+	}
 	if err != nil {
 		this.ErrorLog("发送测试邮件失败：" + err.Error())
 		this.jsonError("发送测试邮件失败！")
