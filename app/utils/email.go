@@ -14,24 +14,31 @@ func NewEmail() *Email {
 type Email struct {
 }
 
-func (email *Email) SendEmail(emailPara map[string]string, content, contentType, subject string) (err error) {
+/**
+ * 发送邮件
+ * @param emailParam 邮件参数
+ * @param content 邮件内容
+ * @param contentType 内容类型（可为html或plain）
+ * @param subject 邮件标题
+ */
+func (email *Email) SendEmail(emailParam map[string]string, content, contentType, subject string) (err error) {
 	var from string
-	auth := smtp.PlainAuth("", emailPara["email_username"], emailPara["email_password"], emailPara["email_host"])
-	if emailPara["email_from"] == "" {
-		from = emailPara["email_username"]
+	auth := smtp.PlainAuth("", emailParam["email_username"], emailParam["email_password"], emailParam["email_host"])
+	if emailParam["email_from"] == "" {
+		from = emailParam["email_username"]
 	} else {
-		from = emailPara["email_from"]
+		from = emailParam["email_from"]
 	}
 	if contentType != "html" {
 		contentType = "plain"
 	}
-	sendTo := strings.Split(emailPara["email_cc_list"], "\n")
+	sendTo := strings.Split(emailParam["email_cc_list"], "\n")
 	ccList := strings.Join(sendTo, ";")
 	msg := []byte("To: " + ccList + "\r\nFrom: " + from + "\r\nSubject: " + subject + "\r\nContent-Type: text/" + contentType + "; charset=UTF-8 \r\n\r\n" + content)
-	if emailPara["email_is_ssl"] == "1" {
-		err = smtp.SendMail(emailPara["email_host"]+":"+emailPara["email_port"], auth, emailPara["email_username"], sendTo, msg)
+	if emailParam["email_is_ssl"] == "1" {
+		err = smtp.SendMail(emailParam["email_host"]+":"+emailParam["email_port"], auth, emailParam["email_username"], sendTo, msg)
 	} else {
-		err = SendMailUsingTLS(emailPara["email_host"]+":"+emailPara["email_port"], auth, emailPara["email_username"], sendTo, msg)
+		err = SendMailUsingTLS(emailParam["email_host"]+":"+emailParam["email_port"], auth, emailParam["email_username"], sendTo, msg)
 	}
 
 	return
