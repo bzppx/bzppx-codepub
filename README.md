@@ -1,6 +1,6 @@
 
 ![brand](/docs/guide_res/images/brand.png)   
-暴走皮皮虾之代码发布系统,是现代的持续集成的发布系统,由后台管理系统和agent两部分组成,一个运行着的agent就是一个节点,本系统并不是造轮子,是"鸟枪"到"大炮"的创新,对"前朝遗老"的革命.
+暴走皮皮虾之代码发布系统,是现代的持续集成发布系统,由后台管理系统和agent两部分组成,一个运行着的agent就是一个节点,本系统并不是造轮子,是"鸟枪"到"大炮"的创新,对"前朝遗老"的革命.
 
 [![stable](https://img.shields.io/badge/stable-stable-green.svg)](https://github.com/bzppx/bzppx-codepub/) [![license](https://img.shields.io/github/license/bzppx/bzppx-codepub.svg?style=plastic)]() [![download_count](https://img.shields.io/github/downloads/bzppx/bzppx-codepub/total.svg?style=plastic)](https://github.com/bzppx/bzppx-codepub/releases) [![download](https://img.shields.io/github/release/bzppx/bzppx-codepub.svg?style=plastic)](https://github.com/bzppx/bzppx-codepub/releases)   
 
@@ -17,7 +17,7 @@
 - 人性化的权限控制,一般一个部门的老大是超级管理员角色,老大只需要管理谁是管理员即可,管理员只需要管理用户即可,用户能发布代码.每层的权限系统都做控制.
 - 界面优美,交互简单,更符合现在的大众web审美.
 - 公告功能,有时候有些重要事情需要告知使用发布系统的开发者,那么公告功能就很好的解决了这个问题.
-
+- 集成外部登录,本系统支持通过外部系统认证用户,比如与公司的LDAP登录融合,只需要根据我们的开发文档花费几十分钟写个HTTP API接口即可.
 
 # 0. 系统开发中,请保持关注哟!
 
