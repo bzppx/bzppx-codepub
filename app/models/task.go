@@ -86,6 +86,7 @@ func (l *TaskLog) Insert(taskLog map[string]interface{}) (id int64, err error) {
 	return
 }
 
+// 插入多条任务日志
 func (l *TaskLog) InsertBatch(taskLog []map[string]interface{}) (err error) {
 	db := G.DB()
 	_, err = db.Exec(db.AR().InsertBatch(Table_TaskLog_Name, taskLog))
