@@ -189,7 +189,7 @@
 </main>
 <script type="text/javascript">
     window.onload = window.onresize = function() {
-        $("#main").height($(window).height() - 22).css("padding-bottom", "50px");
+        $("#main").height($(window).height() - $('header').height() - 12);
     };
     $(function() {
         $(".nav__item--child>a").each(function() {

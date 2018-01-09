@@ -61,4 +61,9 @@ $(function() {
         }
         $(".form-error").hide();
     });
+    $('form').on("keydown", function(event) {
+        if (event.which == 13) {
+            $("#login-button").click();
+        }
+    });
 });
