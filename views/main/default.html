@@ -2,26 +2,17 @@
     <div class="row">
         <div class="col col-sm-8 col-md-8"></div>
         <div class="col col-sm-4 col-md-4">
-            <div class="panel panel-primary">
+            <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="glyphicon glyphicon-volume-up"></i> 公告
                 </div>
                 <div class="panel-body">
+                    {{range $notice:=.notices}}
                     <div class="col col-sm-12 col-md-12">
-                        <a href="javascript:void(0);">1</a>
+                        {{dateFormat $notice.create_time "Y-m-d"}}
+                        <a name="info" class="text text-info" data-link="/notice/info?notice_id={{$notice.notice_id}}">{{$notice.title}}</a>
                     </div>
-                    <div class="col col-sm-12 col-md-12">
-                        <a href="javascript:void(0);">1</a>
-                    </div>
-                    <div class="col col-sm-12 col-md-12">
-                        <a href="javascript:void(0);">1</a>
-                    </div>
-                    <div class="col col-sm-12 col-md-12">
-                        <a href="javascript:void(0);">1</a>
-                    </div>
-                    <div class="col col-sm-12 col-md-12">
-                        <a href="javascript:void(0);">1</a>
-                    </div>
+                    {{end}}
                 </div>
             </div>
         </div>
@@ -30,3 +21,6 @@
         test
     </div>
 </div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='info']", "公告详细信息", "500px");
+</script>
