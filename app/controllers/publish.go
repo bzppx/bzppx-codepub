@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"bzppx-codepub/app/models"
+	"bzppx-codepub/app/utils"
 	"strings"
+	"time"
 )
 
 type PublishController struct {
@@ -144,4 +146,99 @@ func (this *PublishController) Info() {
 	this.Data["moduleGroupName"] = moduleGroupName
 
 	this.viewLayoutTitle("模块详细信息", "publish/info", "page")
+}
+
+// 发布页面
+func (this *PublishController) Publish() {
+	moduleId := this.GetString("module_id", "")
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.viewError("查找模块信息出错")
+	}
+
+	this.Data["module"] = module
+	this.viewLayoutTitle("发布代码", "publish/publish", "page")
+}
+
+// 回滚页面
+func (this *PublishController) Reset() {
+	moduleId := this.GetString("module_id", "")
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.viewError("查找模块信息出错")
+	}
+
+	this.Data["module"] = module
+	this.viewLayoutTitle("回滚代码", "publish/reset", "page")
+}
+
+// 发布操作
+func (this *PublishController) DoPublish() {
+
+	taskValue := make(map[string]interface{}, 4)
+	moduleId := this.GetString("module_id", "")
+	taskValue["module_id"] = moduleId
+	taskValue["user_id"] = this.UserID
+	taskValue["comment"] = this.GetString("comment", "")
+	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
+	if taskValue["comment"] == "" {
+		this.jsonError("发版说明不能为空！")
+	}
+
+	this.addTaskAndTaskLog(taskValue, moduleId)
+}
+
+// 回滚操作
+func (this *PublishController) DoReset() {
+
+	taskValue := make(map[string]interface{}, 4)
+	moduleId := this.GetString("module_id", "")
+	taskValue["sha1_id"] = this.GetString("sha1_id", "")
+	taskValue["module_id"] = moduleId
+	taskValue["user_id"] = this.UserID
+	taskValue["comment"] = this.GetString("comment", "")
+	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
+	if taskValue["comment"] == "" {
+		this.jsonError("回滚说明不能为空！")
+	}
+	if taskValue["sha1_id"] == "" {
+		this.jsonError("commit_id不能为空！")
+	}
+
+	this.addTaskAndTaskLog(taskValue, moduleId)
+}
+
+func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, moduleId string) {
+	taskId, err := models.TaskModel.Insert(taskValue)
+	if err != nil {
+		this.ErrorLog("创建任务失败：" + err.Error())
+		this.jsonError("创建任务失败！")
+	}
+
+	moduleNodes, err := models.ModuleNodeModel.GetModuleNodeByModuleId(moduleId)
+	if len(moduleNodes) <= 0 {
+		this.jsonError("该模块下没有节点！")
+	}
+	if err != nil {
+		this.ErrorLog("查询模块节点关系失败：" + err.Error())
+		this.jsonError("查询模块节点关系失败！")
+	}
+
+	taskLog := make([]map[string]interface{}, len(moduleNodes))
+	for index, moduleNode := range moduleNodes {
+		taskLog[index] = make(map[string]interface{})
+		taskLog[index]["task_id"] = taskId
+		taskLog[index]["node_id"] = moduleNode["node_id"]
+		taskLog[index]["status"] = "0"
+		taskLog[index]["create_time"] = time.Now().Unix()
+		taskLog[index]["update_time"] = time.Now().Unix()
+	}
+
+	err = models.TaskLogModel.InsertBatch(taskLog)
+	if err != nil {
+		this.ErrorLog("创建任务日志失败：" + err.Error())
+		this.jsonError("创建任务日志失败！")
+	}
+
+	this.jsonSuccess("创建任务成功！", nil, "/task/center")
 }

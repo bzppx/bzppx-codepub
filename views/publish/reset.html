@@ -1,0 +1,43 @@
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav">
+            <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 回滚代码</strong></h5>
+            <hr>
+        </ul>
+		{{$module := .module}}
+        <form class="form-horizontal" method="post" action="/publish/doReset">
+			<input type="hidden" name="module_id" value="{{$module.module_id}}">
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 回滚模块： </label>
+				
+                <div class="col-sm-4">
+					<label class="radio-inline" style="cursor: default;"> {{$module.name}}</label>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> commit_id： </label>
+                <div class="col-sm-4">
+                    <input value="" type="text" name="sha1_id" class="form-control" placeholder="请填写commit_id" required>
+					<div style="margin-top:6px;"> 
+						<span class="text-info"> * 提示：这是发布分支上的要发布代码的提交id，可以通过git工具查看，git log命令也能查看</span>
+					</div>
+					
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 回滚说明： </label>
+                <div class="col-sm-4">
+                    <textarea name="comment" class="form-control" rows="6"></textarea>
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, false)" class="btn btn-primary">发布</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+

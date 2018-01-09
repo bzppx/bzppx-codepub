@@ -6,8 +6,8 @@ const (
 	TASKLOG_STATUS_CREATE = 0 // 任务状态，创建
 	TASKLOG_STATUS_SATART = 1 // 任务状态，开始执行
 	TASKLOG_STATUS_FINISH = 2 // 任务状态，执行完成
-	
-	TASKLOG_FAILED = 0 // 执行结果状态，失败
+
+	TASKLOG_FAILED  = 0 // 执行结果状态，失败
 	TASKLOG_SUCCESS = 1 // 执行结果状态，成功
 )
 
@@ -86,5 +86,8 @@ func (l *TaskLog) Insert(taskLog map[string]interface{}) (id int64, err error) {
 	return
 }
 
-
-
+func (l *TaskLog) InsertBatch(taskLog []map[string]interface{}) (err error) {
+	db := G.DB()
+	_, err = db.Exec(db.AR().InsertBatch(Table_TaskLog_Name, taskLog))
+	return
+}
