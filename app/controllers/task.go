@@ -7,11 +7,6 @@ import (
 	"time"
 )
 
-const (
-	TASKLOG_FAILED  = 0 // 执行结果状态，失败
-	TASKLOG_SUCCESS = 1 // 执行结果状态，成功
-)
-
 type TaskController struct {
 	BaseController
 }
@@ -59,13 +54,13 @@ func (this *TaskController) GetExcutingTask() {
 	}
 	taskValue := make(map[string]interface{})
 	result := make(map[string]map[string]int)
-	timePattern := "2006-01-02 15:04"
+	timePattern := "2006-01-02 15:04:05"
 	//初始化task数据
 	for _, task := range tasks {
 		result[task["task_id"]] = make(map[string]int)
 		result[task["task_id"]]["finish"] = 0
 		result[task["task_id"]]["doing"] = 0
-		result[task["task_id"]]["result"] = TASKLOG_SUCCESS
+		result[task["task_id"]]["result"] = models.TASKLOG_SUCCESS
 		createTime := utils.NewConvert().StringToInt64(task["create_time"])
 		task["create_time"] = time.Unix(createTime, 0).Format(timePattern)
 		taskValue[task["task_id"]] = task
@@ -91,7 +86,7 @@ func (this *TaskController) GetExcutingTask() {
 			result[taskLog["task_id"]]["doing"]++
 		}
 		if taskLog["status"] == "2" && taskLog["is_success"] == "0" {
-			result[taskLog["task_id"]]["result"] = TASKLOG_FAILED
+			result[taskLog["task_id"]]["result"] = models.TASKLOG_FAILED
 		}
 	}
 	if err != nil {
