@@ -198,6 +198,7 @@ func (this *PublishController) DoReset() {
 	taskValue["user_id"] = this.UserID
 	taskValue["comment"] = this.GetString("comment", "")
 	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
+	taskValue["publish_time"] = "0"
 	if taskValue["comment"] == "" {
 		this.jsonError("回滚说明不能为空！")
 	}
@@ -230,6 +231,9 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		taskLog[index]["task_id"] = taskId
 		taskLog[index]["node_id"] = moduleNode["node_id"]
 		taskLog[index]["status"] = "0"
+		taskLog[index]["is_success"] = "0"
+		taskLog[index]["result"] = ""
+		taskLog[index]["commit_id"] = ""
 		taskLog[index]["create_time"] = time.Now().Unix()
 		taskLog[index]["update_time"] = time.Now().Unix()
 	}

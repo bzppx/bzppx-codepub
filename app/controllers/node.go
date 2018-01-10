@@ -15,9 +15,9 @@ type NodeController struct {
 // 添加节点
 func (this *NodeController) Add() {
 
-	nodeGroups, err := models.NodesModel.GetNodeGroups();
+	nodeGroups, err := models.NodesModel.GetNodeGroups()
 	if err != nil {
-		this.ErrorLog("获取节点组失败："+err.Error())
+		this.ErrorLog("获取节点组失败：" + err.Error())
 		this.viewError("获取节点组失败！", "/node/list")
 	}
 
@@ -80,7 +80,7 @@ func (this *NodeController) Save() {
 
 	has, err := models.NodeModel.HasNodeByIpAndPort("0", ip, port)
 	if err != nil {
-		this.ErrorLog("查找节点失败："+err.Error())
+		this.ErrorLog("查找节点失败：" + err.Error())
 		this.jsonError("添加节点失败！")
 	}
 	if has {
@@ -88,11 +88,13 @@ func (this *NodeController) Save() {
 	}
 
 	nodeValue := map[string]interface{}{
-		"ip":          ip,
-		"port":        port,
-		"comment":     comment,
-		"create_time": time.Now().Unix(),
-		"update_time": time.Now().Unix(),
+		"ip":               ip,
+		"port":             port,
+		"comment":          comment,
+		"create_time":      time.Now().Unix(),
+		"update_time":      time.Now().Unix(),
+		"is_delete":        "0",
+		"last_active_time": "0",
 	}
 
 	nodeId, err := models.NodeModel.Insert(nodeValue)
@@ -106,8 +108,8 @@ func (this *NodeController) Save() {
 	var insertValues []map[string]interface{}
 	for _, nodeGroupId := range nodeGroupIds {
 		insertValue := map[string]interface{}{
-			"node_id": nodeId,
-			"nodes_id": nodeGroupId,
+			"node_id":     nodeId,
+			"nodes_id":    nodeGroupId,
 			"create_time": time.Now().Unix(),
 		}
 		insertValues = append(insertValues, insertValue)
@@ -132,28 +134,28 @@ func (this *NodeController) Edit() {
 
 	node, err := models.NodeModel.GetNodeByNodeId(nodeId)
 	if err != nil {
-		this.ErrorLog("查找节点 "+nodeId+" 失败："+err.Error())
+		this.ErrorLog("查找节点 " + nodeId + " 失败：" + err.Error())
 		this.viewError("节点不存在", "/node/list")
 	}
 
-	nodeGroups, err := models.NodesModel.GetNodeGroups();
+	nodeGroups, err := models.NodesModel.GetNodeGroups()
 	if err != nil {
-		this.ErrorLog("获取节点组失败："+err.Error())
+		this.ErrorLog("获取节点组失败：" + err.Error())
 		this.viewError("获取节点组失败！", "/node/list")
 	}
 
 	nodeNodes, err := models.NodeNodesModel.GetNodeNodesByNodeId(nodeId)
 	if err != nil {
-		this.ErrorLog("获取节点 "+nodeId+" 节点组关系失败："+err.Error())
+		this.ErrorLog("获取节点 " + nodeId + " 节点组关系失败：" + err.Error())
 		this.viewError("获取节点节点组关系失败！", "/node/list")
 	}
 
 	var newNodeGroups []map[string]string
 	for _, nodeGroup := range nodeGroups {
 		newNodeGroup := map[string]string{
-			"nodes_id": nodeGroup["nodes_id"],
-			"name": nodeGroup["name"],
-			"comment": nodeGroup["comment"],
+			"nodes_id":   nodeGroup["nodes_id"],
+			"name":       nodeGroup["name"],
+			"comment":    nodeGroup["comment"],
 			"is_default": "0",
 		}
 		for _, nodeNode := range nodeNodes {
@@ -198,7 +200,7 @@ func (this *NodeController) Modify() {
 
 	has, err := models.NodeModel.HasNodeByIpAndPort(nodeId, ip, port)
 	if err != nil {
-		this.ErrorLog("查找节点 "+nodeId+" 是否存在失败："+err.Error())
+		this.ErrorLog("查找节点 " + nodeId + " 是否存在失败：" + err.Error())
 		this.jsonError("添加节点失败！")
 	}
 	if has {
@@ -227,8 +229,8 @@ func (this *NodeController) Modify() {
 	var insertValues []map[string]interface{}
 	for _, nodeGroupId := range nodeGroupIds {
 		insertValue := map[string]interface{}{
-			"node_id": nodeId,
-			"nodes_id": nodeGroupId,
+			"node_id":     nodeId,
+			"nodes_id":    nodeGroupId,
 			"create_time": time.Now().Unix(),
 		}
 		insertValues = append(insertValues, insertValue)
@@ -253,7 +255,7 @@ func (this *NodeController) Delete() {
 
 	node, err := models.NodeModel.GetNodeByNodeId(nodeId)
 	if err != nil {
-		this.ErrorLog("查找节点 "+nodeId+" 失败: " + err.Error())
+		this.ErrorLog("查找节点 " + nodeId + " 失败: " + err.Error())
 		this.jsonError("节点不存在！")
 	}
 	if len(node) == 0 {
