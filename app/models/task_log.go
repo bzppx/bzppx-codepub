@@ -35,5 +35,19 @@ func (l *Task) Insert(task map[string]interface{}) (id int64, err error) {
 	return
 }
 
-
-
+// 通过module_id和task_id查找task
+func (l *Task) GetTaskByModuleIdsAndTaskIds(moduleIds, taskIds []string) (task []map[string]string, err error) {
+	db := G.DB()
+	where := make(map[string]interface{})
+	where["task_id"] = taskIds
+	var rs *mysql.ResultSet
+	if len(moduleIds) > 0 {
+		where["module_id"] = moduleIds
+	}
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(where))
+	if err != nil {
+		return
+	}
+	task = rs.Rows()
+	return
+}

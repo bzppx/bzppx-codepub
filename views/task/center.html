@@ -16,26 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td class="center">测试模块1</td>
-                <td>
-                    <div class="progress" style="margin-bottom: 0; height: 14px">
-                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
-                             aria-valuenow="45"
-                             aria-valuemin="0"
-                             aria-valuemax="100"
-                             style="min-width: 2em; width: 40%">
-                            <span style="float:right;margin-right:20px;font-size:10px;line-height:14px;">40%</span>
-                        </div>
-                    </div>
-                </td>
-                <td class="center">
-                    <label class="text-info">2018-01-05 18:09:80</label>
-                </td>
-                <td class="center">
-                    <a name="info" class="glyphicon glyphicon-align-justify" data-link="/task/node?module_id=">节点进度</a>
-                </td>
-            </tr>
+           
             </tbody>
         </table>
     </div>
@@ -44,4 +25,83 @@
 </div>
 <script type="text/javascript">
     Layers.bindIframe("[name='info']", "节点进度", "500px");
+	
+	var taskId = ""
+	var moduleId = ""
+	var task = {
+		getTask: function (){
+			$.ajax({
+		        type: "POST",
+		        cache: false,
+		        url: "/task/getExcutingTask",
+		        data:"task_id=" + taskId + "&module_id=" + moduleId,
+		        dataType: 'json',
+		        success: function (response) {
+		        	moduleId = ""
+		        	taskId = ""
+		            if(response.code == 0) {
+						Common.errorBox("#failedBox", response.message)
+					} else {
+						var html = ""
+						var name = ""
+						var isSuccess = ""
+						var percentage = ""
+						var finish
+						var doing
+
+						for (var j in response.data.module) {
+							moduleId += "," + response.data.module[j]['module_id'];
+						}
+						moduleId = moduleId.substring(1)
+						
+						for (var i in response.data.task) {
+							taskId += "," + response.data.task[i]['task_id']
+							name = response.data.module[response.data.task[i]['module_id']]['name']
+							if (response.data.result[response.data.task[i]['task_id']]['result'] == "1") {
+								isSuccess = "progress-bar-success"
+							} else {
+								isSuccess = "progress-bar-danger"
+							}
+
+							finish = parseInt(response.data.result[response.data.task[i]['task_id']]['finish']);
+							doing = parseInt(response.data.result[response.data.task[i]['task_id']]['doing']);
+							percentage = Math.ceil(finish/(finish+doing)*100)
+							 
+							html += '<tr>\
+						                <td class="center">' + name + '</td>\
+						                <td>\
+						                    <div class="progress" style="margin-bottom: 0; height: 14px">\
+						                        <div class="progress-bar ' + isSuccess + ' progress-bar-striped active" role="progressbar"\
+						                             aria-valuenow="45"\
+						                             aria-valuemin="0"\
+						                             aria-valuemax="100"\
+						                             style="min-width: 2em; width: ' + percentage + '%">\
+						                            <span style="float:right;font-size:10px;margin-left:5px;line-height:14px;">' + percentage + '%</span>\
+						                        </div>\
+						                    </div>\
+						                </td>\
+						                <td class="center">\
+						                    <label class="text-info">' + response.data.task[i]['create_time'] + '</label>\
+						                </td>\
+						                <td class="center">\
+						                    <a name="info" class="glyphicon glyphicon-align-justify" data-link="/task/node?module_id=">节点进度</a>\
+						                </td>\
+						            </tr>'
+						}
+						taskId = taskId.substring(1)
+						$('tbody').html(html)
+						setTimeout(function(){
+							task.getTask()
+						}, 1000)
+						
+					}
+		        },
+				error: function(){
+					Common.errorBox("#failedBox", "ajax请求出错")
+				},
+		    });
+		}
+	}
+	
+	task.getTask()
 </script>

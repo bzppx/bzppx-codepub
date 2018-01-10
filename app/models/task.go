@@ -87,8 +87,42 @@ func (l *TaskLog) Insert(taskLog map[string]interface{}) (id int64, err error) {
 }
 
 // 插入多条任务日志
-func (l *TaskLog) InsertBatch(taskLog []map[string]interface{}) (err error) {
+func (l *TaskLog) InsertBatch(taskLogs []map[string]interface{}) (err error) {
 	db := G.DB()
-	_, err = db.Exec(db.AR().InsertBatch(Table_TaskLog_Name, taskLog))
+	_, err = db.Exec(db.AR().InsertBatch(Table_TaskLog_Name, taskLogs))
+	return
+}
+
+// 查找未执行完的日志
+func (l *TaskLog) GetExcutingTaskIdByTaskLog() (taskIds []string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
+		"status": [2]int{TASKLOG_STATUS_CREATE, TASKLOG_STATUS_SATART},
+	}).GroupBy("task_id"))
+	if err != nil {
+		return
+	}
+
+	taskLogs := rs.Rows()
+	taskIds = make([]string, len(taskLogs))
+	for index, taskLog := range taskLogs {
+		taskIds[index] = taskLog["task_id"]
+	}
+
+	return
+}
+
+// 根据多个 task_id 获取任务日志
+func (t *TaskLog) GetTaskLogByTaskIds(taskIds []string) (tasLogs []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
+		"task_id": taskIds,
+	}))
+	if err != nil {
+		return
+	}
+	tasLogs = rs.Rows()
 	return
 }
