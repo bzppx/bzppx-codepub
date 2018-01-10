@@ -36,9 +36,6 @@ func (this *TaskController) GetExcutingTask() {
 	if viewTaskIds != "" {
 		taskIds = append(taskIds, strings.Split(viewTaskIds, ",")...)
 	}
-	if len(taskIds) == 0 {
-		this.jsonError("没有正在执行的任务！")
-	}
 
 	if !this.isAdmin() && !this.isRoot() {
 		moduleUsers, err := models.UserModuleModel.GetUserModuleByUserId(this.UserID)
