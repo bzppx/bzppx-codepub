@@ -99,3 +99,73 @@ func (this *TaskController) GetExcutingTask() {
 	data["result"] = result
 	this.jsonSuccess("查询正在执行的任务成功！", data, "")
 }
+
+func (this *TaskController) Task() {
+	page, _ := this.GetInt("page", 1)
+	userId := this.GetString("user_id", "")
+	moduleId := this.GetString("module_id", "")
+	if moduleId == "" {
+		this.viewError("模块ID参数出错！")
+	}
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil || len(module) == 0 {
+		this.viewError("获取模块信息失败！")
+	}
+
+	var count int64
+	var tasks []map[string]string
+	number := 20
+	limit := (page - 1) * number
+	if userId != "" {
+		count, err = models.TaskModel.CountTaskByModuleIdAndUserId(moduleId, userId)
+		tasks, err = models.TaskModel.GetTaskByModuleIdAndUserId(moduleId, userId, limit, number)
+	} else {
+		count, err = models.TaskModel.CountTaskByModuleId(moduleId)
+		tasks, err = models.TaskModel.GetTaskByModuleId(moduleId, limit, number)
+	}
+	if err != nil {
+		this.viewError("获取任务信息出错！")
+	}
+
+	this.Data["tasks"] = tasks
+	this.Data["userId"] = userId
+	this.Data["module"] = module
+	this.SetPaginator(number, count)
+	this.viewLayoutTitle("模块任务信息", "task/task", "page")
+}
+
+func (this *TaskController) TaskLog() {
+	taskId := this.GetString("task_id", "")
+	this.Data["taskId"] = taskId
+	this.viewLayoutTitle("模块任务信息", "task/task-log", "page")
+}
+
+func (this *TaskController) GetTaskLog() {
+	taskId := this.GetString("task_id", "")
+	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskId(taskId)
+	if err != nil {
+		this.jsonError("获取任务日志出错！")
+	}
+
+	//获取nodeIds
+	nodeIds := make([]string, len(taskLogs))
+	timePattern := "2006-01-02 15:04:05"
+	for index, taskLog := range taskLogs {
+		nodeIds[index] = taskLog["node_id"]
+		updateTime := utils.NewConvert().StringToInt64(taskLog["update_time"])
+		taskLog["update_time"] = time.Unix(updateTime, 0).Format(timePattern)
+		createTime := utils.NewConvert().StringToInt64(taskLog["create_time"])
+		taskLog["create_time"] = time.Unix(createTime, 0).Format(timePattern)
+	}
+
+	nodesValue, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.jsonError("获取节点信息出错！")
+	}
+	nodes := utils.NewArray().ChangeKey(nodesValue, "node_id")
+
+	data := make(map[string]interface{})
+	data["nodes"] = nodes
+	data["taskLogs"] = taskLogs
+	this.jsonSuccess("查询任务日志成功！", data, "")
+}

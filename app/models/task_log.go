@@ -1,6 +1,10 @@
 package models
 
-import "github.com/snail007/go-activerecord/mysql"
+import (
+	"bzppx-codepub/app/utils"
+
+	"github.com/snail007/go-activerecord/mysql"
+)
 
 const Table_Task_Name = "task"
 
@@ -49,5 +53,63 @@ func (l *Task) GetTaskByModuleIdsAndTaskIds(moduleIds, taskIds []string) (task [
 		return
 	}
 	task = rs.Rows()
+	return
+}
+
+func (l *Task) GetTaskByModuleId(moduleId string, limit, number int) (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
+		"module_id": moduleId,
+	}).Limit(limit, number).OrderBy("task_id", "DESC"))
+
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
+	return
+}
+
+func (l *Task) GetTaskByModuleIdAndUserId(moduleId, userId string, limit, number int) (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
+		"module_id": moduleId,
+		"user_id":   userId,
+	}).Limit(limit, number).OrderBy("task_id", "DESC"))
+
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
+	return
+}
+
+func (l *Task) CountTaskByModuleId(moduleId string) (count int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name).Where(map[string]interface{}{
+		"module_id": moduleId,
+	}))
+
+	if err != nil {
+		return
+	}
+	count = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+func (l *Task) CountTaskByModuleIdAndUserId(moduleId, userId string) (count int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name).Where(map[string]interface{}{
+		"module_id": moduleId,
+		"user_id":   userId,
+	}))
+
+	if err != nil {
+		return
+	}
+	count = utils.NewConvert().StringToInt64(rs.Value("total"))
 	return
 }

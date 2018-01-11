@@ -1,0 +1,56 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+			{{$module := .module}}
+            <form action="/task/task" method="get">
+				<input type="hidden" name="module_id" value="{{$module.module_id}}">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input class="form-control" name="user_id" type="text" value="{{.userId}}" placeholder="请填写用户ID">
+			            <span class="input-group-btn">
+			              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+			            </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w8p">ID</th>
+                <th class="w13p">模块名</th>
+                <th>备注</th>
+				<th class="w13p">commit_id</th>
+				<th class="w8p">创建人</th>
+                <th class="w14p">创建时间</th>
+                <th class="w14p">发布时间</th>
+                <th class="w12p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $task := .tasks}}
+            <tr>
+                <td class="center">{{$task.task_id}}</td>
+                <td>{{$module.name}}</td>
+                <td class="center">{{$task.comment}}</td>
+                <td class="center">{{$task.sha1_id}}</td>
+                <td class="center">{{$task.user_id}}</td>
+				<td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
+				<td class="center">{{dateFormat $task.publish_time "Y-m-d H:i:s"}}</td>
+                <td class="center">
+                    <a name="watch" class="glyphicon glyphicon-eye-open" href="/task/taskLog?task_id={{$task.task_id}}">查看发布</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
+</div>
+<script type="text/javascript">
+    
+</script>

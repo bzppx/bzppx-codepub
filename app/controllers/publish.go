@@ -156,6 +156,20 @@ func (this *PublishController) Publish() {
 		this.viewError("查找模块信息出错")
 	}
 
+	//判断是否封版
+	var isBlock bool
+	if this.isRoot() || this.isAdmin() {
+		isBlock = false
+	} else {
+		isBlock, _, err = models.ConfigureModel.CheckIsBlock()
+		if err != nil {
+			this.viewError("获取封版配置出错")
+		}
+	}
+	if isBlock {
+		this.viewError("已封版")
+	}
+
 	this.Data["module"] = module
 	this.viewLayoutTitle("发布代码", "publish/publish", "page")
 }
@@ -166,6 +180,20 @@ func (this *PublishController) Reset() {
 	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
 	if err != nil {
 		this.viewError("查找模块信息出错")
+	}
+
+	//判断是否封版
+	var isBlock bool
+	if this.isRoot() || this.isAdmin() {
+		isBlock = false
+	} else {
+		isBlock, _, err = models.ConfigureModel.CheckIsBlock()
+		if err != nil {
+			this.viewError("获取封版配置出错！")
+		}
+	}
+	if isBlock {
+		this.viewError("已封版！")
 	}
 
 	this.Data["module"] = module
@@ -210,6 +238,21 @@ func (this *PublishController) DoReset() {
 }
 
 func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, moduleId string) {
+
+	//判断是否封版
+	var isBlock bool
+	var err error
+	if this.isRoot() || this.isAdmin() {
+		isBlock = false
+	} else {
+		isBlock, _, err = models.ConfigureModel.CheckIsBlock()
+		if err != nil {
+			this.jsonError("获取封版配置出错！")
+		}
+	}
+	if isBlock {
+		this.jsonError("已封版！")
+	}
 	taskId, err := models.TaskModel.Insert(taskValue)
 	if err != nil {
 		this.ErrorLog("创建任务失败：" + err.Error())
