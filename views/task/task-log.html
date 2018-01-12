@@ -17,8 +17,8 @@
                 <th class="w13p">创建时间</th>
 				<th class="w13p">更新时间</th>
 				<th class="w12p">commit_id</th>
-                <th class="w8p">执行状态</th>
-                <th class="w13p">执行结果</th>
+				<th class="w13p">执行结果</th>
+                <th class="w6p">执行状态</th>
             </tr>
             </thead>
             <tbody>
@@ -47,7 +47,7 @@
 									isSuccess = "成功"
 								}
 							} else {
-								isSuccess = "<img src='/static/style/layui/layer/theme/default/loading-0.gif'>"
+								isSuccess = "<img src='/static/style/layui/layer/theme/default/loading-2.gif' style='max-width:17px;'>"
 								again = true
 							}
 							html += '<tr>\
@@ -56,8 +56,8 @@
 						                <td class="center">' + response.data.taskLogs[i]['create_time'] + '</td>\
 						                <td class="center">' + response.data.taskLogs[i]['update_time'] + '</td>\
 						                <td class="center">' + response.data.taskLogs[i]['commit_id'] + '</td>\
-										<td class="center">' + isSuccess + '</td>\
 										<td class="center">' + response.data.taskLogs[i]['result'] + '</td>\
+										<td class="center">' + isSuccess + '</td>\
 						            </tr>'
 						}
 						$('tbody').html(html)
