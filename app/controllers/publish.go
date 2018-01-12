@@ -287,5 +287,6 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.jsonError("创建任务日志失败！")
 	}
 
-	this.jsonSuccess("创建任务成功！", nil, "/task/center")
+	this.InfoLog("发布任务成功")
+	this.jsonSuccess("发布任务成功！", nil, "/task/center")
 }

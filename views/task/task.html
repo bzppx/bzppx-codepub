@@ -4,6 +4,10 @@
 			{{$module := .module}}
             <form action="/task/task" method="get">
 				<input type="hidden" name="module_id" value="{{$module.module_id}}">
+				<div class="col-md-9">
+					<div class="input-group">
+                    </div>
+				</div>
                 <div class="col-md-3">
                     <div class="input-group">
                         <input class="form-control" name="user_id" type="text" value="{{.userId}}" placeholder="请填写用户ID">
