@@ -73,5 +73,5 @@
     {{if $isBlock}}
     Common.warningBox("#failedBox", '{{ .block.block_message }}，封版时间为：{{dateFormat .block.block_start_time "Y-m-d H:i:s"}}至{{dateFormat .block.block_end_time "Y-m-d H:i:s"}}');
     {{end}}
-    Layers.bindIframe("[name='task']", "模块详细配置");
+    Layers.bindIframe("[name='task']", "模块任务列表");
 </script>
