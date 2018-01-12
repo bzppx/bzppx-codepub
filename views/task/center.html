@@ -24,7 +24,6 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='info']", "节点进度", "500px");
 	
 	var taskId = ""
 	var moduleId = ""
@@ -84,7 +83,7 @@
 						                    <label class="text-info">' + response.data.task[i]['create_time'] + '</label>\
 						                </td>\
 						                <td class="center">\
-						                    <a name="info" class="glyphicon glyphicon-align-justify" data-link="/task/node?module_id=">节点进度</a>\
+						                    <a name="info" class="glyphicon glyphicon-align-justify" href="/task/taskLog?task_id=' + response.data.task[i]['task_id'] + '">节点进度</a>\
 						                </td>\
 						            </tr>'
 						}

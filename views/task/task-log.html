@@ -1,6 +1,11 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
+			<div class="col-md-3">
+				<button class="btn btn-primary" onclick="javascript:history.go(-1);">
+					<i class="glyphicon glyphicon-share-alt"></i> 返回
+				</button>
+			</div>
         </div>
     </div>
     <div class="table-responsive">
@@ -8,12 +13,12 @@
             <thead>
             <tr>
                 <th class="w8p">ID</th>
-                <th>节点</th>
+                <th class="w12p">节点</th>
                 <th class="w13p">创建时间</th>
 				<th class="w13p">更新时间</th>
 				<th class="w12p">commit_id</th>
-                <th class="w14p">是否成功</th>
-                <th class="w14p">执行结果</th>
+                <th class="w8p">执行状态</th>
+                <th class="w13p">执行结果</th>
             </tr>
             </thead>
             <tbody>
@@ -23,6 +28,7 @@
     </div>
 </div>
 <script type="text/javascript">
+	var again = false
 	var taskLog = {
 		getTaskLog: function (){
 			$.ajax({
@@ -41,7 +47,8 @@
 									isSuccess = "成功"
 								}
 							} else {
-								isSuccess = "正在执行"
+								isSuccess = "<img src='/static/style/layui/layer/theme/default/loading-0.gif'>"
+								again = true
 							}
 							html += '<tr>\
 						                <td class="center">' + response.data.taskLogs[i]['task_log_id'] + '</td>\
@@ -54,6 +61,11 @@
 						            </tr>'
 						}
 						$('tbody').html(html)
+						if (again) {
+							setTimeout(function(){
+								taskLog.getTaskLog()
+							}, 1000);
+						}
 					} else {
 						Common.errorBox("#failedBox", response.message)
 					}
