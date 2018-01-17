@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"bzppx-codepub/app/models"
-	"log"
+	"time"
 )
 
 var Task = TaskRemote{}
@@ -44,6 +44,8 @@ func (this *TaskRemote) GetResults(ip string, port string, args map[string]inter
 			"status": res["status"],
 			"is_success": res["is_success"],
 			"result": res["result"],
+			"commit_id": res["commit_id"],
+			"update_time": time.Now().Unix(),
 		}
 		_, err := models.TaskLogModel.Update(taskLogId, taskLogValue)
 		if err != nil {
