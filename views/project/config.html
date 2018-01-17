@@ -1,29 +1,29 @@
 <div class="panel panel-default">
-    <div class="panel-body">{{$module := .module}}
+    <div class="panel-body">{{$project := .project}}
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#pre_command" aria-controls="pre_command" role="tab" data-toggle="tab">前置命令</a></li>
             <li role="presentation"><a href="#post_command" aria-controls="post_command" role="tab" data-toggle="tab">后置命令</a></li>
         </ul>
         <br>
-        <form class="form-horizontal" method="post" action="/module/configSave">
-            <input type="hidden" name="module_id" value="{{$module.module_id}}">
+        <form class="form-horizontal" method="post" action="/project/configSave">
+            <input type="hidden" name="project_id" value="{{$project.project_id}}">
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="pre_command">
                 <div class="form-group">
                     <label class="col-sm-2 control-label"><span class="text-danger"></span> 前置命令 </label>
                     <div class="col-sm-4">
-                        <textarea name="pre_command" class="form-control" rows="6">{{$module.pre_command}}</textarea><br/>
+                        <textarea name="pre_command" class="form-control" rows="6">{{$project.pre_command}}</textarea><br/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label"><span class="text-danger"></span> 前置命令执行方式</label>
                     <div class="col-sm-4">
                         <select name="pre_command_exec_type" class="form-control">
-                            <option value="1" {{if eq $module.pre_command_exec_type "1" }} selected {{end}}>同步执行，遇到错误停止</option>
-                            <option value="2" {{if eq $module.pre_command_exec_type "2" }} selected {{end}}>同步执行，遇到错误继续</option>
-                            <option value="3" {{if eq $module.pre_command_exec_type "3" }} selected {{end}}>异步执行</option>
+                            <option value="1" {{if eq $project.pre_command_exec_type "1" }} selected {{end}}>同步执行，遇到错误停止</option>
+                            <option value="2" {{if eq $project.pre_command_exec_type "2" }} selected {{end}}>同步执行，遇到错误继续</option>
+                            <option value="3" {{if eq $project.pre_command_exec_type "3" }} selected {{end}}>异步执行</option>
                         </select>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                     <label class="col-sm-2 control-label"><span class="text-danger"></span> 前置命令超时 </label>
                     <div class="col-sm-4">
                         <div class="input-group">
-                            <input type="text" name="pre_command_exec_timeout" value="{{$module.pre_command_exec_timeout}}" class="form-control" placeholder="请输入前置命令执行超时时间" aria-describedby="input-group1" required>
+                            <input type="text" name="pre_command_exec_timeout" value="{{$project.pre_command_exec_timeout}}" class="form-control" placeholder="请输入前置命令执行超时时间" aria-describedby="input-group1" required>
                             <span class="input-group-addon">秒</span>
                         </div>
                     </div>
@@ -41,16 +41,16 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label"><span class="text-danger"></span> 后置命令 </label>
                     <div class="col-sm-4">
-                        <textarea name="post_command" class="form-control" rows="6">{{$module.post_command}}</textarea><br/>
+                        <textarea name="post_command" class="form-control" rows="6">{{$project.post_command}}</textarea><br/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label"><span class="text-danger"></span> 后置命令执行方式</label>
                     <div class="col-sm-4">
                         <select name="post_command_exec_type" class="form-control">
-                            <option value="1" {{if eq $module.post_command_exec_type "1" }} selected {{end}}>同步执行，遇到错误停止</option>
-                            <option value="2" {{if eq $module.post_command_exec_type "2" }} selected {{end}}>同步执行，遇到错误继续</option>
-                            <option value="3" {{if eq $module.post_command_exec_type "3" }} selected {{end}}>异步执行</option>
+                            <option value="1" {{if eq $project.post_command_exec_type "1" }} selected {{end}}>同步执行，遇到错误停止</option>
+                            <option value="2" {{if eq $project.post_command_exec_type "2" }} selected {{end}}>同步执行，遇到错误继续</option>
+                            <option value="3" {{if eq $project.post_command_exec_type "3" }} selected {{end}}>异步执行</option>
                         </select>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                     <label class="col-sm-2 control-label"><span class="text-danger"></span> 后置命令超时 </label>
                     <div class="col-sm-4">
                         <div class="input-group">
-                            <input type="text" name="post_command_exec_timeout" class="form-control" value="{{$module.post_command_exec_timeout}}" placeholder="请输入后置命令执行超时时间" aria-describedby="input-group1" required>
+                            <input type="text" name="post_command_exec_timeout" class="form-control" value="{{$project.post_command_exec_timeout}}" placeholder="请输入后置命令执行超时时间" aria-describedby="input-group1" required>
                             <span class="input-group-addon">秒</span>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"></span> 执行命令用户</label>
                 <div class="col-sm-4">
-                    <input type="text" name="exec_user" value="{{$module.exec_user}}" class="form-control" placeholder="请输入执行命令linux用户" required>
+                    <input type="text" name="exec_user" value="{{$project.exec_user}}" class="form-control" placeholder="请输入执行命令linux用户" required>
                 </div>
             </div>
             <div class="form-group">

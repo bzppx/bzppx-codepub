@@ -151,10 +151,10 @@ func (this *NodesController) Delete() {
 		this.jsonError("节点组不存在！")
 	}
 
-	// todo 判断节点组下的模块是否需要一起删除
+	// todo 判断节点组下的项目是否需要一起删除
 
 	nodesValue := map[string]interface{}{
-		"is_delete": models.MODULES_DELETE,
+		"is_delete": models.NODES_DELETE,
 		"update_time": time.Now().Unix(),
 	}
 

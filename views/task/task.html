@@ -1,9 +1,9 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
-			{{$module := .module}}
+			{{$project := .project}}
             <form action="/task/task" method="get">
-				<input type="hidden" name="module_id" value="{{$module.module_id}}">
+				<input type="hidden" name="project_id" value="{{$project.project_id}}">
 				<div class="col-md-9">
 					<div class="input-group">
                     </div>
@@ -24,7 +24,7 @@
             <thead>
             <tr>
                 <th class="w8p">ID</th>
-                <th class="w13p">模块名</th>
+                <th class="w13p">项目名</th>
                 <th>备注</th>
 				<th class="w13p">commit_id</th>
 				<th class="w8p">创建人</th>
@@ -37,7 +37,7 @@
             {{range $task := .tasks}}
             <tr>
                 <td class="center">{{$task.task_id}}</td>
-                <td>{{$module.name}}</td>
+                <td>{{$project.name}}</td>
                 <td class="center">{{$task.comment}}</td>
                 <td class="center">{{$task.sha1_id}}</td>
                 <td class="center">{{$task.user_id}}</td>

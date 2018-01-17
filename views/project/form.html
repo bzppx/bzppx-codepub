@@ -1,25 +1,25 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <br>{{$module := .module}}{{$pullType := .pullType}}
-        <form class="form-horizontal" method="post" action="{{if $module}} /module/modify {{else}} /module/save {{end}}">
+        <br>{{$project := .project}}{{$pullType := .pullType}}
+        <form class="form-horizontal" method="post" action="{{if $project}} /project/modify {{else}} /project/save {{end}}">
             <div class="form-group">
-                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块名称</label>
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 项目名称</label>
                 <div class="col-sm-4">
-                    <input type="text" name="name" value="{{$module.name}}" class="form-control" placeholder="请输入模块名称" {{if $module}} readonly {{else}} {{end}} required>
+                    <input type="text" name="name" value="{{$project.name}}" class="form-control" placeholder="请输入项目名称" {{if $project}} readonly {{else}} {{end}} required>
                 </div>
             </div>
-            {{if $module}}
-            <input type="hidden" name="module_id" value="{{$module.module_id}}">
+            {{if $project}}
+            <input type="hidden" name="project_id" value="{{$project.project_id}}">
             {{end}}
             <div class="form-group">
-                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 模块组</label>
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 项目组</label>
                 <div class="col-sm-4">
-                    <select name="modules_id" class="form-control">
-                        {{range $moduleGroup := .moduleGroups}}
-                            {{if $module}}
-                            <option value="{{$moduleGroup.modules_id}}" {{if eq $moduleGroup.modules_id $module.modules_id}} selected {{end}}>{{$moduleGroup.name}}</option>
+                    <select name="group_id" class="form-control">
+                        {{range $group := .groups}}
+                            {{if $project}}
+                            <option value="{{$group.group_id}}" {{if eq $group.group_id $project.group_id}} selected {{end}}>{{$group.name}}</option>
                             {{else}}
-                            <option value="{{$moduleGroup.modules_id}}">{{$moduleGroup.name}}</option>
+                            <option value="{{$group.group_id}}">{{$group.name}}</option>
                             {{end}}
                         {{end}}
                     </select>
@@ -43,60 +43,60 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码仓库 </label>
                 <div class="col-sm-4">
-                    <input type="text" name="repository_url" value="{{$module.repository_url}}" class="form-control" placeholder="请输入代码仓库地址" aria-describedby="input-group1" required>
+                    <input type="text" name="repository_url" value="{{$project.repository_url}}" class="form-control" placeholder="请输入代码仓库地址" aria-describedby="input-group1" required>
                 </div>
             </div>
             <div class="form-group ssh-config">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> ssh key </label>
                 <div class="col-sm-4">
-                    <input type="text" name="ssh_key" value="{{$module.ssh_key}}" class="form-control" placeholder="请输入ssh 配置 key" required>
+                    <input type="text" name="ssh_key" value="{{$project.ssh_key}}" class="form-control" placeholder="请输入ssh 配置 key" required>
                 </div>
             </div>
             <div class="form-group ssh-config">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> ssh key salt </label>
                 <div class="col-sm-4">
-                    <input type="text" name="ssh_key_salt" value="{{$module.ssh_key_salt}}" class="form-control" placeholder="请输入ssh key salt" required>
+                    <input type="text" name="ssh_key_salt" value="{{$project.ssh_key_salt}}" class="form-control" placeholder="请输入ssh key salt" required>
                 </div>
             </div>
             <div class="form-group http-config">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 用户名 </label>
                 <div class="col-sm-4">
-                    <input type="text" name="https_username" value="{{$module.https_username}}" class="form-control" placeholder="请输入 http 拉取用户名" required>
+                    <input type="text" name="https_username" value="{{$project.https_username}}" class="form-control" placeholder="请输入 http 拉取用户名" required>
                 </div>
             </div>
             <div class="form-group http-config">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 密码 </label>
                 <div class="col-sm-4">
-                    <input type="password" name="https_password" value="{{$module.https_password}}" class="form-control" placeholder="请输入 http 拉取密码" required>
+                    <input type="password" name="https_password" value="{{$project.https_password}}" class="form-control" placeholder="请输入 http 拉取密码" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码分支</label>
                 <div class="col-sm-4">
-                    <input type="text" name="branch" value="{{$module.branch}}" class="form-control" placeholder="请输入要发布的代码分支名" required>
+                    <input type="text" name="branch" value="{{$project.branch}}" class="form-control" placeholder="请输入要发布的代码分支名" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 发布路径</label>
                 <div class="col-sm-4">
-                    <input type="text" name="code_path" value="{{$module.code_path}}" class="form-control" placeholder="请输入代码发布路径" required>
+                    <input type="text" name="code_path" value="{{$project.code_path}}" class="form-control" placeholder="请输入代码发布路径" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 目录所属用户</label>
                 <div class="col-sm-4">
-                    <input type="text" name="code_dir_user" value="{{$module.code_dir_user}}" class="form-control" placeholder="请输入代码目录所属linux用户" required>
+                    <input type="text" name="code_dir_user" value="{{$project.code_dir_user}}" class="form-control" placeholder="请输入代码目录所属linux用户" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"></span> 备注</label>
                 <div class="col-sm-4">
-                    <input type="text" name="comment" value="{{$module.comment}}" class="form-control" placeholder="请输入备注信息" required>
+                    <input type="text" name="comment" value="{{$project.comment}}" class="form-control" placeholder="请输入备注信息" required>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $module}} true {{else}} false {{end}});" class="btn btn-primary">保存</button>
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $project}} true {{else}} false {{end}});" class="btn btn-primary">保存</button>
                 </div>
             </div>
         </form>

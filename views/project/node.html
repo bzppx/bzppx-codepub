@@ -1,0 +1,42 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav">
+            <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 项目节点配置</strong></h5>
+            <hr>
+        </ul>
+        {{$projectNodes := .projectNodes}}{{$project := .project}}{{$defaultNodeIds := .defaultNodeIds}}
+        {{$flag := .flag}}
+        <form class="form-horizontal" method="post" action="/project/nodeSave">
+            {{range $projectNode := $projectNodes}}
+            <div class="w230 inline-group">
+                <h4><span class="label label-default">{{$projectNode.nodes_name}}</span>
+                <span class="small">
+                    <input name="node_id" type="checkbox" data-type="group" value="{{$projectNode.nodes_id}}" onclick="Project.node(this)" />
+                </span>
+                </h4>
+                <ul class="list-group">
+                    {{range $node := $projectNode.nodes}}
+                    <li class="list-group-item">节点{{$node.node_id}}：{{$node.ip}}:{{$node.port}}
+                        <span class="pull-right">
+                        <input name="node_id" type="checkbox" data-parent="{{$projectNode.nodes_id}}" data-type="node" value="{{$node.node_id}}" onclick="Project.node(this)" />
+                        </span>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+            {{end}}
+            {{if eq $flag "insert"}}
+            <div class="form-group">
+                <div class="col-md-8" style="margin-left:10px;">
+                    <a type="button" href="/project/list" class="btn btn-success">完成</a>
+                </div>
+            </div>
+            {{end}}
+            <input type="hidden" name="project_id" value="{{$project.project_id}}">
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="/static/style/module/project.js"></script>
+<script type="text/javascript">
+    Project.defaults({{ $defaultNodeIds }});
+</script>

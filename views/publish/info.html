@@ -12,50 +12,50 @@
             <div role="tabpanel" class="tab-pane active" id="base">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
-                        <tbody>{{$module := .module}}{{$moduleGroupName := .moduleGroupName}}
+                        <tbody>{{$project := .project}}{{$groupName := .groupName}}
                         <tr>
-                            <td class="w20p">模块名</td>
-                            <td>{{$module.name}}</td>
+                            <td class="w20p">项目名</td>
+                            <td>{{$project.name}}</td>
                         </tr>
                         <tr>
-                            <td class="w20p">模块组</td>
-                            <td>{{$moduleGroupName}}</td>
+                            <td class="w20p">项目组</td>
+                            <td>{{$groupName}}</td>
                         </tr>
                         <tr>
                             <td class="w20p">代码仓库</td>
-                            <td>{{$module.repository_url}}</td>
+                            <td>{{$project.repository_url}}</td>
                         </tr>
                         <tr>
                             <td>代码分支</td>
                             <td>
-                                <strong>{{$module.branch}}</strong>
+                                <strong>{{$project.branch}}</strong>
                             </td>
                         </tr>
                         <tr>
                             <td>发布目录</td>
-                            <td>{{$module.code_path}}</td>
+                            <td>{{$project.code_path}}</td>
                         </tr>
                         <tr>
                             <td>目录所属用户</td>
-                            <td>{{$module.code_dir_user}}</td>
+                            <td>{{$project.code_dir_user}}</td>
                         </tr>
                         <tr>
                             <td>更新时间</td>
-                            <td>{{dateFormat $module.update_time "Y-m-d H:i:s"}}</td>
+                            <td>{{dateFormat $project.update_time "Y-m-d H:i:s"}}</td>
                         </tr>
                         <tr>
                             <td>上一次发布时间</td>
                             <td>
-                                {{if eq $module.last_publish_time "0"}}
+                                {{if eq $project.last_publish_time "0"}}
                                 0
                                 {{else}}
-                                {{dateFormat $module.last_publish_time "Y-m-d H:i:s"}}
+                                {{dateFormat $project.last_publish_time "Y-m-d H:i:s"}}
                                 {{end}}
                             </td>
                         </tr>
                         <tr>
                             <td>备注</td>
-                            <td>{{$module.comment}}</td>
+                            <td>{{$project.comment}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -64,34 +64,34 @@
             <div role="tabpanel" class="tab-pane" id="command">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
-                        <tbody>{{$module := .module}}{{$moduleGroupName := .moduleGroupName}}
+                        <tbody>{{$project := .project}}{{$groupName := .groupName}}
                         <tr>
                             <td class="w20p">前置命令</td>
-                            <td>{{$module.pre_command}}</td>
+                            <td>{{$project.pre_command}}</td>
                         </tr>
                         <tr>
                             <td>前置命令执行方式</td>
-                            <td>{{$module.pre_command_exec_type}}</td>
+                            <td>{{$project.pre_command_exec_type}}</td>
                         </tr>
                         <tr>
                             <td>前置命令超时</td>
-                            <td>{{$module.pre_command_exec_timeout}}</td>
+                            <td>{{$project.pre_command_exec_timeout}}</td>
                         </tr>
                         <tr>
                             <td>后置命令</td>
-                            <td>{{$module.post_command}}</td>
+                            <td>{{$project.post_command}}</td>
                         </tr>
                         <tr>
                             <td>后置命令执行方式</td>
-                            <td>{{$module.post_command_exec_type}}</td>
+                            <td>{{$project.post_command_exec_type}}</td>
                         </tr>
                         <tr>
                             <td>后置命令超时</td>
-                            <td>{{$module.post_command_exec_timeout}}</td>
+                            <td>{{$project.post_command_exec_timeout}}</td>
                         </tr>
                         <tr>
                             <td>执行命令用户</td>
-                            <td>{{$module.exec_user}}</td>
+                            <td>{{$project.exec_user}}</td>
                         </tr>
                         </tbody>
                     </table>

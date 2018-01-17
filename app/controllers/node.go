@@ -273,10 +273,10 @@ func (this *NodeController) Delete() {
 		this.ErrorLog("删除节点 " + nodeId + " 失败: " + err.Error())
 		this.jsonError("删除节点失败！")
 	}
-	err = models.ModuleNodeModel.DeleteModuleNodeByNodeId(nodeId)
+	err = models.ProjectNodeModel.DeleteProjectNodeByNodeId(nodeId)
 	if err != nil {
-		this.ErrorLog("删除模块节点关系，节点ID： " + nodeId + " 失败: " + err.Error())
-		this.jsonError("删除模块节点关系失败！")
+		this.ErrorLog("删除项目节点关系，节点ID： " + nodeId + " 失败: " + err.Error())
+		this.jsonError("删除项目节点关系失败！")
 	}
 	err = models.NodeNodesModel.DeleteNodeNodesByNodeNodesId(nodeId)
 	if err != nil {

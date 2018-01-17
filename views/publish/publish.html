@@ -5,13 +5,13 @@
             <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 发布代码</strong></h5>
             <hr>
         </ul>
-		{{$module := .module}}
+		{{$project := .project}}
         <form class="form-horizontal" method="post" action="/publish/doPublish">
-			<input type="hidden" name="module_id" value="{{$module.module_id}}">
+			<input type="hidden" name="project_id" value="{{$project.project_id}}">
 			<div class="form-group">
-                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 发版模块： </label>
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 发版项目： </label>
                 <div class="col-sm-4">
-					<label class="radio-inline" style="cursor: default;"> {{$module.name}}</label>
+					<label class="radio-inline" style="cursor: default;"> {{$project.name}}</label>
                 </div>
             </div>
             <div class="form-group">

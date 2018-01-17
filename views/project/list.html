@@ -1,0 +1,88 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <form action="/project/list" method="get">
+                <div class="col-md-6">
+                    <div class="input-group">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon"> 项目组</span>
+                        <select class="form-control" name="group_id">
+                            <option value="">全部</option>
+                            {{range $group := .groups}}
+                            <option value="{{$group.group_id}}">{{$group.name}}</option>
+                            {{end}}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input class="form-control" name="name" type="text" value="" placeholder=" 项目名">
+				            <span class="input-group-btn">
+				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+				            </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w5p">ID</th>
+                <th class="w10p"> 项目名</th>
+                <th>代码仓库</th>
+                <th class="w8p">分支</th>
+                <th class="w8p"> 项目组</th>
+                <th class="w13p">修改时间</th>
+                <th class="w20p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $project := .projects}}
+            <tr>
+                <td class="center">{{$project.project_id}}</td>
+                <td>{{$project.name}}</td>
+                <td>
+                    <a name="info" data-link="/project/info?project_id={{$project.project_id}}">{{$project.repository_url}}</a>
+                </td>
+                <td class="center">
+                    <label class="text-info">{{$project.branch}}</label>
+                </td>
+                <td class="center">
+                    {{range $group := $.groups}}
+                        {{if eq $group.group_id $project.group_id}}
+                            <label class="text-success">{{$group.name}}</label>
+                        {{end}}
+                    {{end}}
+                </td>
+                <td class="center">
+                    {{if eq $project.update_time "0"}}
+                    {{else}}
+                        {{dateFormat $project.update_time "Y-m-d H:i:s"}}
+                    {{end}}
+                </td>
+                <td class="center">
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/project/edit?project_id={{$project.project_id}}">修改</a>
+                    <a name="config" class="glyphicon glyphicon-cog" data-link="/project/config?project_id={{$project.project_id}}">配置</a>
+                    <a name="node" class="glyphicon glyphicon-align-justify" data-link="/project/node?project_id={{$project.project_id}}">节点</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/project/delete?project_id={{ $project.project_id }}');" class="remove glyphicon glyphicon-trash">删除</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
+</div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='edit']", "修改 项目信息", "550px");
+    Layers.bindIframe("[name='info']", " 项目详细信息", "530px");
+    Layers.bindIframe("[name='config']", " 项目配置", "530px");
+    Layers.bindIframe("[name='node']", " 项目节点配置", "530px");
+</script>

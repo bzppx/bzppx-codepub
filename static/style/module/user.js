@@ -1,5 +1,5 @@
 /**
- * 模块
+ * 项目
  * Copyright (c) 2017 phachon@163.com
  */
 var User = {
@@ -7,31 +7,31 @@ var User = {
 	defaults : function(defaults) {
 		var arr = defaults.split(",");
 		console.log(arr);
-		$('[data-type="module"][name="module_id"]').each(function() {
+		$('[data-type="project"][name="project_id"]').each(function() {
 			console.log(this.value);
 			var checked = $.inArray(this.value, arr) > -1 ? true : false;
 			this.checked = checked;
 		});
 	},
 
-	module : function(element) {
+	project : function(element) {
 		var userId = $("input[name='user_id']").val();
 		var id = $(element).val();
 		var checked = $(element).is(':checked');
 		var type = $(element).attr("data-type");
-		var moduleIds = [];
+		var projectIds = [];
 
 		if(type == 'group') {
-			$('[name="module_id"][data-parent='+id+']').each(function() {
+			$('[name="project_id"][data-parent='+id+']').each(function() {
 				this.checked = checked;
-				moduleIds.push($(this).val());
+				projectIds.push($(this).val());
 			});
 		}
 		if(type == 'node') {
-			moduleIds.push(id);
+			projectIds.push(id);
 			var parentId = $(element).attr("data-parent");
 			var flag = true;
-			$('[data-type="module"][data-parent='+parentId+']').each(function() {
+			$('[data-type="project"][data-parent='+parentId+']').each(function() {
 				if (this.checked != checked) {
 					flag = false;
 				}
@@ -47,15 +47,15 @@ var User = {
 		if(checked == false) {
 			isChecked = 0;
 		}
-		console.log(moduleIds);
-		User.save(moduleIds.join(","), userId, isChecked);
+		console.log(projectIds);
+		User.save(projectIds.join(","), userId, isChecked);
 	},
 	
-	save: function (moduleIds, userId, isChecked) {
+	save: function (projectIds, userId, isChecked) {
 		$.ajax({
 			type : 'post',
-			url : '/user/moduleSave',
-			data : {'module_ids':moduleIds, 'user_id': userId, 'is_check': isChecked},
+			url : '/user/projectSave',
+			data : {'project_ids':projectIds, 'user_id': userId, 'is_check': isChecked},
 			dataType: "json",
 			success : function(response) {
 				if(response.code == 0) {

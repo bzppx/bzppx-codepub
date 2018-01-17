@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <ul class="nav">
-            <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 以下为当前正在执行的模块进度</strong></h5>
+            <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 以下为当前正在执行的项目进度</strong></h5>
             <hr>
         </ul>
     </div>
@@ -9,7 +9,7 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th class="w10p">模块名</th>
+                <th class="w10p">项目名</th>
                 <th>进度</th>
                 <th class="w13p">开始时间</th>
                 <th class="w20p">操作</th>
@@ -26,17 +26,17 @@
 <script type="text/javascript">
 	
 	var taskId = ""
-	var moduleId = ""
+	var projectId = ""
 	var task = {
 		getTask: function (){
 			$.ajax({
 		        type: "POST",
 		        cache: false,
 		        url: "/task/getExcutingTask",
-		        data:"task_id=" + taskId + "&module_id=" + moduleId,
+		        data:"task_id=" + taskId + "&project_id=" + projectId,
 		        dataType: 'json',
 		        success: function (response) {
-		        	moduleId = ""
+		        	projectId = ""
 		        	taskId = ""
 		            if(response.code == 0) {
 						Common.errorBox("#failedBox", response.message)
@@ -48,14 +48,14 @@
 						var finish
 						var doing
 
-						for (var j in response.data.module) {
-							moduleId += "," + response.data.module[j]['module_id'];
+						for (var j in response.data.project) {
+							projectId += "," + response.data.project[j]['project_id'];
 						}
-						moduleId = moduleId.substring(1)
+						projectId = projectId.substring(1)
 						
 						for (var i in response.data.task) {
 							taskId += "," + response.data.task[i]['task_id']
-							name = response.data.module[response.data.task[i]['module_id']]['name']
+							name = response.data.project[response.data.task[i]['project_id']]['name']
 							if (response.data.result[response.data.task[i]['task_id']]['result'] == "1") {
 								isSuccess = "progress-bar-success"
 							} else {

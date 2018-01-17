@@ -2,7 +2,7 @@
  * 模块
  * Copyright (c) 2017 phachon@163.com
  */
-var Module = {
+var Project = {
 
 	defaults : function(defaults) {
 		var arr = defaults.split(",");
@@ -15,7 +15,7 @@ var Module = {
 	},
 
 	node : function(element) {
-		var moduleId = $("input[name='module_id']").val();
+		var projectId = $("input[name='project_id']").val();
 		var id = $(element).val();
 		var checked = $(element).is(':checked');
 		var type = $(element).attr("data-type");
@@ -48,14 +48,14 @@ var Module = {
 			isChecked = 0;
 		}
 		console.log(nodeIds);
-		Module.save(nodeIds.join(","), moduleId, isChecked);
+		Project.save(nodeIds.join(","), projectId, isChecked);
 	},
 	
-	save: function (nodeIds, moduleId, isChecked) {
+	save: function (nodeIds, projectId, isChecked) {
 		$.ajax({
 			type : 'post',
-			url : '/module/nodeSave',
-			data : {'node_ids':nodeIds, 'module_id': moduleId, 'is_check': isChecked},
+			url : '/project/nodeSave',
+			data : {'node_ids':nodeIds, 'project_id': projectId, 'is_check': isChecked},
 			dataType: "json",
 			success : function(response) {
 				if(response.code == 0) {

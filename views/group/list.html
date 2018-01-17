@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group">
-                    <a href="/modules/add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 添加模块组 </a>
+                    <a href="/group/add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 添加项目组 </a>
                 </div>
             </div>
             <form action="" method="get">
@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="keyword" type="text" value="{{.keyword}}" placeholder="模块组名称">
+                        <input class="form-control" name="keyword" type="text" value="{{.keyword}}" placeholder="项目组名称">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
@@ -35,16 +35,16 @@
             </tr>
             </thead>
             <tbody>
-            {{range $moduleGroup := .moduleGroups}}
+            {{range $group := .groups}}
             <tr>
-                <td class="center">{{$moduleGroup.modules_id}}</td>
-                <td>{{$moduleGroup.name}}</td>
-                <td>{{$moduleGroup.comment}}</td>
-                <td class="center">{{dateFormat $moduleGroup.create_time "Y-m-d H:i:s"}}</td>
-                <td class="center">{{dateFormat $moduleGroup.update_time "Y-m-d H:i:s"}}</td>
+                <td class="center">{{$group.group_id}}</td>
+                <td>{{$group.name}}</td>
+                <td>{{$group.comment}}</td>
+                <td class="center">{{dateFormat $group.create_time "Y-m-d H:i:s"}}</td>
+                <td class="center">{{dateFormat $group.update_time "Y-m-d H:i:s"}}</td>
                 <td class="center">
-                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/modules/edit?modules_id={{$moduleGroup.modules_id}}">修改</a>
-                    <a onclick="Layers.confirm('确定删除吗？', '/modules/delete?modules_id={{$moduleGroup.modules_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/group/edit?group_id={{$group.group_id}}">修改</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/group/delete?group_id={{$group.group_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
                 </td>
             </tr>
             {{end}}
@@ -56,5 +56,5 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='edit']", "修改模块组信息", "400px", "850px")
+    Layers.bindIframe("[name='edit']", "修改项目组信息", "400px", "850px")
 </script>

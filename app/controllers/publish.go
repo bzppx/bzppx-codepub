@@ -13,69 +13,69 @@ type PublishController struct {
 	BaseController
 }
 
-// 模块列表
-func (this *PublishController) Module() {
+// 项目列表
+func (this *PublishController) Project() {
 
 	userId := this.UserID
-	modulesId := this.GetString("modules_id", "")
+	groupId := this.GetString("group_id", "")
 	page, _ := this.GetInt("page", 1)
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	keywords := map[string]string{
-		"modules_id": modulesId,
-		"keyword":    keyword,
+		"group_id": groupId,
+		"keyword": keyword,
 	}
 
 	var err error
-	var moduleGroups []map[string]string
+	var groups []map[string]string
 	if this.isAdmin() || this.isRoot() {
-		moduleGroups, err = models.ModulesModel.GetModuleGroups()
+		groups, err = models.GroupModel.GetGroups()
 		if err != nil {
-			this.ErrorLog("查找模块组失败: " + err.Error())
-			this.viewError("查找模块出错")
+			this.ErrorLog("查找项目组失败: " + err.Error())
+			this.viewError("查找项目出错")
 		}
 	} else {
-		userModules, err := models.UserModuleModel.GetUserModuleByUserId(userId)
+		userProjects, err := models.UserProjectModel.GetUserProjectByUserId(userId)
 		if err != nil {
-			this.ErrorLog("查找用户 " + userId + " 模块失败: " + err.Error())
-			this.viewError("查找模块出错")
+			this.ErrorLog("查找用户 " + userId + " 项目失败: " + err.Error())
+			this.viewError("查找项目出错")
 		}
-		moduleIds := []string{}
-		for _, userModule := range userModules {
-			moduleIds = append(moduleIds, userModule["module_id"])
+		projectIds := []string{}
+		for _, userProject := range userProjects {
+			projectIds = append(projectIds, userProject["project_id"])
 		}
-		modules, err := models.ModuleModel.GetModuleByModuleIds(moduleIds)
+		projects, err := models.ProjectModel.GetProjectByProjectIds(projectIds)
 		if err != nil {
-			this.ErrorLog("查找模块失败: " + err.Error())
-			this.viewError("查找模块出错")
+			this.ErrorLog("查找项目失败: " + err.Error())
+			this.viewError("查找项目出错")
 		}
-		modulesIds := []string{}
-		for _, module := range modules {
-			modulesIds = append(modulesIds, module["modules_id"])
+		groupIds := []string{}
+		for _, project := range projects {
+			groupIds = append(groupIds, project["group_id"])
 		}
-		moduleGroups, err = models.ModulesModel.GetModuleGroupByModulesIds(modulesIds)
+		groups, err = models.GroupModel.GetGroupsByGroupIds(groupIds)
 		if err != nil {
-			this.ErrorLog("查找用户组失败: " + err.Error())
-			this.viewError("查找模块出错")
+			this.ErrorLog("查找项目组失败: " + err.Error())
+			this.viewError("查找项目出错")
 		}
 	}
-	if keywords["modules_id"] == "" {
-		keywords["modules_id"] = moduleGroups[0]["modules_id"]
+	if keywords["group_id"] == "" {
+		keywords["group_id"] = groups[0]["group_id"]
 	}
 
 	number := 12
 	limit := (page - 1) * number
 	var count int64
-	var modules []map[string]string
+	var projects []map[string]string
 	if len(keywords) > 0 {
-		count, err = models.ModuleModel.CountModulesByKeywords(keywords)
-		modules, err = models.ModuleModel.GetModulesByKeywordsAndLimit(keywords, limit, number)
+		count, err = models.ProjectModel.CountProjectsByKeywords(keywords)
+		projects, err = models.ProjectModel.GetProjectsByKeywordsAndLimit(keywords, limit, number)
 	} else {
-		count, err = models.ModuleModel.CountModules()
-		modules, err = models.ModuleModel.GetModulesByLimit(limit, number)
+		count, err = models.ProjectModel.CountProjects()
+		projects, err = models.ProjectModel.GetProjectsByLimit(limit, number)
 	}
 	if err != nil {
-		this.ErrorLog("查找用户模块列表失败: " + err.Error())
-		this.viewError("查找模块出错")
+		this.ErrorLog("查找用户项目列表失败: " + err.Error())
+		this.viewError("查找项目出错")
 	}
 
 	//判断是否封版
@@ -92,70 +92,70 @@ func (this *PublishController) Module() {
 
 	this.Data["isBlock"] = isBlock
 	this.Data["block"] = block
-	this.Data["modules"] = modules
+	this.Data["projects"] = projects
 	this.Data["keywords"] = keywords
-	this.Data["moduleGroups"] = moduleGroups
+	this.Data["groups"] = groups
 	this.SetPaginator(number, count)
-	this.viewLayoutTitle("模块列表", "publish/module", "page")
+	this.viewLayoutTitle("项目列表", "publish/project", "page")
 }
 
-// 模块信息
+// 项目信息
 func (this *PublishController) Info() {
 
-	moduleId := this.GetString("module_id", "")
-	if moduleId == "" {
-		this.viewError("模块不存在", "/publish/module")
+	projectId := this.GetString("project_id", "")
+	if projectId == "" {
+		this.viewError("项目不存在", "/publish/project")
 	}
 
-	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
-		this.ErrorLog("查找模块 " + moduleId + " 失败: " + err.Error())
-		this.viewError("模块不存在", "/publish/module")
+		this.ErrorLog("查找项目 " + projectId + " 失败: " + err.Error())
+		this.viewError("项目不存在", "/publish/project")
 	}
-	if len(module) == 0 {
-		this.viewError("模块不存在", "/publish/module")
+	if len(project) == 0 {
+		this.viewError("项目不存在", "/publish/project")
 	}
-	moduleGroups, err := models.ModulesModel.GetModuleGroups()
+	groups, err := models.GroupModel.GetGroups()
 	if err != nil {
-		this.ErrorLog("查找模块组失败: " + err.Error())
-		this.viewError("获取模块组错误", "/publish/module")
+		this.ErrorLog("查找项目组失败: " + err.Error())
+		this.viewError("获取项目组错误", "/publish/project")
 	}
-	moduleGroupName := ""
-	for _, moduleGroup := range moduleGroups {
-		if moduleGroup["modules_id"] == module["modules_id"] {
-			moduleGroupName = moduleGroup["name"]
+	groupName := ""
+	for _, group := range groups {
+		if group["group_id"] == project["group_id"] {
+			groupName = group["name"]
 		}
 	}
 
-	// 查找该模块的节点
-	moduleNodes, err := models.ModuleNodeModel.GetModuleNodeByModuleId(moduleId)
+	// 查找该项目的节点
+	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
 	if err != nil {
-		this.ErrorLog("查找模块 " + moduleId + " 节点关系失败: " + err.Error())
-		this.viewError("查找模块信息出错")
+		this.ErrorLog("查找项目 " + projectId + " 节点关系失败: " + err.Error())
+		this.viewError("查找项目信息出错")
 	}
 	var nodeIds []string
-	for _, moduleNode := range moduleNodes {
-		nodeIds = append(nodeIds, moduleNode["node_id"])
+	for _, projectNode := range projectNodes {
+		nodeIds = append(nodeIds, projectNode["node_id"])
 	}
 	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
 	if err != nil {
-		this.ErrorLog("查找模块失败: " + err.Error())
-		this.viewError("查找模块信息出错")
+		this.ErrorLog("查找项目失败: " + err.Error())
+		this.viewError("查找项目信息出错")
 	}
 
 	this.Data["nodes"] = nodes
-	this.Data["module"] = module
-	this.Data["moduleGroupName"] = moduleGroupName
+	this.Data["project"] = project
+	this.Data["groupName"] = groupName
 
-	this.viewLayoutTitle("模块详细信息", "publish/info", "page")
+	this.viewLayoutTitle("项目详细信息", "publish/info", "page")
 }
 
 // 发布页面
 func (this *PublishController) Publish() {
-	moduleId := this.GetString("module_id", "")
-	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	projectId := this.GetString("project_id", "")
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
-		this.viewError("查找模块信息出错")
+		this.viewError("查找项目信息出错")
 	}
 
 	//判断是否封版
@@ -172,16 +172,16 @@ func (this *PublishController) Publish() {
 		this.viewError("已封版")
 	}
 
-	this.Data["module"] = module
+	this.Data["project"] = project
 	this.viewLayoutTitle("发布代码", "publish/publish", "page")
 }
 
 // 回滚页面
 func (this *PublishController) Reset() {
-	moduleId := this.GetString("module_id", "")
-	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	projectId := this.GetString("project_id", "")
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
-		this.viewError("查找模块信息出错")
+		this.viewError("查找项目信息出错")
 	}
 
 	//判断是否封版
@@ -198,7 +198,7 @@ func (this *PublishController) Reset() {
 		this.viewError("已封版！")
 	}
 
-	this.Data["module"] = module
+	this.Data["project"] = project
 	this.viewLayoutTitle("回滚代码", "publish/reset", "page")
 }
 
@@ -206,8 +206,8 @@ func (this *PublishController) Reset() {
 func (this *PublishController) DoPublish() {
 
 	taskValue := make(map[string]interface{}, 4)
-	moduleId := this.GetString("module_id", "")
-	taskValue["module_id"] = moduleId
+	projectId := this.GetString("project_id", "")
+	taskValue["project_id"] = projectId
 	taskValue["user_id"] = this.UserID
 	taskValue["comment"] = this.GetString("comment", "")
 	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
@@ -215,16 +215,16 @@ func (this *PublishController) DoPublish() {
 		this.jsonError("发版说明不能为空！")
 	}
 
-	this.addTaskAndTaskLog(taskValue, moduleId)
+	this.addTaskAndTaskLog(taskValue, projectId)
 }
 
 // 回滚操作
 func (this *PublishController) DoReset() {
 
 	taskValue := make(map[string]interface{}, 4)
-	moduleId := this.GetString("module_id", "")
+	projectId := this.GetString("project_id", "")
 	taskValue["sha1_id"] = this.GetString("sha1_id", "")
-	taskValue["module_id"] = moduleId
+	taskValue["project_id"] = projectId
 	taskValue["user_id"] = this.UserID
 	taskValue["comment"] = this.GetString("comment", "")
 	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
@@ -236,10 +236,10 @@ func (this *PublishController) DoReset() {
 		this.jsonError("commit_id不能为空！")
 	}
 
-	this.addTaskAndTaskLog(taskValue, moduleId)
+	this.addTaskAndTaskLog(taskValue, projectId)
 }
 
-func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, moduleId string) {
+func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, projectId string) {
 
 	//判断是否封版
 	var isBlock bool
@@ -261,21 +261,21 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.jsonError("创建任务失败！")
 	}
 
-	moduleNodes, err := models.ModuleNodeModel.GetModuleNodeByModuleId(moduleId)
-	if len(moduleNodes) <= 0 {
-		this.jsonError("该模块下没有节点！")
+	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
+	if len(projectNodes) <= 0 {
+		this.jsonError("该项目下没有节点！")
 	}
 	if err != nil {
-		this.ErrorLog("查询模块节点关系失败：" + err.Error())
-		this.jsonError("查询模块节点关系失败！")
+		this.ErrorLog("查询项目节点关系失败：" + err.Error())
+		this.jsonError("查询项目节点关系失败！")
 	}
 
-	taskLog := make([]map[string]interface{}, len(moduleNodes))
+	taskLog := make([]map[string]interface{}, len(projectNodes))
 	nodeIds := []string{}
-	for index, moduleNode := range moduleNodes {
+	for index, projectNode := range projectNodes {
 		taskLog[index] = make(map[string]interface{})
 		taskLog[index]["task_id"] = taskId
-		taskLog[index]["node_id"] = moduleNode["node_id"]
+		taskLog[index]["node_id"] = projectNode["node_id"]
 		taskLog[index]["status"] = "0"
 		taskLog[index]["is_success"] = "0"
 		taskLog[index]["result"] = ""
@@ -283,7 +283,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		taskLog[index]["create_time"] = time.Now().Unix()
 		taskLog[index]["update_time"] = time.Now().Unix()
 
-		nodeIds = append(nodeIds, moduleNode["node_id"])
+		nodeIds = append(nodeIds, projectNode["node_id"])
 	}
 
 	err = models.TaskLogModel.InsertBatch(taskLog)
@@ -304,7 +304,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.ErrorLog("创建任务失败：" + err.Error())
 		this.jsonError("创建任务日志失败！")
 	}
-	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
 		this.ErrorLog("创建任务失败：" + err.Error())
 		this.jsonError("创建任务日志失败！")
@@ -315,13 +315,13 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		port := ""
 		args := map[string]interface{} {
 			"task_log_id": taskLog["task_log_id"],
-			"url": module["repository_url"],
-			"ssh_key": module["ssh_key"],
-			"ssh_key_salt": module["ssh_key_salt"],
-			"path": module["code_path"],
-			"branch": module["branch"],
-			"username": module["https_username"],
-			"password": module["https_password"],
+			"url": project["repository_url"],
+			"ssh_key": project["ssh_key"],
+			"ssh_key_salt": project["ssh_key_salt"],
+			"path": project["code_path"],
+			"branch": project["branch"],
+			"username": project["https_username"],
+			"password": project["https_password"],
 		}
 		for _, node := range nodes {
 			if node["node_id"] == taskLog["node_id"] {

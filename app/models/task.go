@@ -9,6 +9,7 @@ import (
 const Table_Task_Name = "task"
 
 type Task struct {
+
 }
 
 var TaskModel = Task{}
@@ -39,14 +40,14 @@ func (l *Task) Insert(task map[string]interface{}) (id int64, err error) {
 	return
 }
 
-// 通过module_id和task_id查找task
-func (l *Task) GetTaskByModuleIdsAndTaskIds(moduleIds, taskIds []string) (task []map[string]string, err error) {
+// 通过project_id和task_id查找task
+func (l *Task) GetTaskByProjectIdsAndTaskIds(projectIds, taskIds []string) (task []map[string]string, err error) {
 	db := G.DB()
 	where := make(map[string]interface{})
 	where["task_id"] = taskIds
 	var rs *mysql.ResultSet
-	if len(moduleIds) > 0 {
-		where["module_id"] = moduleIds
+	if len(projectIds) > 0 {
+		where["project_id"] = projectIds
 	}
 	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(where))
 	if err != nil {
@@ -56,11 +57,11 @@ func (l *Task) GetTaskByModuleIdsAndTaskIds(moduleIds, taskIds []string) (task [
 	return
 }
 
-func (l *Task) GetTaskByModuleId(moduleId string, limit, number int) (tasks []map[string]string, err error) {
+func (l *Task) GetTaskByProjectId(projectId string, limit, number int) (tasks []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
-		"module_id": moduleId,
+		"project_id": projectId,
 	}).Limit(limit, number).OrderBy("task_id", "DESC"))
 
 	if err != nil {
@@ -70,11 +71,11 @@ func (l *Task) GetTaskByModuleId(moduleId string, limit, number int) (tasks []ma
 	return
 }
 
-func (l *Task) GetTaskByModuleIdAndUserId(moduleId, userId string, limit, number int) (tasks []map[string]string, err error) {
+func (l *Task) GetTaskByProjectIdAndUserId(projectId, userId string, limit, number int) (tasks []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
-		"module_id": moduleId,
+		"project_id": projectId,
 		"user_id":   userId,
 	}).Limit(limit, number).OrderBy("task_id", "DESC"))
 
@@ -85,11 +86,11 @@ func (l *Task) GetTaskByModuleIdAndUserId(moduleId, userId string, limit, number
 	return
 }
 
-func (l *Task) CountTaskByModuleId(moduleId string) (count int64, err error) {
+func (l *Task) CountTaskByProjectId(projectId string) (count int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name).Where(map[string]interface{}{
-		"module_id": moduleId,
+		"project_id": projectId,
 	}))
 
 	if err != nil {
@@ -99,11 +100,11 @@ func (l *Task) CountTaskByModuleId(moduleId string) (count int64, err error) {
 	return
 }
 
-func (l *Task) CountTaskByModuleIdAndUserId(moduleId, userId string) (count int64, err error) {
+func (l *Task) CountTaskByProjectIdAndUserId(projectId, userId string) (count int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name).Where(map[string]interface{}{
-		"module_id": moduleId,
+		"project_id": projectId,
 		"user_id":   userId,
 	}))
 

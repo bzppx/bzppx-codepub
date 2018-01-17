@@ -21,9 +21,9 @@ func (this *TaskController) Node() {
 
 func (this *TaskController) GetExcutingTask() {
 	//页面传的数据
-	viewModuleIds := this.GetString("module_id", "")
+	viewProjectIds := this.GetString("project_id", "")
 	viewTaskIds := this.GetString("task_id", "")
-	var moduleIds []string
+	var projectIds []string
 	taskIds, err := models.TaskLogModel.GetExcutingTaskIdByTaskLog()
 	if err != nil {
 		this.jsonError("获取taskId失败！")
@@ -33,22 +33,22 @@ func (this *TaskController) GetExcutingTask() {
 	}
 
 	if !this.isAdmin() && !this.isRoot() {
-		moduleUsers, err := models.UserModuleModel.GetUserModuleByUserId(this.UserID)
+		projectUsers, err := models.UserProjectModel.GetUserProjectByUserId(this.UserID)
 		if err != nil {
 			this.jsonError("获取权限失败！")
 		}
-		if len(moduleUsers) == 0 {
-			this.jsonError("此账号没有被授予任何模块权限！")
+		if len(projectUsers) == 0 {
+			this.jsonError("此账号没有被授予任何项目权限！")
 		}
-		moduleIds = utils.NewArray().ArrayColumn(moduleUsers, "module_id")
+		projectIds = utils.NewArray().ArrayColumn(projectUsers, "project_id")
 	}
-	if len(moduleIds) > 0 && viewModuleIds != "" {
-		moduleIds = append(moduleIds, strings.Split(viewModuleIds, ",")...)
+	if len(projectIds) > 0 && viewProjectIds != "" {
+		projectIds = append(projectIds, strings.Split(viewProjectIds, ",")...)
 	}
 
-	moduleIds = utils.NewArray().ArrayUnique(moduleIds)
+	projectIds = utils.NewArray().ArrayUnique(projectIds)
 	taskIds = utils.NewArray().ArrayUnique(taskIds)
-	tasks, err := models.TaskModel.GetTaskByModuleIdsAndTaskIds(moduleIds, taskIds)
+	tasks, err := models.TaskModel.GetTaskByProjectIdsAndTaskIds(projectIds, taskIds)
 	if err != nil {
 		this.jsonError("获取任务失败！")
 	}
@@ -67,13 +67,13 @@ func (this *TaskController) GetExcutingTask() {
 	}
 	excutingTaskIds := utils.NewArray().ArrayColumn(tasks, "task_id")
 
-	moduleIds = utils.NewArray().ArrayColumn(tasks, "module_id")
-	moduleIds = utils.NewArray().ArrayUnique(moduleIds)
-	modules, err := models.ModuleModel.GetModuleByModuleIds(moduleIds)
+	projectIds = utils.NewArray().ArrayColumn(tasks, "project_id")
+	projectIds = utils.NewArray().ArrayUnique(projectIds)
+	projects, err := models.ProjectModel.GetProjectByProjectIds(projectIds)
 	if err != nil {
-		this.jsonError("获取模块信息失败！")
+		this.jsonError("获取项目信息失败！")
 	}
-	modulesValue := utils.NewArray().ChangeKey(modules, "module_id")
+	projectsValue := utils.NewArray().ChangeKey(projects, "project_id")
 
 	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskIds(excutingTaskIds)
 	if err != nil {
@@ -94,7 +94,7 @@ func (this *TaskController) GetExcutingTask() {
 	}
 
 	data := make(map[string]interface{})
-	data["module"] = modulesValue
+	data["project"] = projectsValue
 	data["task"] = taskValue
 	data["result"] = result
 	this.jsonSuccess("查询正在执行的任务成功！", data, "")
@@ -103,13 +103,13 @@ func (this *TaskController) GetExcutingTask() {
 func (this *TaskController) Task() {
 	page, _ := this.GetInt("page", 1)
 	userId := this.GetString("user_id", "")
-	moduleId := this.GetString("module_id", "")
-	if moduleId == "" {
-		this.viewError("模块ID参数出错！")
+	projectId := this.GetString("project_id", "")
+	if projectId == "" {
+		this.viewError("项目ID参数出错！")
 	}
-	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
-	if err != nil || len(module) == 0 {
-		this.viewError("获取模块信息失败！")
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
+	if err != nil || len(project) == 0 {
+		this.viewError("获取项目信息失败！")
 	}
 
 	var count int64
@@ -117,11 +117,11 @@ func (this *TaskController) Task() {
 	number := 20
 	limit := (page - 1) * number
 	if userId != "" {
-		count, err = models.TaskModel.CountTaskByModuleIdAndUserId(moduleId, userId)
-		tasks, err = models.TaskModel.GetTaskByModuleIdAndUserId(moduleId, userId, limit, number)
+		count, err = models.TaskModel.CountTaskByProjectIdAndUserId(projectId, userId)
+		tasks, err = models.TaskModel.GetTaskByProjectIdAndUserId(projectId, userId, limit, number)
 	} else {
-		count, err = models.TaskModel.CountTaskByModuleId(moduleId)
-		tasks, err = models.TaskModel.GetTaskByModuleId(moduleId, limit, number)
+		count, err = models.TaskModel.CountTaskByProjectId(projectId)
+		tasks, err = models.TaskModel.GetTaskByProjectId(projectId, limit, number)
 	}
 	if err != nil {
 		this.viewError("获取任务信息出错！")
@@ -129,15 +129,15 @@ func (this *TaskController) Task() {
 
 	this.Data["tasks"] = tasks
 	this.Data["userId"] = userId
-	this.Data["module"] = module
+	this.Data["project"] = project
 	this.SetPaginator(number, count)
-	this.viewLayoutTitle("模块任务信息", "task/task", "page")
+	this.viewLayoutTitle("项目任务信息", "task/task", "page")
 }
 
 func (this *TaskController) TaskLog() {
 	taskId := this.GetString("task_id", "")
 	this.Data["taskId"] = taskId
-	this.viewLayoutTitle("模块任务信息", "task/task-log", "page")
+	this.viewLayoutTitle("项目任务信息", "task/task-log", "page")
 }
 
 func (this *TaskController) GetTaskLog() {

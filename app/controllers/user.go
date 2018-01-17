@@ -191,8 +191,8 @@ func (this *UserController) Delete() {
 	this.jsonSuccess("删除用户成功", nil, "/user/list")
 }
 
-// 用户用户列表
-func (this *UserController) Module() {
+// 用户项目列表
+func (this *UserController) Project() {
 	
 	userId := this.GetString("user_id", "")
 	if userId == "" {
@@ -207,92 +207,92 @@ func (this *UserController) Module() {
 		this.viewError("用户不存在", "/user/list")
 	}
 	
-	// 查找所有的模块组
-	moduleGroups, err := models.ModulesModel.GetModuleGroups()
+	// 查找所有的项目组
+	groups, err := models.GroupModel.GetGroups()
 	if err != nil {
-		this.viewError("查找模块出错", "/user/list")
+		this.viewError("查找项目出错", "/user/list")
 	}
-	//查找所有的模块
-	modules, err := models.ModuleModel.GetModules()
+	//查找所有的项目
+	projects, err := models.ProjectModel.GetProjects()
 	if err != nil {
-		this.viewError("查找模块出错", "/user/list")
+		this.viewError("查找项目出错", "/user/list")
 	}
 	
-	var userModules []map[string]interface{}
-	for _, moduleGroup := range moduleGroups {
-		userModule := map[string]interface{}{
-			"modules_id": moduleGroup["modules_id"],
-			"modules_name": moduleGroup["name"],
-			"modules": []map[string]string{},
+	var userProjects []map[string]interface{}
+	for _, group := range groups {
+		userProject := map[string]interface{}{
+			"group_id": group["group_id"],
+			"group_name": group["name"],
+			"projects": []map[string]string{},
 		}
-		moduleGroupModules := []map[string]string{}
-		for _, module := range modules {
-			if module["modules_id"] == moduleGroup["modules_id"] {
-				moduleValue := map[string]string{
-					"module_id": module["module_id"],
-					"name": module["name"],
+		groupProjects := []map[string]string{}
+		for _, project := range projects {
+			if project["group_id"] == group["group_id"] {
+				projectValue := map[string]string{
+					"project_id": project["project_id"],
+					"name": project["name"],
 				}
-				moduleGroupModules = append(moduleGroupModules, moduleValue)
+				groupProjects = append(groupProjects, projectValue)
 			}
 		}
-		userModule["modules"] = moduleGroupModules
-		userModules = append(userModules, userModule)
+		userProject["projects"] = groupProjects
+		userProjects = append(userProjects, userProject)
 	}
 	
-	//查找该用户默认的模块
-	defaultUserModules, _ := models.UserModuleModel.GetUserModuleByUserId(userId)
-	var defaultModuleIds = []string{}
-	for _, defaultUserModule := range defaultUserModules {
-		defaultModuleIds = append(defaultModuleIds, defaultUserModule["module_id"])
+	//查找该用户默认的项目
+	defaultUserProjects, _ := models.UserProjectModel.GetUserProjectByUserId(userId)
+	var defaultProjectIds = []string{}
+	for _, defaultUserProject := range defaultUserProjects {
+		defaultProjectIds = append(defaultProjectIds, defaultUserProject["project_id"])
 	}
 	
 	this.Data["user"] = user
-	this.Data["userModules"] = userModules
-	this.Data["defaultModuleIds"] = strings.Join(defaultModuleIds, ",")
-	this.viewLayoutTitle("用户模块", "user/module", "page")
+	this.Data["userProjects"] = userProjects
+	this.Data["defaultProjectIds"] = strings.Join(defaultProjectIds, ",")
+	this.viewLayoutTitle("用户项目", "user/project", "page")
 }
 
-// 用户用户保存
-func (this *UserController) ModuleSave() {
+// 用户项目保存
+func (this *UserController) ProjectSave() {
 	userId := this.GetString("user_id", "")
-	moduleIdsStr := this.GetString("module_ids")
+	projectIdsStr := this.GetString("project_ids")
 	isCheck := this.GetString("is_check", "")
 	
 	if userId == "" {
 		this.jsonError("用户不存在")
 	}
-	if moduleIdsStr == "" {
-		this.jsonError("没有选择模块")
+	if projectIdsStr == "" {
+		this.jsonError("没有选择项目")
 	}
 	
-	moduleIds := strings.Split(moduleIdsStr, ",")
+	projectIds := strings.Split(projectIdsStr, ",")
 	// 先删除
-	err := models.UserModuleModel.DeleteByUserIdModuleIds(userId, moduleIds)
+	err := models.UserProjectModel.DeleteByUserIdProjectIds(userId, projectIds)
 	if err != nil {
-		this.ErrorLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 失败")
-		this.jsonError("修改用户模块失败！")
+		this.ErrorLog("修改用户 "+userId+" 删除项目"+strings.Join(projectIds, ",")+" 失败")
+		this.jsonError("修改用户项目失败！")
 	}
 	if isCheck == "1" {
 		var insertValues []map[string]interface{}
-		for _, moduleId := range moduleIds {
+		for _, projectId := range projectIds {
 			insertValue := map[string]interface{}{
-				"module_id": moduleId,
+				"project_id": projectId,
 				"user_id": userId,
 				"create_time": time.Now().Unix(),
 			}
 			insertValues = append(insertValues, insertValue)
 		}
-		_, err = models.UserModuleModel.InsertBatch(insertValues)
+		_, err = models.UserProjectModel.InsertBatch(insertValues)
 		if err != nil {
-			this.InfoLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 失败")
-			this.jsonError("修改用户模块失败！")
+			this.InfoLog("修改用户 "+userId+" 添加项目"+strings.Join(projectIds, ",")+" 失败")
+			this.jsonError("修改用户项目失败！")
 		}
 	}
 
 	if isCheck == "1" {
-		this.InfoLog("修改用户 "+userId+" 添加模块"+strings.Join(moduleIds, ",")+" 成功")
+		this.InfoLog("修改用户 "+userId+" 添加项目"+strings.Join(projectIds, ",")+" 成功")
 	}else {
-		this.InfoLog("修改用户 "+userId+" 删除模块"+strings.Join(moduleIds, ",")+" 成功")
+		this.InfoLog("修改用户 "+userId+" 删除项目"+strings.Join(projectIds, ",")+" 成功")
 	}
 
 	this.jsonSuccess("修改节点成功", nil)

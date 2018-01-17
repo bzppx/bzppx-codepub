@@ -1,9 +1,9 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        {{$moduleGroups := .moduleGroups}}{{$keywords := .keywords}}{{$modules := .modules}}{{$isBlock := .isBlock}}
+        {{$groups := .groups}}{{$keywords := .keywords}}{{$projects := .projects}}{{$isBlock := .isBlock}}
         <ul class="nav nav-tabs">
-            {{range $moduleGroup := $moduleGroups}}
-            <li {{if eq $keywords.modules_id $moduleGroup.modules_id }} class="active" {{end}}><a href="/publish/module?modules_id={{$moduleGroup.modules_id}}" >{{$moduleGroup.name}}</a></li>
+            {{range $group := $groups}}
+            <li {{if eq $keywords.group_id $group.group_id }} class="active" {{end}}><a href="/publish/project?group_id={{$group.group_id}}" >{{$group.name}}</a></li>
             {{end}}
         </ul>
     </div>
@@ -16,8 +16,8 @@
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="keyword" type="text" value="{{$keywords.keyword}}" placeholder="模块名">
-                        <input name="modules_id" type="hidden" value="{{$keywords.modules_id}}">
+                        <input class="form-control" name="keyword" type="text" value="{{$keywords.keyword}}" placeholder="项目名">
+                        <input name="group_id" type="hidden" value="{{$keywords.group_id}}">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
@@ -30,7 +30,7 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th class="w13p">模块名</th>
+                <th class="w13p">项目名</th>
                 <th>代码地址</th>
                 <th class="w13p">发布分支</th>
                 <th class="w13p">上一次发布时间</th>
@@ -38,28 +38,28 @@
             </tr>
             </thead>
             <tbody>
-            {{range $module := $modules}}
+            {{range $project := $projects}}
             <tr>
-                <td>{{$module.name}}</td>
+                <td>{{$project.name}}</td>
                 <td>
-                    <a name="code_info" data-link="/publish/info?module_id={{$module.module_id}}">{{$module.repository_url}}</a>
+                    <a name="code_info" data-link="/publish/info?project_id={{$project.project_id}}">{{$project.repository_url}}</a>
                 </td>
                 <td class="center">
-                    <label class="text-info">{{$module.branch}}</label>
+                    <label class="text-info">{{$project.branch}}</label>
                 </td>
                 <td class="center">
-                    {{if eq $module.last_publish_time "0"}}
+                    {{if eq $project.last_publish_time "0"}}
                     0
                     {{else}}
-                    {{dateFormat $module.last_publish_time "Y-m-d H:i:s"}}
+                    {{dateFormat $project.last_publish_time "Y-m-d H:i:s"}}
                     {{end}}
                 </td>
                 <td class="center">
 					{{if not $isBlock}}
-                    <a name="publish" class="glyphicon glyphicon-ok-circle" href="/publish/publish?module_id={{$module.module_id}}">发布 </a>
-                    <a name="publish" class="glyphicon glyphicon-share-alt" href="/publish/reset?module_id={{$module.module_id}}">回滚 </a>
+                    <a name="publish" class="glyphicon glyphicon-ok-circle" href="/publish/publish?project_id={{$project.project_id}}">发布 </a>
+                    <a name="publish" class="glyphicon glyphicon-share-alt" href="/publish/reset?project_id={{$project.project_id}}">回滚 </a>
 					{{end}}
-                    <a name="task" class="glyphicon glyphicon-align-justify" data-link="/task/task?module_id={{$module.module_id}}">日志 </a>
+                    <a name="task" class="glyphicon glyphicon-align-justify" data-link="/task/task?project_id={{$project.project_id}}">日志 </a>
                 </td>
             </tr>
             {{end}}
@@ -73,5 +73,6 @@
     {{if $isBlock}}
     Common.warningBox("#failedBox", '{{ .block.block_message }}，封版时间为：{{dateFormat .block.block_start_time "Y-m-d H:i:s"}}至{{dateFormat .block.block_end_time "Y-m-d H:i:s"}}');
     {{end}}
-    Layers.bindIframe("[name='task']", "模块任务列表");
+    Layers.bindIframe("[name='task']", "项目任务列表");
+    Layers.bindIframe("[name='code_info']", "项目详细信息");
 </script>

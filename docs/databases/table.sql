@@ -6,12 +6,12 @@ SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 
-DROP TABLE IF EXISTS `cp_module`;
-CREATE TABLE `cp_module` (
-  `module_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块id',
-  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '模块名称',
+DROP TABLE IF EXISTS `cp_project`;
+CREATE TABLE `cp_project` (
+  `project_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '项目id',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '项目名称',
   `user_id` int(11) NOT NULL COMMENT 'user id',
-  `modules_id` int(11) NOT NULL COMMENT '模块组 id',
+  `group_id` int(11) NOT NULL COMMENT '项目组 id',
   `repository_url` varchar(300) NOT NULL COMMENT 'git 仓库地址 https or ssh',
   `branch` varchar(50) NOT NULL COMMENT '分支',
   `ssh_key` text NOT NULL COMMENT 'ssh key ',
@@ -32,30 +32,30 @@ CREATE TABLE `cp_module` (
   `last_publish_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次发布时间',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间',
-  PRIMARY KEY (`module_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='代码模块表';
+  PRIMARY KEY (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目表';
 
 
-DROP TABLE IF EXISTS `cp_modules`;
-CREATE TABLE `cp_modules` (
-  `modules_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '模块组表主键id',
-  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '模块组名称',
+DROP TABLE IF EXISTS `cp_group`;
+CREATE TABLE `cp_group` (
+  `group_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '项目组表主键id',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '项目组名称',
   `comment` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除 0 否 1 是',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
-  PRIMARY KEY (`modules_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块组表';
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目组表';
 
 
-DROP TABLE IF EXISTS `cp_module_node`;
-CREATE TABLE `cp_module_node` (
-  `module_node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点和模块关系表主键',
-  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块ID',
+DROP TABLE IF EXISTS `cp_project_node`;
+CREATE TABLE `cp_project_node` (
+  `project_node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '项目节点ID',
+  `project_id` int(10) NOT NULL DEFAULT '0' COMMENT '项目ID',
   `node_id` int(10) NOT NULL DEFAULT '0' COMMENT '节点ID',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`module_node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块和节点关系表';
+  PRIMARY KEY (`project_node_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目和节点关系表';
 
 
 DROP TABLE IF EXISTS `cp_node_nodes`;
@@ -97,7 +97,7 @@ CREATE TABLE `cp_nodes` (
 DROP TABLE IF EXISTS `cp_task`;
 CREATE TABLE `cp_task` (
   `task_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '发布代码任务主键 id',
-  `module_id` int(10) NOT NULL COMMENT '模块id',
+  `project_id` int(10) NOT NULL COMMENT '项目id',
   `sha1_id` varchar(200) NOT NULL DEFAULT '' COMMENT 'git commit id',
   `comment` text NOT NULL COMMENT '发布备注',
   `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
@@ -140,14 +140,14 @@ CREATE TABLE `cp_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 
-DROP TABLE IF EXISTS `cp_user_module`;
-CREATE TABLE `cp_user_module` (
-  `user_module_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户和模块关系表 id',
+DROP TABLE IF EXISTS `cp_user_project`;
+CREATE TABLE `cp_user_project` (
+  `user_project_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户项目关系表 id',
   `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户 id',
-  `module_id` int(10) NOT NULL DEFAULT '0' COMMENT '模块 id',
+  `project_id` int(10) NOT NULL DEFAULT '0' COMMENT '项目 id',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`user_module_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和模块对应关系表';
+  PRIMARY KEY (`user_project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户项目关系表';
 
 DROP TABLE IF EXISTS `cp_configure`;
 CREATE TABLE IF NOT EXISTS `cp_configure` (
