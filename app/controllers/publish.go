@@ -5,6 +5,8 @@ import (
 	"bzppx-codepub/app/utils"
 	"strings"
 	"time"
+	"strconv"
+	"bzppx-codepub/app/container"
 )
 
 type PublishController struct {
@@ -269,6 +271,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 
 	taskLog := make([]map[string]interface{}, len(moduleNodes))
+	nodeIds := []string{}
 	for index, moduleNode := range moduleNodes {
 		taskLog[index] = make(map[string]interface{})
 		taskLog[index]["task_id"] = taskId
@@ -279,12 +282,60 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		taskLog[index]["commit_id"] = ""
 		taskLog[index]["create_time"] = time.Now().Unix()
 		taskLog[index]["update_time"] = time.Now().Unix()
+
+		nodeIds = append(nodeIds, moduleNode["node_id"])
 	}
 
 	err = models.TaskLogModel.InsertBatch(taskLog)
 	if err != nil {
 		this.ErrorLog("创建任务日志失败：" + err.Error())
 		this.jsonError("创建任务日志失败！")
+	}
+
+	// rpc 调用 agent 开始发布
+	taskIdStr := strconv.FormatInt(taskId, 10)
+	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskId(taskIdStr)
+	if err != nil {
+		this.ErrorLog("创建任务失败：" + err.Error())
+		this.jsonError("创建任务日志失败！")
+	}
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.ErrorLog("创建任务失败：" + err.Error())
+		this.jsonError("创建任务日志失败！")
+	}
+	module, err := models.ModuleModel.GetModuleByModuleId(moduleId)
+	if err != nil {
+		this.ErrorLog("创建任务失败：" + err.Error())
+		this.jsonError("创建任务日志失败！")
+	}
+
+	for _, taskLog := range taskLogs {
+		ip := ""
+		port := ""
+		args := map[string]interface{} {
+			"task_log_id": taskLog["task_log_id"],
+			"url": module["repository_url"],
+			"ssh_key": module["ssh_key"],
+			"ssh_key_salt": module["ssh_key_salt"],
+			"path": module["code_path"],
+			"branch": module["branch"],
+			"username": module["https_username"],
+			"password": module["https_password"],
+		}
+		for _, node := range nodes {
+			if node["node_id"] == taskLog["node_id"] {
+				ip = node["ip"]
+				port = node["port"]
+				break
+			}
+		}
+		agentMessage := container.AgentMessage {
+			Ip: ip,
+			Port: port,
+			Args: args,
+		}
+		container.Worker.SendPublishChan(agentMessage)
 	}
 
 	this.InfoLog("发布任务成功")
