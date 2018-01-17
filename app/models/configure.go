@@ -10,6 +10,8 @@ import (
 const (
 	CONFIGURE_DELETE = 1
 	CONFIGURE_NORMAL = 0
+	BLOCK_ENABLE     = "1"
+	BLOCK_UNABLE     = "0"
 )
 
 const Table_Configure_Name = "configure"
@@ -89,7 +91,7 @@ func (config *Configure) CheckIsBlock() (isBlock bool, block map[string]string, 
 	if err != nil {
 		return
 	}
-	if block["block_is_enable"] == "1" {
+	if block["block_is_enable"] == BLOCK_UNABLE {
 		isBlock = false
 		return
 	}
