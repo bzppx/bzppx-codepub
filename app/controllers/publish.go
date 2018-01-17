@@ -1,12 +1,12 @@
 package controllers
 
 import (
+	"bzppx-codepub/app/container"
 	"bzppx-codepub/app/models"
 	"bzppx-codepub/app/utils"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
-	"bzppx-codepub/app/container"
 )
 
 type PublishController struct {
@@ -22,7 +22,7 @@ func (this *PublishController) Project() {
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	keywords := map[string]string{
 		"group_id": groupId,
-		"keyword": keyword,
+		"keyword":  keyword,
 	}
 
 	var err error
@@ -57,9 +57,6 @@ func (this *PublishController) Project() {
 			this.ErrorLog("查找项目组失败: " + err.Error())
 			this.viewError("查找项目出错")
 		}
-	}
-	if keywords["group_id"] == "" {
-		keywords["group_id"] = groups[0]["group_id"]
 	}
 
 	number := 12
@@ -313,15 +310,15 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	for _, taskLog := range taskLogs {
 		ip := ""
 		port := ""
-		args := map[string]interface{} {
-			"task_log_id": taskLog["task_log_id"],
-			"url": project["repository_url"],
-			"ssh_key": project["ssh_key"],
+		args := map[string]interface{}{
+			"task_log_id":  taskLog["task_log_id"],
+			"url":          project["repository_url"],
+			"ssh_key":      project["ssh_key"],
 			"ssh_key_salt": project["ssh_key_salt"],
-			"path": project["code_path"],
-			"branch": project["branch"],
-			"username": project["https_username"],
-			"password": project["https_password"],
+			"path":         project["code_path"],
+			"branch":       project["branch"],
+			"username":     project["https_username"],
+			"password":     project["https_password"],
 		}
 		for _, node := range nodes {
 			if node["node_id"] == taskLog["node_id"] {
@@ -330,8 +327,8 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 				break
 			}
 		}
-		agentMessage := container.AgentMessage {
-			Ip: ip,
+		agentMessage := container.AgentMessage{
+			Ip:   ip,
 			Port: port,
 			Args: args,
 		}
