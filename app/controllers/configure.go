@@ -48,7 +48,7 @@ func (this *ConfigureController) AddBlock() {
 	blockStartTime := strings.Trim(this.GetString("block_start_time", ""), "")
 	blockEndTime := strings.Trim(this.GetString("block_end_time", ""), "")
 
-	if blockIsEnable == "0" && blockMessage == "" {
+	if blockIsEnable == models.BLOCK_ENABLE && blockMessage == "" {
 		this.jsonError("封版提示文本不能为空")
 	}
 	if blockIsEnable == "" {
@@ -61,7 +61,7 @@ func (this *ConfigureController) AddBlock() {
 		this.jsonError("请选择封版结束时间")
 	}
 
-	if blockIsEnable == "0" {
+	if blockIsEnable == models.BLOCK_ENABLE {
 		timePattern := "2006-01-02 15:04"
 		loc, _ := time.LoadLocation("Local")
 		startTime, err := time.ParseInLocation(timePattern, blockStartTime, loc)
