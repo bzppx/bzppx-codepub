@@ -307,6 +307,12 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.jsonError("创建任务日志失败！")
 	}
 
+	// 判断是发布还是回滚
+	branch := project["branch"]
+	sha1Id, ok := taskValue["sha1_id"].(string)
+	if ok {
+		branch = sha1Id
+	}
 	for _, taskLog := range taskLogs {
 		ip := ""
 		port := ""
@@ -316,7 +322,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			"ssh_key":      project["ssh_key"],
 			"ssh_key_salt": project["ssh_key_salt"],
 			"path":         project["code_path"],
-			"branch":       project["branch"],
+			"branch":       branch,
 			"username":     project["https_username"],
 			"password":     project["https_password"],
 		}
@@ -335,6 +341,6 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		container.Worker.SendPublishChan(agentMessage)
 	}
 
-	this.InfoLog("发布任务成功")
+	this.InfoLog("添加发布任务 " + taskIdStr + " 成功")
 	this.jsonSuccess("操作成功！", nil, "/task/taskLog?task_id="+taskIdStr)
 }
