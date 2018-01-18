@@ -9,7 +9,6 @@ import (
 const Table_Task_Name = "task"
 
 type Task struct {
-
 }
 
 var TaskModel = Task{}
@@ -76,7 +75,7 @@ func (l *Task) GetTaskByProjectIdAndUserId(projectId, userId string, limit, numb
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
 		"project_id": projectId,
-		"user_id":   userId,
+		"user_id":    userId,
 	}).Limit(limit, number).OrderBy("task_id", "DESC"))
 
 	if err != nil {
@@ -105,12 +104,26 @@ func (l *Task) CountTaskByProjectIdAndUserId(projectId, userId string) (count in
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name).Where(map[string]interface{}{
 		"project_id": projectId,
-		"user_id":   userId,
+		"user_id":    userId,
 	}))
 
 	if err != nil {
 		return
 	}
 	count = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+func (l *Task) GetTaskByProjectIdNoLimit(projectId string) (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
+		"project_id": projectId,
+	}).OrderBy("task_id", "DESC"))
+
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
 	return
 }
