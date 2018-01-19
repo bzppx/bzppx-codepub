@@ -1,0 +1,57 @@
+<div class="panel panel-default">{{$project := .project}}
+    <div class="panel-body">
+        <ul class="nav">
+            <h5><strong> 【{{$project.name}}】 项目发布历史</strong></h5>
+            <hr>
+        </ul>
+        <div class="row">
+            <!--<form action="/publish/history" method="get">-->
+				<!--<input type="hidden" name="project_id" value="{{$project.project_id}}">-->
+				<!--<div class="col-md-9">-->
+					<!--<div class="input-group">-->
+                    <!--</div>-->
+				<!--</div>-->
+                <!--<div class="col-md-3">-->
+                    <!--<div class="input-group">-->
+                        <!--<input class="form-control" name="user_id" type="text" value="{{.userId}}" placeholder="请填写用户ID">-->
+			            <!--<span class="input-group-btn">-->
+			              <!--<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>-->
+			            <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</form>-->
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w8p">发布人</th>
+                <th>备注</th>
+				<!--<th class="w30p">commit_id</th>-->
+                <th class="w13p">创建时间</th>
+                <th class="w10p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $task := .tasks}}
+            <tr>
+                <td class="center">{{$task.user_id}}</td>
+                <td>{{$task.comment}}</td>
+                <!--<td class="center">{{$task.sha1_id}}</td>-->
+				<td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
+                <td class="center">
+                    <a name="watch" class="glyphicon glyphicon-eye-open" href="/task/taskLog?task_id={{$task.task_id}}">节点状态</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
+</div>
+<script type="text/javascript">
+    
+</script>

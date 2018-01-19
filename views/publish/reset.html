@@ -10,19 +10,17 @@
 			<input type="hidden" name="project_id" value="{{$project.project_id}}">
 			<div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 回滚项目： </label>
-				
                 <div class="col-sm-4">
-					<label class="radio-inline" style="cursor: default;"> {{$project.name}}</label>
+                    <input value="{{$project.name}}" type="text" name="name" class="form-control" readonly>
                 </div>
             </div>
 			<div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> commit_id： </label>
                 <div class="col-sm-4">
-                    <input value="" type="text" name="sha1_id" class="form-control" placeholder="请填写commit_id" required>
-					<div style="margin-top:6px;"> 
-						<span class="text-info"> * 提示：这是发布分支上的要发布代码的提交id，可以通过git工具查看，git log命令也能查看</span>
-					</div>
-					
+                    <input value="" type="text" name="sha1_id" class="form-control" placeholder="请填写 commit_id" required>
+                </div>
+                <div class="col-sm-4">
+                    <span class="text-danger"> * 要回滚到的代码提交的 commit_id，可通过 git log 命令查看</span>
                 </div>
             </div>
             <div class="form-group">

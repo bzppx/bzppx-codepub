@@ -87,6 +87,10 @@ func (this *PublishController) Project() {
 		}
 	}
 
+	if keywords["group_id"] == "" {
+		keywords["group_id"] = groups[0]["group_id"]
+	}
+
 	this.Data["isBlock"] = isBlock
 	this.Data["block"] = block
 	this.Data["projects"] = projects
@@ -197,6 +201,43 @@ func (this *PublishController) Reset() {
 
 	this.Data["project"] = project
 	this.viewLayoutTitle("回滚代码", "publish/reset", "page")
+}
+
+// 发布历史页面
+func (this *PublishController) History() {
+
+	page, _ := this.GetInt("page", 1)
+	userId := this.GetString("user_id", "")
+	projectId := this.GetString("project_id", "")
+
+	if projectId == "" {
+		this.viewError("项目ID参数出错！")
+	}
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
+	if err != nil || len(project) == 0 {
+		this.viewError("获取项目信息失败！")
+	}
+
+	var count int64
+	var tasks []map[string]string
+	number := 20
+	limit := (page - 1) * number
+	if userId != "" {
+		count, err = models.TaskModel.CountTaskByProjectIdAndUserId(projectId, userId)
+		tasks, err = models.TaskModel.GetTaskByProjectIdAndUserId(projectId, userId, limit, number)
+	} else {
+		count, err = models.TaskModel.CountTaskByProjectId(projectId)
+		tasks, err = models.TaskModel.GetTaskByProjectId(projectId, limit, number)
+	}
+	if err != nil {
+		this.viewError("获取任务信息出错！")
+	}
+
+	this.Data["tasks"] = tasks
+	this.Data["userId"] = userId
+	this.Data["project"] = project
+	this.SetPaginator(number, count)
+	this.viewLayoutTitle("历史发布信息", "publish/history", "page")
 }
 
 // 发布操作
