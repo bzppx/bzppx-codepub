@@ -2,7 +2,6 @@ package models
 
 import (
 	"bzppx-codepub/app/utils"
-	"fmt"
 
 	"github.com/snail007/go-activerecord/mysql"
 )
@@ -164,7 +163,6 @@ func (l *Task) GetTasksByUserIdsAndProjectIdsAndLimit(userName, projectName stri
 	if projectName != "" {
 		where["project_id"] = projectIds
 	}
-	fmt.Println(where)
 	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(where).Limit(limit, number).OrderBy("task_id", "DESC"))
 
 	if err != nil {

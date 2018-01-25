@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"bzppx-codepub/app/models"
-	"fmt"
 	"strings"
 )
 
@@ -98,7 +97,6 @@ func (this *LogController) Task() {
 		count, err = models.TaskModel.CountTask()
 		tasks, err = models.TaskModel.GetTasksByLimit(limit, number)
 	} else {
-		fmt.Println(projectIds)
 		count, err = models.TaskModel.CountTaskByUserIdsAndProjectIds(userName, projectName, userIds, projectIds)
 		tasks, err = models.TaskModel.GetTasksByUserIdsAndProjectIdsAndLimit(userName, projectName, userIds, projectIds, limit, number)
 	}
