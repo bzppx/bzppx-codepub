@@ -43,7 +43,7 @@ func (this *LoginController) Index() {
 		}
 		user, err := userModel.GetUserByName(name)
 		if err != nil {
-			this.ErrorLog("查找用户失败："+err.Error())
+			this.ErrorLog("查找用户失败：" + err.Error())
 			this.jsonError("账号不存在！")
 			return
 		}
@@ -76,6 +76,11 @@ func (this *LoginController) Index() {
 		this.InfoLog("登录成功")
 		this.jsonSuccess("登录成功", "", "/main/index", 500)
 	} else {
+		apiLoginList, err := models.ApiAuthModel.GetAllShowApiAuth()
+		if err != nil {
+			this.viewError("加载API认证信息失败")
+		}
+		this.Data["apiLoginList"] = apiLoginList
 		this.viewLayoutTitle("Login", "login/login", "login")
 	}
 }

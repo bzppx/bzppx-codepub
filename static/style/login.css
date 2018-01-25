@@ -1033,3 +1033,7 @@ body,
 html {
     overflow: hidden;
 }
+
+option {
+    color: gray;
+}
