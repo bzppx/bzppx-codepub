@@ -1,0 +1,105 @@
+package container
+
+import (
+	"github.com/astaxie/beego"
+	"bzppx-codepub/app/models"
+)
+
+//监控后台数据库未提交的数据
+
+type Monitor struct {
+
+}
+
+func (l *Monitor) Start() {
+
+
+}
+
+// 监控
+func (l *Monitor) ListenCreateTaskLog() {
+	taskLogs, err := models.TaskLogModel.GetTaskLogByStatus(models.TASKLOG_STATUS_SATART)
+	if err != nil {
+		beego.Error(err.Error())
+		return
+	}
+	if len(taskLogs) == 0 {
+		return
+	}
+	nodeIds := []string{}
+	taskIds := []string{}
+	for _, taskLog := range taskLogs {
+		nodeIds = append(nodeIds, taskLog["node_id"])
+		taskIds = append(taskIds, taskLog["task_id"])
+	}
+	tasks, err := models.TaskModel.GetTaskByTaskIds(taskIds)
+	if len(tasks) == 0 {
+		return
+	}
+	if err != nil {
+		beego.Error(err.Error())
+		return
+	}
+	projectIds := []string{}
+	for _, task := range taskIds {
+		projectIds = append(projectIds, task["project_id"])
+	}
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		beego.Error(err.Error())
+		return
+	}
+	projects, err := models.ProjectModel.GetProjectByProjectIds(projectIds)
+	if err != nil {
+		beego.Error(err.Error())
+		return
+	}
+
+	for _, taskLog := range taskLogs {
+		ip := ""
+		port := ""
+		projectId := "0"
+		sha1Id := ""
+		for _, task := range tasks {
+			if task["task_id"] == taskLog["task_id"] {
+				projectId = task["project_id"]
+				sha1Id = task["sha1_id"]
+				break
+			}
+		}
+		project := map[string]string{}
+		for _, projectItem := range projects {
+			if projectItem["project_id"] == projectId {
+				project = projectItem
+				break
+			}
+		}
+		// sha1d 不为空，为回滚操作
+		if sha1Id == "" {
+			sha1Id = project["branch"]
+		}
+		args := map[string]interface{}{
+			"task_log_id":  taskLog["task_log_id"],
+			"url":          project["repository_url"],
+			"ssh_key":      project["ssh_key"],
+			"ssh_key_salt": project["ssh_key_salt"],
+			"path":         project["code_path"],
+			"branch":       sha1Id,
+			"username":     project["https_username"],
+			"password":     project["https_password"],
+		}
+		for _, node := range nodes {
+			if node["node_id"] == taskLog["node_id"] {
+				ip = node["ip"]
+				port = node["port"]
+				break
+			}
+		}
+		agentMessage := AgentMessage{
+			Ip:   ip,
+			Port: port,
+			Args: args,
+		}
+		Worker.SendPublishChan(agentMessage)
+	}
+}
