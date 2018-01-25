@@ -134,12 +134,6 @@ func (this *TaskController) Task() {
 	this.viewLayoutTitle("项目任务信息", "task/task", "page")
 }
 
-func (this *TaskController) TaskLog() {
-	taskId := this.GetString("task_id", "")
-	this.Data["taskId"] = taskId
-	this.viewLayoutTitle("项目任务信息", "task/task-log", "page")
-}
-
 func (this *TaskController) GetTaskLog() {
 	taskId := this.GetString("task_id", "")
 	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskId(taskId)

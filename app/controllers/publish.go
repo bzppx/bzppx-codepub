@@ -241,18 +241,22 @@ func (this *PublishController) History() {
 	taskIds := []string{}
 	for _, task := range tasks {
 		taskIds = append(taskIds, task["task_id"])
-		task["is_success"] = "1"
+		task["status"] = "1" // 状态默认为成功
 	}
 
-	failedTaskLogs, err := models.TaskLogModel.GetFailedTaskLogByTaskIds(taskIds)
+	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskIds(taskIds)
 	if err != nil {
 		this.viewError("获取任务信息出错！")
 	}
 	for _, task := range tasks {
-		for _, failedTaskLog := range failedTaskLogs {
-			if failedTaskLog["task_id"] == task["task_id"] {
-				task["is_success"] = "0"
+		for _, taskLog := range taskLogs {
+			if (taskLog["task_id"] == task["task_id"]) && (taskLog["status"] != "2")  {
+				task["status"] = "2" // 执行中
 				break
+			}
+			if (taskLog["task_id"] == task["task_id"]) && (taskLog["is_success"] == "0")  {
+				task["status"] = "0" // 执行失败
+				continue
 			}
 		}
 	}
@@ -452,5 +456,5 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 
 	this.InfoLog("添加发布任务 " + taskIdStr + " 成功")
-	this.jsonSuccess("发布成功！", nil, "/task/taskLog?task_id="+taskIdStr)
+	this.jsonSuccess("发布成功！", nil, "/publish/taskLog?task_id="+taskIdStr)
 }

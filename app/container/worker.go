@@ -2,8 +2,9 @@ package container
 
 import (
 	"bzppx-codepub/app/remotes"
-	"log"
 	"time"
+	"bzppx-codepub/app/models"
+	"github.com/astaxie/beego"
 )
 
 var Worker = NewWorker()
@@ -40,9 +41,16 @@ func (w *worker) StartPublish() {
 		select {
 		case agentMsg := <-w.publishChan:
 			go func(agentMsg AgentMessage) {
+				defer func() {
+					err := recover()
+					if err != nil {
+						beego.Error(err)
+					}
+				}()
 				err := remotes.Task.Publish(agentMsg.Ip, agentMsg.Port, agentMsg.Args)
 				if err != nil {
-					log.Println(err.Error())
+					beego.Error(err.Error())
+					w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())
 				}else {
 					w.SendGetStatusChan(agentMsg)
 				}
@@ -57,10 +65,17 @@ func (w *worker) StartGetStatus() {
 		select {
 		case agentMsg := <-w.statusChan:
 			go func(agentMsg AgentMessage) {
+				defer func() {
+					err := recover()
+					if err != nil {
+						beego.Error(err)
+					}
+				}()
 				for {
 					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Args)
 					if err != nil {
-						log.Println(err.Error())
+						beego.Error(err.Error())
+						w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())
 					}
 					if isFinish {
 						break
@@ -69,6 +84,17 @@ func (w *worker) StartGetStatus() {
 				}
 			}(agentMsg)
 		}
+	}
+}
+
+func (t *worker) UpdateResult(taskLogId string, result string) {
+	update := map[string]interface{}{
+		"result": result,
+		"update_time": time.Now().Unix(),
+	}
+	_, err := models.TaskLogModel.Update(taskLogId, update)
+	if err != nil {
+		beego.Error("update task_log result error: "+ err.Error())
 	}
 }
 
