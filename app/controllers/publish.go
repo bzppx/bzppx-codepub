@@ -357,6 +357,17 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.jsonError("创建任务失败！")
 	}
 
+	// 修改项目最后一次发布时间
+	projectValue := map[string]interface{}{
+		"last_publish_time": taskValue["create_time"],
+		"update_time": time.Now().Unix(),
+	}
+	_, err = models.ProjectModel.Update(projectId, projectValue)
+	if err != nil {
+		this.ErrorLog("创建任务修改最后项目发布时间失败：" + err.Error())
+		this.jsonError("创建任务失败！")
+	}
+
 	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
 	if len(projectNodes) <= 0 {
 		this.jsonError("该项目下没有节点！")

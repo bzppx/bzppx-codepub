@@ -8,9 +8,10 @@
             <tr>
                 <th class="w8p">发布人</th>
                 <th>备注</th>
+                <th class="w8p">类型</th>
                 <th class="w13p">创建时间</th>
                 <th class="w8p">结果</th>
-                    <th class="w10p">操作</th>
+                <th class="w10p">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -18,6 +19,14 @@
             <tr>
                 <td class="center">{{$username}}</td>
                 <td>{{$task.comment}}</td>
+                <td class="center">
+                    {{if eq $task.sha1_id ""}}
+                    <label class="text-info">发布</label>
+                    {{else}}
+                    <label><a data-toggle="collapse" data-target="#rollback_{{$task.task_id}}" class="text-danger">回滚</a></label>
+                    <!--<label data-toggle="tooltip" data-placement="bottom" title="sha_id: {{$task.sha1_id}}">回滚</label>-->
+                    {{end}}
+                </td>
                 <td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
                 <td class="center">
                     {{if eq $task.is_success "1"}}
@@ -30,6 +39,11 @@
                     <a name="watch" class="glyphicon glyphicon-eye-open" href="/publish/taskLog?task_id={{$task.task_id}}">节点状态</a>
                 </td>
             </tr>
+            <tr class="collapse" id="rollback_{{$task.task_id}}">
+                <td colspan="6" class="center">
+                    <strong class="text-danger">sha_id: {{$task.sha1_id}}</strong>
+                </td>
+            </tr>
             {{end}}
             </tbody>
         </table>
@@ -38,6 +52,3 @@
         {{template "paginator/default.html" .}}
     </div>
 </div>
-<script type="text/javascript">
-    
-</script>
