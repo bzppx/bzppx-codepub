@@ -140,3 +140,18 @@ func (t *TaskLog) Update(taskLogId string, taskLogValue map[string]interface{}) 
 	id = rs.LastInsertId
 	return
 }
+
+// 获取失败的 task_log
+func (t *TaskLog) GetFailedTaskLogByTaskIds(taskIds []string) (tasLogs []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
+		"task_id": taskIds,
+		"is_success": TASKLOG_FAILED,
+	}))
+	if err != nil {
+		return
+	}
+	tasLogs = rs.Rows()
+	return
+}

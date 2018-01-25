@@ -238,11 +238,64 @@ func (this *PublishController) History() {
 		this.viewError("获取任务信息出错！")
 	}
 
+	taskIds := []string{}
+	for _, task := range tasks {
+		taskIds = append(taskIds, task["task_id"])
+		task["is_success"] = "1"
+	}
+
+	failedTaskLogs, err := models.TaskLogModel.GetFailedTaskLogByTaskIds(taskIds)
+	if err != nil {
+		this.viewError("获取任务信息出错！")
+	}
+	for _, task := range tasks {
+		for _, failedTaskLog := range failedTaskLogs {
+			if failedTaskLog["task_id"] == task["task_id"] {
+				task["is_success"] = "0"
+				break
+			}
+		}
+	}
+
 	this.Data["tasks"] = tasks
 	this.Data["userId"] = userId
+	this.Data["username"] = this.User["username"]
 	this.Data["project"] = project
 	this.SetPaginator(number, count)
 	this.viewLayoutTitle("历史发布信息", "publish/history", "page")
+}
+
+// 节点信息
+func (this *PublishController) TaskLog() {
+	taskId := this.GetString("task_id", "")
+
+	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskId(taskId)
+	if err != nil {
+		this.viewError("获取节点发布信息失败")
+	}
+	if len(taskLogs) == 0 {
+		this.viewError("节点发布信息不存在")
+	}
+
+	nodeIds := []string{}
+	for _, taskLog := range taskLogs {
+		nodeIds = append(nodeIds, taskLog["node_id"])
+		taskLog["node_address"] = ""
+	}
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.viewError("获取节点信息失败")
+	}
+	for _, taskLog := range taskLogs {
+		for _, node := range nodes {
+			if taskLog["node_id"] == node["node_id"] {
+				taskLog["node_address"] = node["ip"]+":"+node["port"]
+			}
+		}
+	}
+
+	this.Data["taskLogs"] = taskLogs
+	this.viewLayoutTitle("项目任务信息", "publish/task-log", "page")
 }
 
 // 发布操作

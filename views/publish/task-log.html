@@ -1,0 +1,62 @@
+<div class="panel panel-default">
+    <div class="panel-body">{{$taskLogs := .taskLogs}}
+        <div class="row">
+			<div class="col-md-3">
+				<button class="btn btn-primary" onclick="javascript:history.go(-1);">
+					<i class="glyphicon glyphicon-share-alt"></i> 返回
+				</button>
+			</div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w13p">节点</th>
+				<th class="w18p">commit_id</th>
+				<th class="w10p">执行状态</th>
+                <th class="w10p">发布状态</th>
+				<th class="w13p">更新时间</th>
+				<th class="w10p">执行结果</th>
+            </tr>
+            </thead>
+            <tbody>
+			{{range $taskLog := $taskLogs}}
+			<tr>
+				<td class="center">{{$taskLog.node_address}}</td>
+				<td class="center"><strong class="text-primary">{{$taskLog.commit_id}}</strong></td>
+				<td class="center">
+					{{if eq $taskLog.status "0"}}
+					<span class="label label-info">创建</span>
+					{{else if eq $taskLog.status "1"}}
+					<span class="label label-primary">开始</span>
+					{{else if eq $taskLog.status "2"}}
+					<span class="label label-success">完成</span>
+					{{end}}
+				</td>
+				<td class="center">
+					{{if eq $taskLog.is_success "0"}}
+					<span class="label label-danger">失败</span>
+					{{else if eq $taskLog.is_success "1"}}
+					<span class="label label-success">成功</span>
+					{{end}}
+				</td>
+				<td class="center">{{dateFormat $taskLog.update_time "Y-m-d H:i:s"}}</td>
+				<td class="center">
+					<a data-toggle="collapse" data-target="#result_{{$taskLog.task_log_id}}" class="">点击查看</a>
+				</td>
+			</tr>
+			<tr class="collapse" id="result_{{$taskLog.task_log_id}}">
+				<td colspan="6">
+					<div class="well well-sm" style="margin-bottom:0">
+						<strong>Result: </strong>{{$taskLog.result}}
+					</div>
+				</td>
+			</tr>
+			{{end}}
+            </tbody>
+        </table>
+    </div>
+	<div class="panel-footer">
+	</div>
+</div>
