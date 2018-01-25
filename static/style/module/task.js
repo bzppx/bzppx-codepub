@@ -81,10 +81,10 @@ var Task = {
 						statusSelect.html(Task.taskLogEndHtml);
 						if (isSuccess == 1) {
 							isSuccessSelect.html(Task.taskLogSuccessHtml);
-							Task.updateProgress("success");
+							Task.updateProgress();
 						}else {
 							isSuccessSelect.html(Task.taskLogFailedHtml);
-							Task.updateProgress("danger");
+							Task.updateProgress();
 						}
 					}
 				}
@@ -93,7 +93,11 @@ var Task = {
 	},
 
 	// 刷新进度条
-	updateProgress: function (status) {
+	updateProgress: function () {
+		var status = "success";
+		if ($(".end_failed").length > 0) {
+			status = "danger"
+		}
 		var totalRow = $("tr[data-row]").length;
 		var end = $("td[data-name='status'][data-status='2']").length;
 		var p = (end/totalRow).toFixed(2) * 100;

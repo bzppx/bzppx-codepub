@@ -3,22 +3,30 @@ package container
 import (
 	"github.com/astaxie/beego"
 	"bzppx-codepub/app/models"
+	"time"
 )
 
 //监控后台数据库未提交的数据
 
+func NewMonitor() *Monitor {
+	return &Monitor{}
+}
+
 type Monitor struct {
-
+	
 }
 
-func (l *Monitor) Start() {
-
-
+// 每 5 s 监控一次是否有没有提交的
+func (m *Monitor) MonitorCreateStatus()  {
+	for {
+		m.HandleCreateStatusTaskLog()
+		time.Sleep(10 * time.Second)
+	}
 }
 
-// 监控
-func (l *Monitor) ListenCreateTaskLog() {
-	taskLogs, err := models.TaskLogModel.GetTaskLogByStatus(models.TASKLOG_STATUS_SATART)
+// 程序启动监控已创建的任务日志
+func (m *Monitor) HandleCreateStatusTaskLog() {
+	taskLogs, err := models.TaskLogModel.GetTaskLogByStatus(models.TASKLOG_STATUS_CREATE)
 	if err != nil {
 		beego.Error(err.Error())
 		return
@@ -41,7 +49,7 @@ func (l *Monitor) ListenCreateTaskLog() {
 		return
 	}
 	projectIds := []string{}
-	for _, task := range taskIds {
+	for _, task := range tasks {
 		projectIds = append(projectIds, task["project_id"])
 	}
 	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)

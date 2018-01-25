@@ -3,7 +3,7 @@ package main
 import (
 	_ "bzppx-codepub/app/routers"
 	_ "bzppx-codepub/app/models"
-	_ "bzppx-codepub/app/container"
+	"bzppx-codepub/app/container"
 	"github.com/astaxie/beego"
 	"log"
 )
@@ -27,5 +27,11 @@ func initLog() {
 }
 
 func initTask() {
-
+	go func() {
+		err := recover()
+		if err != nil {
+			beego.Error(err)
+		}
+		container.NewMonitor().MonitorCreateStatus()
+	}()
 }

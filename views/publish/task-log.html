@@ -48,7 +48,7 @@
 				<td class="center" data-name="is_success" data-success="{{$taskLog.is_success}}">
 					{{if eq $taskLog.status "2" }}
 						{{if eq $taskLog.is_success "0"}}
-						<span class="label label-danger">失败</span>
+						<span class="label label-danger end_failed">失败</span>
 						{{else if eq $taskLog.is_success "1"}}
 						<span class="label label-success">成功</span>
 						{{end}}
