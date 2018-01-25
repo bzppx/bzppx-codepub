@@ -32,6 +32,20 @@ func (t *TaskLog) GetTaskLogByTaskLogId(taskLogId string) (tasLogs map[string]st
 	return
 }
 
+// 根据 task_log_ids 获取任务日志
+func (t *TaskLog) GetTaskLogsByTaskLogIds(taskLogIds []string) (taskLogs []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
+		"task_log_id": taskLogIds,
+	}))
+	if err != nil {
+		return
+	}
+	taskLogs = rs.Rows()
+	return
+}
+
 // 根据 task_id 获取任务日志
 func (t *TaskLog) GetTaskLogByTaskId(taskId string) (tasLogs []map[string]string, err error) {
 	db := G.DB()

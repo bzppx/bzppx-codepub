@@ -24,13 +24,14 @@
                     <label class="text-info">发布</label>
                     {{else}}
                     <label><a data-toggle="collapse" data-target="#rollback_{{$task.task_id}}" class="text-danger">回滚</a></label>
-                    <!--<label data-toggle="tooltip" data-placement="bottom" title="sha_id: {{$task.sha1_id}}">回滚</label>-->
                     {{end}}
                 </td>
                 <td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
                 <td class="center">
-                    {{if eq $task.is_success "1"}}
+                    {{if eq $task.status "1"}}
                     <span class="label label-success">成功</span>
+                    {{else if eq $task.status "2"}}
+                    <img src='/static/style/layui/layer/theme/default/loading-2.gif' style='max-width:17px;'>
                     {{else}}
                     <span class="label label-danger">失败</span>
                     {{end}}
@@ -41,7 +42,7 @@
             </tr>
             <tr class="collapse" id="rollback_{{$task.task_id}}">
                 <td colspan="6" class="center">
-                    <strong class="text-danger">sha_id: {{$task.sha1_id}}</strong>
+                    <strong class="text-danger">sha1_id: {{$task.sha1_id}}</strong>
                 </td>
             </tr>
             {{end}}
