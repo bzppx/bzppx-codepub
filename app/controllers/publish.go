@@ -87,7 +87,7 @@ func (this *PublishController) Project() {
 		}
 	}
 
-	if keywords["group_id"] == "" {
+	if (keywords["group_id"] == "") && (len(groups) > 0) {
 		keywords["group_id"] = groups[0]["group_id"]
 	}
 
