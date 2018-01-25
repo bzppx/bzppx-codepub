@@ -31,7 +31,7 @@ func (p *User) GetUserByUserId(userId string) (user map[string]string, err error
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
-		"user_id": userId,
+		"user_id":   userId,
 		"is_delete": USER_NORMAL,
 	}))
 	if err != nil {
@@ -48,7 +48,7 @@ func (p *User) HasSameUsername(userId, username string) (has bool, err error) {
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
 		"user_id <>": userId,
 		"username":   username,
-		"is_delete": USER_NORMAL,
+		"is_delete":  USER_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -64,7 +64,7 @@ func (p *User) HasUsername(username string) (has bool, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
-		"username": username,
+		"username":  username,
 		"is_delete": USER_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -81,7 +81,7 @@ func (p *User) GetUserByName(username string) (user map[string]string, err error
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
-		"username": username,
+		"username":  username,
 		"is_delete": USER_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -136,7 +136,7 @@ func (p *User) Update(userId string, user map[string]interface{}) (id int64, err
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Exec(db.AR().Update(Table_User_Name, user, map[string]interface{}{
-		"user_id": userId,
+		"user_id":   userId,
 		"is_delete": USER_NORMAL,
 	}))
 	if err != nil {
@@ -159,7 +159,7 @@ func (p *User) ChangePassword(userId, newpassword, oldpassword string) (err erro
 	_, err = db.Exec(db.AR().Update(Table_User_Name, map[string]interface{}{
 		"password": p.EncodePassword(newpassword),
 	}, map[string]interface{}{
-		"user_id": userId,
+		"user_id":   userId,
 		"is_delete": USER_NORMAL,
 	}))
 	if err != nil {
@@ -183,7 +183,7 @@ func (user *User) GetUsersByKeywordAndLimit(keyword string, limit int, number in
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
 		"username LIKE": "%" + keyword + "%",
-		"is_delete": USER_NORMAL,
+		"is_delete":     USER_NORMAL,
 	}).Limit(limit, number).OrderBy("user_id", "DESC"))
 	if err != nil {
 		return
@@ -224,8 +224,8 @@ func (user *User) CountUsers() (count int64, err error) {
 			Select("count(*) as total").
 			From(Table_User_Name).
 			Where(map[string]interface{}{
-			"is_delete": USER_NORMAL,
-		}))
+				"is_delete": USER_NORMAL,
+			}))
 	if err != nil {
 		return
 	}
@@ -243,11 +243,41 @@ func (user *User) CountUsersByKeyword(keyword string) (count int64, err error) {
 		From(Table_User_Name).
 		Where(map[string]interface{}{
 			"username LIKE": "%" + keyword + "%",
-			"is_delete": USER_NORMAL,
+			"is_delete":     USER_NORMAL,
 		}))
 	if err != nil {
 		return
 	}
 	count = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+// 根据用户名模糊查找用户
+func (p *User) GetUserByLikeName(username string) (user []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
+		"username Like": "%" + username + "%",
+		"is_delete":     USER_NORMAL,
+	}).Limit(0, 1))
+	if err != nil {
+		return
+	}
+	user = rs.Rows()
+	return
+}
+
+// 根据 user_ids 获取用户
+func (p *User) GetUserByUserIds(userIds []string) (users []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
+		"user_id":   userIds,
+		"is_delete": USER_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+	users = rs.Rows()
 	return
 }

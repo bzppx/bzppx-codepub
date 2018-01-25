@@ -2,6 +2,7 @@ package models
 
 import (
 	"bzppx-codepub/app/utils"
+	"fmt"
 
 	"github.com/snail007/go-activerecord/mysql"
 )
@@ -125,5 +126,66 @@ func (l *Task) GetTaskByProjectIdNoLimit(projectId string) (tasks []map[string]s
 		return
 	}
 	tasks = rs.Rows()
+	return
+}
+
+func (l *Task) GetTasksByLimit(limit, number int) (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Limit(limit, number).OrderBy("task_id", "DESC"))
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
+	return
+}
+
+func (l *Task) GetTasksByUserIdsAndProjectIdsAndLimit(userName, projectName string, userIds, projectIds []string, limit, number int) (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	where := make(map[string]interface{})
+	if userName != "" {
+		where["user_id"] = userIds
+	}
+	if projectName != "" {
+		where["project_id"] = projectIds
+	}
+	fmt.Println(where)
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(where).Limit(limit, number).OrderBy("task_id", "DESC"))
+
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
+	return
+}
+
+func (l *Task) CountTask() (count int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name))
+
+	if err != nil {
+		return
+	}
+	count = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+func (l *Task) CountTaskByUserIdsAndProjectIds(userName, projectName string, userIds, projectIds []string) (count int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	where := make(map[string]interface{})
+	if userName != "" {
+		where["user_id"] = userIds
+	}
+	if projectName != "" {
+		where["project_id"] = projectIds
+	}
+	rs, err = db.Query(db.AR().Select("count(*) as total").From(Table_Task_Name).Where(where))
+	if err != nil {
+		return
+	}
+	count = utils.NewConvert().StringToInt64(rs.Value("total"))
 	return
 }
