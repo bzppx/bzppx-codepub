@@ -153,7 +153,12 @@ func (this *PublishController) Info() {
 
 // 发布页面
 func (this *PublishController) Publish() {
+
 	projectId := this.GetString("project_id", "")
+
+	if projectId == "" {
+		this.viewError("项目不存在")
+	}
 	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
 		this.viewError("查找项目信息出错")
@@ -170,7 +175,7 @@ func (this *PublishController) Publish() {
 		}
 	}
 	if isBlock {
-		this.viewError("已封版")
+		this.viewError("封版期间，禁止发布")
 	}
 
 	this.Data["project"] = project
