@@ -62,8 +62,8 @@
 
 			    var options = {
 			        title: "数据统计",
-			        width: 1100,
-			        height: 330,
+			        width: 1000,
+			        height: 310,
 			        bar: {groupWidth: "95%"},
 			        legend: { position: "none" },
 			    };
@@ -73,8 +73,33 @@
     	</script>
   	</head>
   	<body>
-		<div id="barchart_values" style="width: 900px; height: 300px;"></div>
-    	<div id="task" style="width: 500px; height: 300px; float:left;"></div>
-		<div id="taskLog" style="width: 500px; height: 300px; float:left;"></div>
+		<div class="panel panel-default">
+    		<div class="panel-body">
+				<div class="row">
+		            <div class="col-md-12">
+		                <div class="panel panel-default">
+		                    <div class="panel-heading">数据统计</div>
+		                    <div class="panel-body">
+		                        <div id="barchart_values" style="width: 900px; height: 300px;"></div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="row">
+					<div class="col-md-6">
+		                <div class="panel panel-default">
+		                    <div class="panel-heading">任务统计</div>
+		                    <div id="task" style="width: 500px; height: 300px;"></div>
+		                </div>
+		            </div>
+		            <div class="col-md-6">
+		                <div class="panel panel-default">
+		                    <div class="panel-heading">任务日志统计</div>
+		                    <div id="taskLog" style="width: 500px; height: 300px;"></div>
+		                </div>
+		            </div>
+				</div>
+			</div>
+		</div>
   	</body>
 </html>
