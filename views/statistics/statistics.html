@@ -1,0 +1,80 @@
+<html>
+  	<head>
+    	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    	<script type="text/javascript">
+      		google.charts.load("current", {packages:["corechart"]});
+      		google.charts.setOnLoadCallback(drawChart);
+      		function drawChart() {
+				//task图表
+        		var task = google.visualization.arrayToDataTable([
+          			['task', 'statistics'],
+          			['成功（{{.task_number.success}}）', {{.task_number.success}}],
+          			['失败（{{.task_number.failed}}）', {{.task_number.failed}}],
+          			['正在执行（{{.task_number.doing}}）', {{.task_number.doing}}],
+        		]);var taskOptions = {
+          			title: '任务统计',
+          			is3D: true,
+					slices: {
+			            0: { color: '#178bca' },
+			            1: { color: '#67a9cf' },
+						2: { color: '#a6bddb' },
+			        }
+        		};
+       			var taskChart = new google.visualization.PieChart(document.getElementById('task'));
+        		taskChart.draw(task, taskOptions);
+				
+				//taskLog图表
+				var taskLog = google.visualization.arrayToDataTable([
+          			['task', 'statistics'],
+          			['成功（{{.task_log_number.success}}）', {{.task_log_number.success}}],
+          			['失败（{{.task_log_number.failed}}）', {{.task_log_number.failed}}],
+          			['正在执行（{{.task_log_number.doing}}）', {{.task_log_number.doing}}],
+        		]);var taskLogOptions = {
+          			title: '任务日志统计',
+          			is3D: true,
+					slices: {
+			            0: { color: '#178bca' },
+			            1: { color: '#67a9cf' },
+						2: { color: '#a6bddb' },
+			        }
+        		};
+				var taskLogChart = new google.visualization.PieChart(document.getElementById('taskLog'));
+				taskLogChart.draw(taskLog, taskLogOptions);
+				
+				//节点，节电组，项目，项目组统计
+				var data = google.visualization.arrayToDataTable([
+			        ["name", "数量", { role: "style" } ],
+			        ["项目", {{.project_number}}, "color: #178bca"],
+			        ["项目组", {{.project_group_number}}, "color: #67a9cf"],
+			        ["节点", {{.node_number}}, "color: #a6bddb"],
+			        ["节点组", {{.node_group_number}}, "color: #e5e4e2"]
+			   	]);
+
+      			var view = new google.visualization.DataView(data);
+      			view.setColumns([0, 1,
+                    { 
+						calc: "stringify",
+                        sourceColumn: 1,
+                        type: "string",
+                        role: "annotation"
+					},
+                2]);
+
+			    var options = {
+			        title: "数据统计",
+			        width: 1100,
+			        height: 330,
+			        bar: {groupWidth: "95%"},
+			        legend: { position: "none" },
+			    };
+		      	var chart = new google.visualization.BarChart(document.getElementById("barchart_values"));
+      			chart.draw(view, options);
+     		}
+    	</script>
+  	</head>
+  	<body>
+		<div id="barchart_values" style="width: 900px; height: 300px;"></div>
+    	<div id="task" style="width: 500px; height: 300px; float:left;"></div>
+		<div id="taskLog" style="width: 500px; height: 300px; float:left;"></div>
+  	</body>
+</html>

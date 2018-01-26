@@ -172,6 +172,7 @@ func (l *Task) GetTasksByUserIdsAndProjectIdsAndLimit(userName, projectName stri
 	return
 }
 
+//获取task的数量
 func (l *Task) CountTask() (count int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
@@ -184,6 +185,7 @@ func (l *Task) CountTask() (count int64, err error) {
 	return
 }
 
+//通过 user_id 和 project_id 获取task的数量
 func (l *Task) CountTaskByUserIdsAndProjectIds(userName, projectName string, userIds, projectIds []string) (count int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
@@ -199,5 +201,16 @@ func (l *Task) CountTaskByUserIdsAndProjectIds(userName, projectName string, use
 		return
 	}
 	count = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+func (l *Task) GetAllTask() (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Task_Name))
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
 	return
 }

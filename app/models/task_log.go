@@ -160,12 +160,24 @@ func (t *TaskLog) GetFailedTaskLogByTaskIds(taskIds []string) (tasLogs []map[str
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
-		"task_id": taskIds,
+		"task_id":    taskIds,
 		"is_success": TASKLOG_FAILED,
 	}))
 	if err != nil {
 		return
 	}
 	tasLogs = rs.Rows()
+	return
+}
+
+// 获取全部的 task_log
+func (t *TaskLog) GetAllTaskLog() (taskLogs []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_TaskLog_Name))
+	if err != nil {
+		return
+	}
+	taskLogs = rs.Rows()
 	return
 }
