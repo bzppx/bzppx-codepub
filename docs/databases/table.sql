@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `cp_api_auth`;
 CREATE TABLE `cp_api_auth` (
   `api_auth_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '外部API认证表主键ID',
   `name` varchar(30) NOT NULL COMMENT '名称',
+  `key` varchar(30) NOT NULL COMMENT '用户名前缀',
   `url` varchar(200) NOT NULL COMMENT 'api的url地址',
   `sort` int(11) NOT NULL COMMENT '登录列表排序',
   `is_show` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否显示在登录列表',
@@ -18,9 +19,9 @@ CREATE TABLE `cp_api_auth` (
   PRIMARY KEY (`api_auth_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='外部API认证表';
 
-INSERT INTO `cp_api_auth` (`api_auth_id`, `name`, `url`, `sort`, `is_show`, `is_delete`, `create_time`, `update_time`) VALUES
-(1,	'LDAP',	'http://127.0.0.1/ldap.php',	0,	1,	0,	0,	0),
-(2,	'LDAP_HK',	'http://127.0.0.1/ldap.php',	1,	1,	0,	0,	0);
+INSERT INTO `cp_api_auth` (`api_auth_id`, `name`, `key`, `url`, `sort`, `is_show`, `is_delete`, `create_time`, `update_time`) VALUES
+(1,	'LDAP',	'ldap',	'http://127.0.0.1/ldap.php',	0,	1,	0,	0,	0),
+(2,	'LDAP_HK',	'hk',	'http://127.0.0.1/ldap.php',	1,	1,	0,	0,	0);
 
 DROP TABLE IF EXISTS `cp_configure`;
 CREATE TABLE `cp_configure` (
@@ -274,4 +275,4 @@ CREATE TABLE `cp_user_project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户项目关系表';
 
 
--- 2018-01-25 06:47:15
+-- 2018-01-26 10:53:48
