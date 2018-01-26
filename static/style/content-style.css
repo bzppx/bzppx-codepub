@@ -440,3 +440,7 @@ textarea {
     background-color: #0178bc;
     border-color: #0178bc;
 }
+
+.huge {
+    font-size: 30px;
+}

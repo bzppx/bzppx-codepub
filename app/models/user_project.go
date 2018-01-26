@@ -1,6 +1,9 @@
 package models
 
-import "github.com/snail007/go-activerecord/mysql"
+import (
+	"github.com/snail007/go-activerecord/mysql"
+	"strconv"
+)
 
 const Table_UserProject_Name = "user_project"
 
@@ -71,4 +74,23 @@ func (p *UserProject) GetUserProjectByUserId(userId string) (userProjects []map[
 	}
 	userProjects = rs.Rows()
 	return
+}
+
+func (p *UserProject) CountProjectByUserId(userId string) (total int, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+
+	sql := db.AR().From(Table_UserProject_Name).Select("count(*) as total").Where(map[string]interface{}{
+		"user_id": userId,
+	})
+
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+
+	if rs.Value("total") != "" {
+		total, _ = strconv.Atoi(rs.Value("total"))
+	}
+	return total, nil
 }

@@ -1,6 +1,9 @@
 package models
 
-import "github.com/snail007/go-activerecord/mysql"
+import (
+	"github.com/snail007/go-activerecord/mysql"
+	"strconv"
+)
 
 const (
 	TASKLOG_STATUS_CREATE = 0 // 任务状态，创建
@@ -180,4 +183,24 @@ func (t *TaskLog) GetAllTaskLog() (taskLogs []map[string]string, err error) {
 	}
 	taskLogs = rs.Rows()
 	return
+}
+
+func (t *TaskLog) CountTaskLogByTaskIdsAndIsSuccess(taskIds []string, isSuccess int) (total int, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+
+	sql := db.AR().From(Table_TaskLog_Name).Select("count(*) as total").Where(map[string]interface{}{
+		"task_id": taskIds,
+		"is_success": isSuccess,
+	})
+
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+
+	if rs.Value("total") != "" {
+		total, _ = strconv.Atoi(rs.Value("total"))
+	}
+	return total, nil
 }

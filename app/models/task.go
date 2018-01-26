@@ -27,6 +27,20 @@ func (t *Task) GetTaskByTaskId(taskId string) (tasks map[string]string, err erro
 	return
 }
 
+// 根据 user_id 获取任务
+func (t *Task) GetTasksByUserId(userId string) (tasks []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Task_Name).Where(map[string]interface{}{
+		"user_id": userId,
+	}))
+	if err != nil {
+		return
+	}
+	tasks = rs.Rows()
+	return
+}
+
 // 根据 task_ids 获取任务
 func (t *Task) GetTaskByTaskIds(taskIds []string) (tasks []map[string]string, err error) {
 	db := G.DB()
