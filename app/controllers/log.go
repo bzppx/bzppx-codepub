@@ -155,7 +155,7 @@ func (this *LogController) Task() {
 				tasks[index]["status"] = "正在执行"
 				break
 			}
-			if taskLogChangeKey["is_success"] != "0" {
+			if taskLogChangeKey["is_success"] == "0" {
 				tasks[index]["status"] = "失败"
 			}
 		}

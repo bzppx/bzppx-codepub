@@ -44,7 +44,7 @@
 				<td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
 				<td class="center">{{dateFormat $task.publish_time "Y-m-d H:i:s"}}</td>
                 <td class="center">
-                    <a name="watch" class="glyphicon glyphicon-eye-open" href="/task/taskLog?task_id={{$task.task_id}}">查看发布</a>
+                    <a name="watch" class="glyphicon glyphicon-eye-open" href="/publish/taskLog?task_id={{$task.task_id}}">查看发布</a>
                 </td>
             </tr>
             {{end}}
