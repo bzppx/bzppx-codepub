@@ -26,7 +26,7 @@ th {
 }
 
 .panel-heading {
-    padding: 8px;
+    /*padding: 8px;*/
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -399,4 +399,44 @@ body::-webkit-scrollbar-thumb {
 
 textarea {
     resize: none;
+}
+
+.panel-green {
+    border-color: #00a65a;
+}
+
+.panel-green > .panel-heading {
+    color: #fff;
+    background-color: #00a65a;
+    border-color: #00a65a;
+}
+
+.panel-yellow {
+    border-color: #f39c12;
+}
+
+.panel-yellow > .panel-heading {
+    color: #fff;
+    background-color: #f39c12;
+    border-color: #f39c12;
+}
+
+.panel-red {
+    border-color: #dd4b39;
+}
+
+.panel-red > .panel-heading {
+    color: #fff;
+    background-color: #dd4b39;
+    border-color: #dd4b39;
+}
+
+.panel-blue {
+    border-color: #0178bc;
+}
+
+.panel-blue > .panel-heading {
+    color: #fff;
+    background-color: #0178bc;
+    border-color: #0178bc;
 }

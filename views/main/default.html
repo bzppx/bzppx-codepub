@@ -1,24 +1,295 @@
-<div style="position:relative;">
-    <div class="row">
-        <div class="col col-sm-8 col-md-8"></div>
-        <div class="col col-sm-4 col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <i class="glyphicon glyphicon-volume-up"></i> 公告
-                </div>
-                <div class="panel-body">
-                    {{range $notice:=.notices}}
-                    <div class="col col-sm-12 col-md-12">
-                        {{dateFormat $notice.create_time "Y-m-d"}}
-                        <a name="info" class="text text-info" data-link="/notice/info?notice_id={{$notice.notice_id}}">{{$notice.title}}</a>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <!-- 统计面板 -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-blue">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-x fa-cubes fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">100</div>
+                                <!--<div>我的项目组</div>-->
+                            </div>
+                        </div>
                     </div>
-                    {{end}}
+                    <div class="panel-footer">
+                        <span class="pull-left"><label class="text-primary">我的项目组</label></span>
+                        <span class="pull-right"><a href=""><i class="glyphicon glyphicon-hand-right"></i> 详情</a></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-x fa-cube fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">100</div>
+                                <div>项目</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">项目</span>
+                        <span class="pull-right">1000</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-x fa-paper-plane-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">100</div>
+                                <div>发布次数</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">发布次数</span>
+                        <span class="pull-right">1000</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-x fa-cubes fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">100</div>
+                                <div>项目组</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">项目组</span>
+                        <span class="pull-right">1000</span>
+                        <div class="clearfix"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div style="position:absolute;top:0;left:0;">
-        test
+        <!-- 时间发布曲线 -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">发布统计</div>
+                    <div class="panel-body">
+                        曲线图<hr>
+                        曲线图<hr>
+                        曲线图<hr>
+                        曲线图<hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">网站数据统计</div>
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>统计项目</th>
+                                <th>今日</th>
+                                <th>昨日</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">注册会员</th>
+                                <td>200</td>
+                                <td>400</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">登录会员</th>
+                                <td>4100</td>
+                                <td>5112</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">今日发帖</th>
+                                <td>1540</td>
+                                <td>4511</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">转载次数</th>
+                                <td>150</td>
+                                <td>110</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">系统公告</div>
+                    <ul class="list-group">
+                        {{range $notice:=.notices}}
+                        <li class="list-group-item">
+                            <a name="info" data-link="/notice/info?notice_id={{$notice.notice_id}}"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;{{$notice.title}}<small class="pull-right">{{dateFormat $notice.create_time "Y/m/d"}}</small></a>
+                        </li>
+                        {{end}}
+                        <li class="list-group-item">
+                            <a href="index.html"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;泛<small class="pull-right">2015/08/08</small></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="index.html"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;泛<small class="pull-right">2015/08/08</small></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="index.html"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;泛<small class="pull-right">2015/08/08</small></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="index.html"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;泛<small class="pull-right">2015/08/08</small></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="index.html"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;泛<small class="pull-right">2015/08/08</small></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="index.html"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;泛<small class="pull-right">2015/08/08</small></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">发布统计</div>
+                    <div class="panel-body">
+                        <canvas id="canvas" class="col-md-12"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">服务器状态</div>
+                    <div class="panel-body">
+                        <p>内存使用率：40%</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"></div>
+                        </div>
+                        <p>数据库使用率：20%</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+                        </div>
+                        <p>磁盘使用率：60%</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%"></div>
+                        </div>
+                        <p>CPU使用率：80%</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">团队留言板</div>
+                    <div class="panel-body">
+                        <div class="col-md-7">
+                            <div class="media well">
+                                <div class="media-left">
+                                    <a href="#">
+                                        <img class="media-object wh64" src="images/a.png" alt="卓大哥">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">卓大哥</h4>
+                                    技术大哥，今晚请把网站程序升级一下哈，现在的系统有漏洞，安全起见！
+                                </div>
+                            </div>
+                            <div class="media well">
+                                <div class="media-body text-right">
+                                    <h4 class="media-heading">技术大哥</h4>
+                                    收到，今晚凌晨2点准时升级！
+                                </div>
+                                <div class="media-right">
+                                    <a href="#">
+                                        <img class="media-object wh64" src="images/b.png" alt="技术大哥">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="media well">
+                                <div class="media-body text-right">
+                                    <h4 class="media-heading">技术大哥</h4>
+                                    你先在站点发布一下通知哈！
+                                </div>
+                                <div class="media-right">
+                                    <a href="#">
+                                        <img class="media-object wh64" src="images/b.png" alt="技术大哥">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="media well">
+                                <div class="media-left">
+                                    <a href="#">
+                                        <img class="media-object wh64" src="images/a.png" alt="卓大哥">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">卓大哥</h4>
+                                    好嘞。
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <form action="#">
+                                <div class="form-group">
+                                    <label for="text1">输入留言内容</label>
+                                    <textarea class="form-control" id="text1" rows="5" cols="10" placeholder="请输入留言内容"></textarea>
+                                    <button type="submit" class="btn btn-default mar_t15">留言</button>
+                                </div>
+                            </form>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">团队联系手册</div>
+                                <div class="panel-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">站长(李小龙)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13134848615</li>
+                                        <li class="list-group-item">技术(大牛哥)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13456127694</li>
+                                        <li class="list-group-item">推广(张二哥)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13457815482</li>
+                                        <li class="list-group-item">客服(王女士)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13134567782&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;028-888888</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col col-sm-8 col-md-8"></div>
+                <div class="col col-sm-4 col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="glyphicon glyphicon-volume-up"></i> 公告
+                        </div>
+                        <div class="panel-body">
+                            {{range $notice:=.notices}}
+                            <div class="col col-sm-12 col-md-12">
+                                {{dateFormat $notice.create_time "Y-m-d"}}
+                                <a name="info" class="text text-info"
+                                   data-link="/notice/info?notice_id={{$notice.notice_id}}">{{$notice.title}}</a>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
 <script type="text/javascript">
