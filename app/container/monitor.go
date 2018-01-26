@@ -16,7 +16,7 @@ type Monitor struct {
 	
 }
 
-// 每 5 s 监控一次是否有没有提交的
+// 每 5 s 监控一次是否有没有提交的(暂时取消)
 func (m *Monitor) MonitorCreateStatus()  {
 	for {
 		m.HandleCreateStatusTaskLog()
