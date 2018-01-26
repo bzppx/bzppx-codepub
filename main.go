@@ -32,6 +32,6 @@ func initTask() {
 		if err != nil {
 			beego.Error(err)
 		}
-		container.NewMonitor().MonitorCreateStatus()
+		container.NewMonitor().HandleCreateStatusTaskLog()
 	}()
 }

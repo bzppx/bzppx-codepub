@@ -77,6 +77,8 @@
 </div>
 <script src="/static/style/module/task.js"></script>
 <script type="text/javascript">
-	Task.updateProgress();
-	setInterval('Task.loadTaskLogStatus()', 5000);
+	$(function () {
+		Task.updateProgress();
+		setInterval('Task.loadTaskLogStatus()', 3000);
+	})
 </script>

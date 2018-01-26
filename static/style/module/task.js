@@ -8,7 +8,7 @@ var Task = {
 	taskLogStartHtml: '<span class="label label-primary">开始</span>',
 	taskLogEndHtml: '<span class="label label-success">完成</span>',
 	taskLogSuccessHtml: '<span class="label label-success">成功</span>',
-	taskLogFailedHtml: '<span class="label label-danger">失败</span>',
+	taskLogFailedHtml: '<span class="label label-danger end_failed">失败</span>',
 	taskLogLoadingHtml: '<img src="/static/style/layui/layer/theme/default/loading-2.gif" style="max-width:17px;">',
 
 	/**
@@ -81,10 +81,10 @@ var Task = {
 						statusSelect.html(Task.taskLogEndHtml);
 						if (isSuccess == 1) {
 							isSuccessSelect.html(Task.taskLogSuccessHtml);
-							Task.updateProgress();
+							Task.updateProgress("success");
 						}else {
 							isSuccessSelect.html(Task.taskLogFailedHtml);
-							Task.updateProgress();
+							Task.updateProgress("danger");
 						}
 					}
 				}
@@ -93,9 +93,8 @@ var Task = {
 	},
 
 	// 刷新进度条
-	updateProgress: function () {
-		var status = "success";
-		if ($(".end_failed").length > 0) {
+	updateProgress: function (status) {
+		if (status == undefined && $(".end_failed").length > 0) {
 			status = "danger"
 		}
 		var totalRow = $("tr[data-row]").length;
