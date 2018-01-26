@@ -1,0 +1,80 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+			<div class="col-md-3">
+			</div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w8p">ID</th>
+                <th class="w12p">节点</th>
+                <th class="w13p">创建时间</th>
+				<th class="w13p">更新时间</th>
+				<th class="w12p">commit_id</th>
+				<th class="w13p">执行结果</th>
+                <th class="w6p">执行状态</th>
+            </tr>
+            </thead>
+            <tbody>
+				 
+            </tbody>
+        </table>
+    </div>
+	<div class="panel-footer">
+	</div>
+</div>
+<script type="text/javascript">
+	var again = false
+	var taskLog = {
+		getTaskLog: function (){
+			$.ajax({
+		        type: "POST",
+		        cache: false,
+		        url: "/task/getTaskLog",
+		        data:"task_id={{.taskId}}",
+		        dataType: 'json',
+		        success: function (response) {
+					if (response.code == "1") {
+						var html = ""
+						for(var i in response.data.taskLogs) {
+							var isSuccess = "失败"
+							if (response.data.taskLogs[i]['status'] == 2) {
+								if (response.data.taskLogs[i]['status'] = 1) {
+									isSuccess = "成功"
+								}
+							} else {
+								isSuccess = "<img src='/static/style/layui/layer/theme/default/loading-2.gif' style='max-width:17px;'>"
+								again = true
+							}
+							html += '<tr>\
+						                <td class="center">' + response.data.taskLogs[i]['task_log_id'] + '</td>\
+						                <td>' + response.data.nodes[response.data.taskLogs[i]['node_id']]['ip'] +':'+ response.data.nodes[response.data.taskLogs[i]['node_id']]['port'] + '</td>\
+						                <td class="center">' + response.data.taskLogs[i]['create_time'] + '</td>\
+						                <td class="center">' + response.data.taskLogs[i]['update_time'] + '</td>\
+						                <td class="center">' + response.data.taskLogs[i]['commit_id'] + '</td>\
+										<td class="center">' + response.data.taskLogs[i]['result'] + '</td>\
+										<td class="center">' + isSuccess + '</td>\
+						            </tr>'
+						}
+						$('tbody').html(html)
+						if (again) {
+							setTimeout(function(){
+								taskLog.getTaskLog()
+							}, 1000);
+						}
+					} else {
+						Common.errorBox("#failedBox", response.message)
+					}
+		        },
+				error: function(){
+					Common.errorBox("#failedBox", "ajax请求出错")
+				},
+		    });
+		}
+	}
+	
+	taskLog.getTaskLog()
+</script>

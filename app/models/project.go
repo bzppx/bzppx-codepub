@@ -2,6 +2,7 @@ package models
 
 import (
 	"bzppx-codepub/app/utils"
+
 	"github.com/snail007/go-activerecord/mysql"
 )
 
@@ -13,7 +14,6 @@ const (
 const Table_Project_Name = "project"
 
 type Project struct {
-
 }
 
 var ProjectModel = Project{}
@@ -24,7 +24,7 @@ func (p *Project) GetProjectByProjectId(projectId string) (project map[string]st
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
 		"project_id": projectId,
-		"is_delete": PROJECT_NORMAL,
+		"is_delete":  PROJECT_NORMAL,
 	}))
 	if err != nil {
 		return
@@ -39,7 +39,7 @@ func (p *Project) GetProjectByProjectIds(projectIds []string) (projects []map[st
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
 		"project_id": projectIds,
-		"is_delete": PROJECT_NORMAL,
+		"is_delete":  PROJECT_NORMAL,
 	}))
 	if err != nil {
 		return
@@ -54,8 +54,8 @@ func (p *Project) HasSameProjectName(projectId, name string) (has bool, err erro
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
 		"project_id <>": projectId,
-		"name":   name,
-		"is_delete": PROJECT_NORMAL,
+		"name":          name,
+		"is_delete":     PROJECT_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -71,7 +71,7 @@ func (p *Project) HasProjectName(name string) (has bool, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
-		"name": name,
+		"name":      name,
 		"is_delete": PROJECT_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -88,7 +88,7 @@ func (p *Project) GetProjectByName(name string) (project map[string]string, err 
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
-		"name": name,
+		"name":      name,
 		"is_delete": PROJECT_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -130,7 +130,7 @@ func (p *Project) Update(projectId string, project map[string]interface{}) (id i
 	var rs *mysql.ResultSet
 	rs, err = db.Exec(db.AR().Update(Table_Project_Name, project, map[string]interface{}{
 		"project_id": projectId,
-		"is_delete": PROJECT_NORMAL,
+		"is_delete":  PROJECT_NORMAL,
 	}))
 	if err != nil {
 		return
@@ -149,7 +149,7 @@ func (p *Project) GetProjectsByKeywordsAndLimit(keywords map[string]string, limi
 		"name LIKE": "%" + keywords["keyword"] + "%",
 		"is_delete": PROJECT_NORMAL,
 	}
-	groupId, _ := keywords["group_id"];
+	groupId, _ := keywords["group_id"]
 	if groupId != "" {
 		where["group_id"] = keywords["group_id"]
 	}
@@ -195,8 +195,8 @@ func (project *Project) CountProjects() (count int64, err error) {
 			Select("count(*) as total").
 			From(Table_Project_Name).
 			Where(map[string]interface{}{
-			"is_delete": PROJECT_NORMAL,
-		}))
+				"is_delete": PROJECT_NORMAL,
+			}))
 	if err != nil {
 		return
 	}
@@ -214,7 +214,7 @@ func (project *Project) CountProjectsByKeywords(keywords map[string]string) (cou
 		"name LIKE": "%" + keywords["keyword"] + "%",
 		"is_delete": PROJECT_NORMAL,
 	}
-	groupId, _ := keywords["group_id"];
+	groupId, _ := keywords["group_id"]
 	if groupId != "" {
 		where["group_id"] = keywords["group_id"]
 	}
@@ -233,6 +233,22 @@ func (project *Project) GetProjects() (projects []map[string]string, err error) 
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
+		"is_delete": NODE_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+
+	projects = rs.Rows()
+	return
+}
+
+// name模糊搜索
+func (project *Project) GetProjectsByLikeName(name string) (projects []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(map[string]interface{}{
+		"name LIKE": "%" + name + "%",
 		"is_delete": NODE_NORMAL,
 	}))
 	if err != nil {
