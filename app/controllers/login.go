@@ -4,7 +4,6 @@ import (
 	"bzppx-codepub/app/models"
 	"bzppx-codepub/app/utils"
 	"encoding/json"
-	"fmt"
 	"image/color"
 	"image/png"
 	"io/ioutil"
@@ -71,7 +70,6 @@ func (this *LoginController) Index() {
 				this.jsonError("请求接口失败！")
 			}
 			var response map[string]interface{}
-			fmt.Println(string(responseJson))
 			err = json.Unmarshal(responseJson, &response)
 			if err != nil {
 				this.jsonError("请求数据错误！")
@@ -160,7 +158,7 @@ func (this *LoginController) Index() {
 				this.jsonError("账号或密码错误!")
 			}
 		}
-		fmt.Println(user)
+
 		//保存 session
 		this.SetSession("author", user)
 		//保存 cookie
