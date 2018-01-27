@@ -281,3 +281,16 @@ func (p *User) GetUserByUserIds(userIds []string) (users []map[string]string, er
 	users = rs.Rows()
 	return
 }
+
+func (p *User) UpdateUserByUsername(user map[string]interface{}) (affect int64, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Exec(db.AR().Update(Table_User_Name, user, map[string]interface{}{
+		"username": user["username"],
+	}))
+	if err != nil {
+		return
+	}
+	affect = rs.RowsAffected
+	return
+}

@@ -3,8 +3,15 @@ package controllers
 import (
 	"bzppx-codepub/app/models"
 	"bzppx-codepub/app/utils"
+	"encoding/json"
+	"fmt"
 	"image/color"
 	"image/png"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"reflect"
+	"regexp"
 	"strings"
 	"time"
 
@@ -35,31 +42,129 @@ func (this *LoginController) Index() {
 		userModel := models.User{}
 		name := strings.TrimSpace(this.GetString("username"))
 		password := strings.TrimSpace(this.GetString("password"))
+		apiAuthId := strings.TrimSpace(this.GetString("api_auth_id"))
 		captcha := strings.TrimSpace(this.GetString("captcha"))
 		captchaSession := this.GetSession("captcha")
 		this.SetSession("captcha", "")
 		if captchaSession == nil || captcha == "" || captchaSession != strings.ToLower(captcha) {
 			this.jsonError("验证码错误!")
 		}
-		user, err := userModel.GetUserByName(name)
-		if err != nil {
-			this.ErrorLog("查找用户失败：" + err.Error())
-			this.jsonError("账号不存在！")
-			return
-		}
-		if len(user) == 0 {
-			this.jsonError("账号错误!")
-		}
-		encrypt := new(utils.Encrypt)
-		password = userModel.EncodePassword(password)
 
-		if user["password"] != password {
-			this.jsonError("账号或密码错误!")
-		}
+		user := make(map[string]string)
+		var err error
+		//外部接口登录
+		if apiAuthId != "" {
+			apiAuth, err := models.ApiAuthModel.GetApiAuthByApiAuthId(apiAuthId)
+			if err != nil {
+				this.ErrorLog("获取api_auth_id" + apiAuthId + "数据失败：" + err.Error())
+				this.jsonError("获取授权数据失败！")
+			}
+			request, err := http.PostForm(apiAuth["url"], url.Values{"username": {name}, "password": {password}})
+			if err != nil {
+				this.ErrorLog("请求" + apiAuth["url"] + "失败：" + err.Error())
+				this.jsonError("请求接口失败！")
+			}
+			defer request.Body.Close()
+			responseJson, err := ioutil.ReadAll(request.Body)
+			if err != nil {
+				this.ErrorLog("请求" + apiAuth["url"] + "后读取数据失败：" + err.Error())
+				this.jsonError("请求接口失败！")
+			}
+			var response map[string]interface{}
+			fmt.Println(string(responseJson))
+			err = json.Unmarshal(responseJson, &response)
+			if err != nil {
+				this.jsonError("请求数据错误！")
+			}
 
+			//判断返回的uid的类型，如果不是string转为string
+			var uid string
+			switch reflect.TypeOf(response["uid"]).String() {
+			case "int":
+				uid = utils.NewConvert().IntToTenString(response["uid"].(int))
+			case "int64":
+				uid = utils.NewConvert().IntToString(response["uid"].(int64), 10)
+			case "float32":
+				uid = utils.NewConvert().FloatToString(response["uid"].(float64), 'f', 0, 32)
+			case "float64":
+				uid = utils.NewConvert().FloatToString(response["uid"].(float64), 'f', 0, 64)
+			case "string":
+				uid = response["uid"].(string)
+			}
+			reg := regexp.MustCompile("^[a-zA-Z0-9_]+$")
+			ok := reg.MatchString(uid)
+			if !ok {
+				this.jsonError("返回数据的uid只能为数字字母和下划线组合错误！")
+			}
+
+			userData := make(map[string]interface{})
+			userData["given_name"], ok = response["given_name"]
+			if !ok {
+				this.jsonError("请求数据错误！")
+			}
+			userData["email"], ok = response["email"]
+			if !ok {
+				userData["email"] = ""
+			}
+			userData["mobile"], ok = response["mobile"]
+			if !ok {
+				userData["mobile"] = ""
+			}
+			userData["api_auth_id"] = apiAuthId
+			userData["username"] = apiAuth["key"] + "_" + uid
+			userData["password"] = ""
+			userData["last_ip"] = this.getClientIp()
+			userData["role"] = "1"
+			userData["is_delete"] = "0"
+			strTime := utils.NewConvert().IntToString(time.Now().Unix(), 10)
+			userData["last_time"] = strTime
+			userData["update_time"] = strTime
+
+			user, err = models.UserModel.GetUserByName(userData["username"].(string))
+			if err != nil {
+				this.jsonError("获取用户信息错误！")
+			}
+			//判断user表是否有此账号，没有添加
+			if len(user) == 0 {
+				userData["create_time"] = strTime
+				_, err = models.UserModel.Insert(userData)
+				if err != nil {
+					this.jsonError("添加用户信息错误！")
+				}
+				for index, data := range userData {
+					user[index] = data.(string)
+				}
+			} else {
+				_, err = models.UserModel.UpdateUserByUsername(userData)
+				if err != nil {
+					this.jsonError("更新用户信息错误！")
+				}
+			}
+
+			//转换name
+			name = user["username"]
+			password = ""
+		} else {
+			user, err = userModel.GetUserByName(name)
+			if err != nil {
+				this.ErrorLog("查找用户失败：" + err.Error())
+				this.jsonError("账号不存在！")
+				return
+			}
+			if len(user) == 0 {
+				this.jsonError("账号错误!")
+			}
+
+			password = userModel.EncodePassword(password)
+			if user["password"] != password {
+				this.jsonError("账号或密码错误!")
+			}
+		}
+		fmt.Println(user)
 		//保存 session
 		this.SetSession("author", user)
 		//保存 cookie
+		encrypt := new(utils.Encrypt)
 		identify := encrypt.Md5Encode(this.Ctx.Request.UserAgent() + this.getClientIp() + password)
 		passportValue := encrypt.Base64Encode(name + "@" + identify)
 		passport := beego.AppConfig.String("author.passport")
