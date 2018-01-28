@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/snail007/go-activerecord/mysql"
-	"strconv"
+	"bzppx-codepub/app/utils"
 )
 
 const Table_UserProject_Name = "user_project"
@@ -76,7 +76,7 @@ func (p *UserProject) GetUserProjectByUserId(userId string) (userProjects []map[
 	return
 }
 
-func (p *UserProject) CountProjectByUserId(userId string) (total int, err error) {
+func (p *UserProject) CountProjectByUserId(userId string) (total int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 
@@ -90,7 +90,8 @@ func (p *UserProject) CountProjectByUserId(userId string) (total int, err error)
 	}
 
 	if rs.Value("total") != "" {
-		total, _ = strconv.Atoi(rs.Value("total"))
+		//total, _ = strconv.Atoi(rs.Value("total"))
+		total = utils.NewConvert().StringToInt64(rs.Value("total"))
 	}
 	return total, nil
 }
