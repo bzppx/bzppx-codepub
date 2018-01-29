@@ -26,6 +26,11 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
+	controllerName, _ := this.GetControllerAndAction()
+	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
+	if controllerName == "install" {
+		return
+	}
 	if this.isLogin() && this.inAccessList(beego.AppConfig.String("guest_access_list")) {
 		this.Redirect("/main/index", 302)
 		this.StopRun()
@@ -64,7 +69,7 @@ func (this *BaseController) Prepare() {
 	this.Layout = "layout/default.html"
 }
 
-// check is login
+// check user role is root
 func (this *BaseController) isRoot() bool {
 	if !this.isLogin() {
 		return false
@@ -78,7 +83,7 @@ func (this *BaseController) isRoot() bool {
 	return u["role"] == fmt.Sprintf("%d", models.USER_ROLE_ROOT)
 }
 
-// check is login
+// check user role is admin
 func (this *BaseController) isAdmin() bool {
 	if !this.isLogin() {
 		return false

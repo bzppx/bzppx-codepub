@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{{.title}}</title>
+    {{template "common/head.html" .}}
+    <link rel="stylesheet" href="/static/style/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style/font-awesome/css/font-awesome.min.css">
+
+    <script src="/static/style/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/static/style/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/style/layui/layer/layer.js"></script>
+    <script src="/static/style/jquery/jquery.form.js"></script>
+    <script src="/static/style/common/layers.js"></script>
+    <script src="/static/style/common/form.js"></script>
+    <script src="/static/style/common/common.js"></script>
+
+    <link rel="stylesheet" href="/static/style/content-style.css">
+</head>
+<body style="padding-top: 60px">
+    <header role="header" class="site__header header" id="home">
+        <div class="header__wrapper">
+            <div class="header__brand">
+                <a href="/install/index"><img src="/static/style/brand.png" /></a>
+                <div class="header__title">
+                </div>
+            </div>
+            <div class="header__account account account--has-login">
+                <div class="account__wrapper">
+                    <img class="account__img" src="/static/style/irfan-maulana.jpg" />
+                    <span class="account__name">开源地址</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    {{.LayoutContent}}
+    {{template "common/foot.html" .}}
+</body>
+
+</html>

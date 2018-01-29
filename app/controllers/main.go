@@ -15,9 +15,14 @@ func (this *MainController) Index() {
 
 func (this *MainController) Default() {
 	var err error
-
+	
 	//获取我的项目数
-	projectCount, err := models.UserProjectModel.CountProjectByUserId(this.UserID)
+	var projectCount int64
+	if (this.isAdmin() || this.isRoot()) {
+		projectCount, err = models.ProjectModel.CountProjects()
+	}else {
+		projectCount, err = models.UserProjectModel.CountProjectByUserId(this.UserID)
+	}
 	if err != nil {
 		this.ErrorLog("获取我的项目数失败：" + err.Error())
 		this.viewError("获取数据失败")
@@ -48,7 +53,7 @@ func (this *MainController) Default() {
 	// 获取项目总排行
 
 	// 获取最新公告
-	notices, err := models.NoticeModel.GetNoticesByLimit(0, 5)
+	notices, err := models.NoticeModel.GetNoticesByLimit(0, 6)
 	if err != nil {
 		this.ErrorLog("获取最新公告失败：" + err.Error())
 		this.viewError("获取最新公告失败")

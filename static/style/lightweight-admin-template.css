@@ -653,7 +653,7 @@ blockquote {
 }
 .nav__item--child>a:hover,
 .nav__item>a:hover{
-	color:
+	/*color:*/
 }
 .nav__wrapper--is-open {
 	display: block
