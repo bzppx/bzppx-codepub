@@ -439,6 +439,13 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			"branch":       branch,
 			"username":     project["https_username"],
 			"password":     project["https_password"],
+			"pre_command":                  project["pre_command"],
+			"pre_command_exec_type":        project["pre_command_exec_type"],
+			"pre_command_exec_timeout":     project["pre_command_exec_timeout"],
+			"post_command":                 project["post_command"],
+			"post_command_exec_type":       project["post_command_exec_type"],
+			"post_command_exec_timeout":    project["post_command_exec_timeout"],
+			"exec_user":                    project["exec_user"],
 		}
 		for _, node := range nodes {
 			if node["node_id"] == taskLog["node_id"] {
