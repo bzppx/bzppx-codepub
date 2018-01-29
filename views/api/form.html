@@ -1,0 +1,55 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>{{$apiAuth := .apiAuth}}
+        <form class="form-horizontal" method="post" action="{{if $apiAuth}} /apiAuth/modify {{else}} /apiAuth/save {{end}}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> api名称 </label>
+                <div class="col-sm-4">
+                    <input type="text" name="name" class="form-control" value="{{$apiAuth.name}}" placeholder="请输入api名称" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> url </label>
+                <div class="col-sm-4">
+                    <input type="text" name="url" class="form-control" value="{{$apiAuth.url}}" placeholder="请输入url" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> key </label>
+                <div class="col-sm-4">
+                    <input type="text" name="key" class="form-control" value="{{$apiAuth.key}}" placeholder="请输入key" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 排序号 </label>
+                <div class="col-sm-4">
+                    <input type="number" name="sort" class="form-control" value="{{$apiAuth.sort}}" placeholder="请输入排序号" required>
+                </div>
+            </div>
+			<div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 登录页面是否显示 </label>
+                <div class="col-sm-4">
+                    <label class="radio-inline">
+                        <input type="radio" name="is_show" value="0" > 不显示
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="is_show" value="1" checked> 显示
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="api_auth_id" class="form-control" value="{{$apiAuth.api_auth_id}}">
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $apiAuth}} true {{else}} false {{end}})" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+	$(function(){
+		{{if $apiAuth}}
+		$('input[name=is_show]').eq({{$apiAuth.is_show}}).prop('checked', true)
+		{{end}}
+	})
+</script>

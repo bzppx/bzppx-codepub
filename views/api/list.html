@@ -1,0 +1,60 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <form action="/apiAuth/list" method="get">
+				<div class="col-md-3">
+	                <div class="input-group">
+	                    <a href="/apiAuth/add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 添加认证api </a>
+	                </div>
+	            </div>
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w13p">ID</th>
+                <th class="w17p">url</th>
+                <th class="w8p">api名称</th>
+				<th class="w8p">key</th>
+                <th class="w7p">排序号</th>
+				<th class="w9p">登录列表显示</th>
+				<th class="w13p">更新时间</th>
+				<th class="w13p">创建时间</th>
+                <th class="w10p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $authApi := .authApis}}
+            <tr>
+                <td class="center">{{$authApi.api_auth_id}}</td>
+                <td>{{$authApi.url}}</td>
+                <td class="center">{{$authApi.name}}</td>
+				<td class="center">{{$authApi.key}}</td>
+				<td class="center">{{$authApi.sort}}</td>
+				<td class="center">{{if eq $authApi.is_show "0"}} 不显示 {{else}} 显示 {{end}}</td>
+				<td class="center">{{dateFormat $authApi.create_time "Y-m-d H:i:s"}}</td>
+                <td class="center">{{dateFormat $authApi.update_time "Y-m-d H:i:s"}}</td>
+                <td class="center">
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/apiAuth/edit?api_auth_id={{$authApi.api_auth_id}}">修改</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/apiAuth/delete?api_auth_id={{$authApi.api_auth_id}}');" class="remove glyphicon glyphicon-trash">删除 </a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        {{template "paginator/default.html" .}}
+    </div>
+</div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='edit']", "修改auth_api信息", "480px", "940px")
+</script>
