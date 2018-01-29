@@ -3,6 +3,8 @@ package controllers
 import (
 	"bzppx-codepub/app/models"
 	"encoding/json"
+	"fmt"
+	"github.com/shirou/gopsutil/mem"
 )
 
 type MainController struct {
@@ -98,6 +100,7 @@ func (this *MainController) Default() {
 			projectPublishCountRank = append(projectPublishCountRank, projectPublishCount)
 		}
 	}
+	jsonProjectPublishCountRank, _ := json.Marshal(projectPublishCountRank)
 
 	// 获取最新公告
 	notices, err := models.NoticeModel.GetNoticesByLimit(0, 6)
@@ -106,8 +109,10 @@ func (this *MainController) Default() {
 		this.viewError("获取最新公告失败")
 	}
 
-	jsonProjectPublishCountRank, _ := json.Marshal(projectPublishCountRank)
-
+	// 服务器状态
+	v, _ := mem.VirtualMemory()
+	fmt.Printf("Total: %v, Free:%v, UsedPercent:%f%%\n", v.Total, v.Free, v.UsedPercent)
+	fmt.Println(v)
 	this.Data["groupCount"] = groupCount
 	this.Data["projectCount"] = projectCount
 	this.Data["failedPublish"] = failedPublish
