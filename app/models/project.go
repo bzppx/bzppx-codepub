@@ -258,3 +258,20 @@ func (project *Project) GetProjectsByLikeName(name string) (projects []map[strin
 	projects = rs.Rows()
 	return
 }
+
+// 根据 project_ids 获取项目组数量
+func (p *Project) CountGroupByProjectIds(projectIds []string) (total int64, err error){
+	db := G.DB()
+	var rs *mysql.ResultSet
+	sql := db.AR().Select("count(distinct group_id) as total").
+		From(Table_Task_Name).
+		Where(map[string]interface{}{
+			"project_id": projectIds,
+		})
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+	total = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}

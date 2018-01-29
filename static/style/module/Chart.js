@@ -14,11 +14,11 @@ var Chart = {
 		Morris.Bar({
 			element: element,
 			data: data,
-			xkey: 'project',
-			ykeys: ['number'],
-			labels: ['数量'],
+			xkey: 'project_name',
+			ykeys: ['total'],
+			labels: ['发布次数'],
 			barRatio: 0.4,
-			xLabelAngle: 35,
+			xLabelAngle: 65,
 			hideHover: 'auto',
 			resize: true
 		});

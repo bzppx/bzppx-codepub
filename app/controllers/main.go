@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bzppx-codepub/app/models"
+	"encoding/json"
 )
 
 type MainController struct {
@@ -18,13 +19,29 @@ func (this *MainController) Default() {
 	
 	//获取我的项目数
 	var projectCount int64
+	var groupCount int64
 	if (this.isAdmin() || this.isRoot()) {
 		projectCount, err = models.ProjectModel.CountProjects()
+		groupCount, err = models.GroupModel.CountGroups()
 	}else {
-		projectCount, err = models.UserProjectModel.CountProjectByUserId(this.UserID)
+		userProjects, err := models.UserProjectModel.GetUserProjectByUserId(this.UserID)
+		if err != nil {
+			this.ErrorLog("获取我的项目组数据失败: " + err.Error())
+			this.viewError("获取数据失败")
+		}
+		projectIds := []string{}
+		for _, userProject := range userProjects {
+			projectIds = append(projectIds, userProject["project_id"])
+		}
+		projectCount = int64(len(projectIds))
+		groupCount, err = models.ProjectModel.CountGroupByProjectIds(projectIds)
+		if err != nil {
+			this.ErrorLog("获取我的项目组数据失败: " + err.Error())
+			this.viewError("获取数据失败")
+		}
 	}
 	if err != nil {
-		this.ErrorLog("获取我的项目数失败：" + err.Error())
+		this.ErrorLog("获取我的项目组数据失败：" + err.Error())
 		this.viewError("获取数据失败")
 	}
 
@@ -51,6 +68,36 @@ func (this *MainController) Default() {
 	}
 
 	// 获取项目总排行
+	projectPublishCountRank := []map[string]string{}
+	projectCountIds, err := models.TaskModel.GetProjectIdsOrderByCountProject()
+	if err != nil {
+		this.ErrorLog("获取项目总排行数据失败：" + err.Error())
+		this.viewError("获取数据失败")
+	}
+	if len(projectCountIds) > 0 {
+		projectIds := []string{}
+		for _, projectCountId := range projectCountIds {
+			projectIds = append(projectIds, projectCountId["project_id"])
+		}
+		projects, err := models.ProjectModel.GetProjectByProjectIds(projectIds)
+		if err != nil {
+			this.ErrorLog("获取项目总排行数据失败：" + err.Error())
+			this.viewError("获取数据失败")
+		}
+		for _, projectCountId := range projectCountIds {
+			projectPublishCount := map[string]string{
+				"project_name": "",
+				"total": projectCountId["total"],
+			}
+			for _, project := range projects {
+				if projectCountId["project_id"] == project["project_id"] {
+					projectPublishCount["project_name"] = project["name"]
+					break
+				}
+			}
+			projectPublishCountRank = append(projectPublishCountRank, projectPublishCount)
+		}
+	}
 
 	// 获取最新公告
 	notices, err := models.NoticeModel.GetNoticesByLimit(0, 6)
@@ -59,9 +106,13 @@ func (this *MainController) Default() {
 		this.viewError("获取最新公告失败")
 	}
 
+	jsonProjectPublishCountRank, _ := json.Marshal(projectPublishCountRank)
+
+	this.Data["groupCount"] = groupCount
 	this.Data["projectCount"] = projectCount
 	this.Data["failedPublish"] = failedPublish
 	this.Data["successPublish"] = successPublish
+	this.Data["projectPublishCountRank"] = string(jsonProjectPublishCountRank)
 	this.Data["notices"] = notices
 	this.viewLayoutTitle("首页", "main/default", "index")
 }

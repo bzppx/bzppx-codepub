@@ -10,7 +10,7 @@
                                 <i class="fa fa-x fa-cubes fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">100</div>
+                                <div class="huge">{{.groupCount}}</div>
                                 <div>项目组</div>
                             </div>
                         </div>
@@ -217,8 +217,8 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/static/module/chart.js"></script>
 <script type="text/javascript">
     Layers.bindIframe("[name='info']", "公告详细信息", "450px", "850px");
-    Chart.activeProjectRank("active-project-rank", "");
+    var chatData = JSON.parse({{.projectPublishCountRank}})
+    Chart.activeProjectRank("active-project-rank", chatData);
 </script>
