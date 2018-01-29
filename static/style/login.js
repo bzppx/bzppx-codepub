@@ -58,8 +58,10 @@ $(function() {
         $(this).addClass("cur").siblings().removeClass("cur");
         $(".form-con>div").hide().eq(index).show();
         if (index == 0) {
+            $(".captcha")[0].src = "/login/captcha?_=" + (Math.random() + "").substring(1);
             $(".form-foot").hide();
         } else {
+            $(".captcha")[1].src = "/login/captcha?_=" + (Math.random() + "").substring(1);
             $(".form-foot").show();
         }
         $(".form-error").hide();
