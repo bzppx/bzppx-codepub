@@ -229,13 +229,14 @@ func (l *Task) GetAllTask() (tasks []map[string]string, err error) {
 	return
 }
 
-func (t *Task) GetProjectIdsOrderByCountProject() (tasks []map[string]string, err error) {
+func (t *Task) GetProjectIdsOrderByCountProjectLimit(limit int) (tasks []map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	sql := db.AR().Select("project_id, count('project_id') as total").
 		From(Table_Task_Name).
 		GroupBy("project_id").
-		OrderBy("total", "DESC")
+		OrderBy("total", "DESC").
+		Limit(0, limit)
 	rs, err = db.Query(sql)
 	if err != nil {
 		return

@@ -69,7 +69,7 @@ func (this *MainController) Default() {
 
 	// 获取项目总排行
 	projectPublishCountRank := []map[string]string{}
-	projectCountIds, err := models.TaskModel.GetProjectIdsOrderByCountProject()
+	projectCountIds, err := models.TaskModel.GetProjectIdsOrderByCountProjectLimit(15)
 	if err != nil {
 		this.ErrorLog("获取项目总排行数据失败：" + err.Error())
 		this.viewError("获取数据失败")
