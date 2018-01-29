@@ -102,7 +102,6 @@ func (this *ApiAuthController) Modify() {
 	authApiId := strings.Trim(this.GetString("api_auth_id", ""), "")
 	name := strings.Trim(this.GetString("name", ""), "")
 	url := strings.Trim(this.GetString("url", ""), "")
-	key := strings.Trim(this.GetString("key", ""), "")
 	sort := strings.Trim(this.GetString("sort", ""), "")
 	isShow := strings.Trim(this.GetString("is_show", ""), "")
 
@@ -119,13 +118,6 @@ func (this *ApiAuthController) Modify() {
 	if !ok {
 		this.jsonError("url不正确！")
 	}
-	if key == "" {
-		this.jsonError("key不能为空！")
-	}
-	exist, err := models.ApiAuthModel.CheckKeyExist(key, authApiId)
-	if exist {
-		this.jsonError("key已存在！")
-	}
 	if sort == "" {
 		this.jsonError("排序号不能为空！")
 	}
@@ -134,7 +126,6 @@ func (this *ApiAuthController) Modify() {
 	apiAuth := map[string]interface{}{
 		"name":        name,
 		"url":         url,
-		"key":         key,
 		"sort":        sort,
 		"is_show":     isShow,
 		"is_delete":   0,
