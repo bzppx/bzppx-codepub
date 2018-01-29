@@ -77,7 +77,7 @@ func (p *User) HasUsername(username string) (has bool, err error) {
 }
 
 // 根据用户名查找用户
-func (p *User) GetUserByName(username string) (user map[string]string, err error) {
+func (p *User) GetUserByName(username, appAuthID string) (user map[string]string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{

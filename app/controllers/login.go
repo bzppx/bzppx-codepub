@@ -118,7 +118,7 @@ func (this *LoginController) Index() {
 			userData["last_time"] = strTime
 			userData["update_time"] = strTime
 
-			user, err = models.UserModel.GetUserByName(userData["username"].(string))
+			user, err = models.UserModel.GetUserByName(userData["username"].(string), apiAuthId)
 			if err != nil {
 				this.jsonError("获取用户信息错误！")
 			}
@@ -143,7 +143,7 @@ func (this *LoginController) Index() {
 			name = user["username"]
 			password = ""
 		} else {
-			user, err = userModel.GetUserByName(name)
+			user, err = userModel.GetUserByName(name, "0")
 			if err != nil {
 				this.ErrorLog("查找用户失败：" + err.Error())
 				this.jsonError("账号不存在！")
