@@ -206,24 +206,31 @@ func (t *TaskLog) CountTaskLogByTaskIdsAndIsSuccess(taskIds []string, isSuccess 
 }
 
 // 根据创建时间获取 task_log 数量
-func (l *TaskLog) CountTaskLogByCreateTimeAndIsSuccess(startTime int64, endTime int64, isSuccess int) (total int64, err error) {
+func (l *TaskLog) CountByCreateTimeGroupByIsSuccess(startTime int64, endTime int64) (successTotal int64, failedTotal int64, err error) {
 
 	db := G.DB()
 	var rs *mysql.ResultSet
-	sql := db.AR().Select("count(*) as total").
+	sql := db.AR().Select("is_success, count('is_success') as total").
 		From(Table_TaskLog_Name).
 		Where(map[string]interface{}{
-		"is_success": isSuccess,
 		"create_time >= ": startTime,
 		"create_time < ": endTime,
-	})
+		}).
+		GroupBy("is_success")
 	rs, err = db.Query(sql)
 	if err != nil {
 		return
 	}
-	res := rs.Row()
+	res := rs.Rows()
 	if len(res) > 0 {
-		total = utils.NewConvert().StringToInt64(res["total"])
+		for _, r := range res {
+			if r["is_success"] == "1" {
+				successTotal = utils.NewConvert().StringToInt64(r["total"])
+			}
+			if r["is_success"] == "0" {
+				failedTotal = utils.NewConvert().StringToInt64(r["total"])
+			}
+		}
 	}
 	return
 }

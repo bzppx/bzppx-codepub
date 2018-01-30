@@ -67,6 +67,37 @@ var Main = {
 			}
 		});
 	},
+
+	/**
+	 * 获取发布数据
+	 * @param url
+	 * @constructor
+	 */
+	GetPublishData: function (url) {
+		$.ajax({
+			type : 'post',
+			url : url,
+			data : {'arr':''},
+			dataType: "json",
+			success : function(response) {
+				if(response.code == 0) {
+					console.log(response.message);
+					return false
+				}
+				$("td[data-name='today_task_total']").text(response.data.task_total.today);
+				$("td[data-name='yesterday_task_total']").text(response.data.task_total.yesterday);
+				$("td[data-name='today_user_total']").text(response.data.user_total.today);
+				$("td[data-name='yesterday_user_total']").text(response.data.user_total.yesterday);
+				$("td[data-name='today_success_node']").text(response.data.success_tasklog.today);
+				$("td[data-name='yesterday_success_node']").text(response.data.success_tasklog.yesterday);
+				$("td[data-name='today_failed_node']").text(response.data.failed_tasklog.today);
+				$("td[data-name='yesterday_failed_node']").text(response.data.failed_tasklog.yesterday);
+			},
+			error : function(response) {
+				console.log(response.message)
+			}
+		});
+	},
 	
 	/**
 	 * 获取服务器状态

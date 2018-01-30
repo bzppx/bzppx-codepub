@@ -138,34 +138,45 @@ func (this *MainController) GetPublishData() {
 
 	today := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.UTC).Unix()
 	yesterday := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day() - 1, 0, 0, 0, 0, time.UTC).Unix()
-	todayTaskCount, todayUserCount, err := models.TaskModel.CountTaskAndUserByCreateTime(today, time.Now().Unix())
+
+	tdTaskCount, tdUserCount, err := models.TaskModel.CountTaskAndUserByCreateTime(today, time.Now().Unix())
 	if err != nil {
 		this.ErrorLog("获取今日发布任务总数失败："+err.Error())
 		this.jsonError("获取数据失败")
 	}
-	yesterdayTaskCount, yesterdayUserCount, err := models.TaskModel.CountTaskAndUserByCreateTime(yesterday, today)
+	ydTaskCount, ydUserCount, err := models.TaskModel.CountTaskAndUserByCreateTime(yesterday, today)
 	if err != nil {
 		this.ErrorLog("获取昨日发布任务总数失败："+err.Error())
 		this.jsonError("获取数据失败")
 	}
 
+	tdSuccessTaskLogCount, tdFailedTaskLogCount, err := models.TaskLogModel.CountByCreateTimeGroupByIsSuccess(today, time.Now().Unix())
+	if err != nil {
+		this.ErrorLog("获取今日节点任务总数失败："+err.Error())
+		this.jsonError("获取数据失败")
+	}
+	ydSuccessTaskLogCount, ydFailedTaskLogCount, err := models.TaskLogModel.CountByCreateTimeGroupByIsSuccess(yesterday, today)
+	if err != nil {
+		this.ErrorLog("获取昨日发布节点任务总数失败："+err.Error())
+		this.jsonError("获取数据失败")
+	}
 
 	data := map[string]interface{}{
 		"task_total": map[string]interface{}{
-			"today": todayTaskCount,
-			"yesterday": yesterdayTaskCount,
+			"today": tdTaskCount,
+			"yesterday": ydTaskCount,
 		},
 		"user_total": map[string]interface{}{
-			"today": todayUserCount,
-			"yesterday": yesterdayUserCount,
+			"today": tdUserCount,
+			"yesterday": ydUserCount,
 		},
-		"success_node": map[string]interface{}{
-			"today": "",
-			"yesterday": "",
+		"success_tasklog": map[string]interface{}{
+			"today": tdSuccessTaskLogCount,
+			"yesterday": ydSuccessTaskLogCount,
 		},
-		"failed_node": map[string]interface{}{
-			"today": "",
-			"yesterday": "",
+		"failed_tasklog": map[string]interface{}{
+			"today": tdFailedTaskLogCount,
+			"yesterday": ydFailedTaskLogCount,
 		},
 	}
 

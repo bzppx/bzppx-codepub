@@ -95,7 +95,7 @@
             </div>
         </div>
         <!-- 发布数据和系统公告 -->
-        <div class="row">
+        <div class="row" id="publish_data">
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">发布数据统计</div>
@@ -211,6 +211,7 @@
         Layers.bindIframe("[name='info']", "公告详细信息", "450px", "850px");
         Main.GetProjectCount("/main/getMyProjectCount");
         Main.GetActiveProjectRank("active-project-rank", "/main/getActiveProjectRank");
+        Main.GetPublishData("/main/getPublishData");
         Main.GetServerStatus("/main/serverStatus");
         setInterval('Main.GetServerStatus("/main/serverStatus")', 2000);
     });
