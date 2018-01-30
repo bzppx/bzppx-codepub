@@ -25,8 +25,12 @@ func (this *ProfileController) Password() {
 func (this *ProfileController) Save() {
 
 	givenName := strings.Trim(this.GetString("given_name", ""), "")
-	email := strings.Trim(this.GetString("email", "") ,"")
+	email := strings.Trim(this.GetString("email", ""), "")
 	mobile := strings.Trim(this.GetString("mobile", ""), "")
+
+	if this.Data["loginUser"].(map[string]string)["api_auth_id"] != "0" {
+		this.jsonError("auth_api的用户信息不能修改！")
+	}
 
 	if givenName == "" {
 		this.jsonError("姓名不能为空！")
@@ -45,7 +49,7 @@ func (this *ProfileController) Save() {
 	})
 
 	if err != nil {
-		this.ErrorLog("修改个人资料失败："+err.Error())
+		this.ErrorLog("修改个人资料失败：" + err.Error())
 		this.jsonError("修改失败")
 	} else {
 		this.InfoLog("修改个人资料成功")
@@ -59,6 +63,10 @@ func (this *ProfileController) SavePassword() {
 	pwd := strings.Trim(this.GetString("pwd", ""), "")
 	pwdNew := strings.Trim(this.GetString("pwd_new", ""), "")
 	pwdConfirm := strings.Trim(this.GetString("pwd_confirm", ""), "")
+
+	if this.Data["loginUser"].(map[string]string)["api_auth_id"] != "0" {
+		this.jsonError("auth_api的用户信息不能修改！")
+	}
 
 	if (pwd == "") || (pwdNew == "") || (pwdConfirm == "") {
 		this.jsonError("密码不能为空！")
@@ -82,7 +90,7 @@ func (this *ProfileController) SavePassword() {
 	this.Ctx.Request.PostForm.Del("pwd_confirm")
 
 	if err != nil {
-		this.ErrorLog("修改密码失败："+err.Error())
+		this.ErrorLog("修改密码失败：" + err.Error())
 		this.jsonError("修改密码失败")
 	} else {
 		this.InfoLog("修改密码成功")

@@ -135,6 +135,9 @@ func (this *UserController) Modify() {
 	}
 
 	user, err := models.UserModel.GetUserByUserId(userId)
+	if user["api_auth_id"] != "0" {
+		this.jsonError("auth_api的用户信息不能修改！")
+	}
 	if err != nil {
 		this.jsonError("用户不存在！")
 	}

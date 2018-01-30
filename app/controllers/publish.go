@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"bzppx-codepub/app/remotes"
 )
 
 type PublishController struct {
@@ -341,7 +342,7 @@ func (this *PublishController) DoReset() {
 
 func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, projectId string) {
 
-	//判断是否封版
+	// 判断是否封版
 	var isBlock bool
 	var err error
 	if this.isRoot() || this.isAdmin() {
@@ -355,9 +356,41 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	if isBlock {
 		this.jsonError("已封版！")
 	}
+
+	// 查找该项目下的节点
+	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
+	if len(projectNodes) <= 0 {
+		this.jsonError("该项目下还没有节点！请先添加节点后再发布")
+	}
+	if err != nil {
+		this.ErrorLog("创建任务查询项目 "+projectId+" 节点关系失败：" + err.Error())
+		this.jsonError("创建任务失败！")
+	}
+
+	// 查找该项目所有的节点信息
+	nodeIds := []string{}
+	for _, projectNode := range projectNodes {
+		nodeIds = append(nodeIds, projectNode["node_id"])
+	}
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.ErrorLog("创建任务查找项目 "+projectId+" 节点信息失败：" + err.Error())
+		this.jsonError("创建任务失败！")
+	}
+
+	// 检查所有的节点是否通畅
+	for _, node := range nodes {
+		err := remotes.System.Ping(node["ip"], node["port"], nil)
+		if err != nil {
+			this.ErrorLog("项目 "+projectId+" 创建任务节点 "+node["node_id"]+" 检测失败：" + err.Error())
+			this.jsonError("创建任务失败！节点 "+node["ip"]+":"+node["port"]+ " 连接失败")
+		}
+	}
+
+	// 创建发布任务
 	taskId, err := models.TaskModel.Insert(taskValue)
 	if err != nil {
-		this.ErrorLog("创建任务失败：" + err.Error())
+		this.ErrorLog("项目 "+projectId+" 创建发布任务失败：" + err.Error())
 		this.jsonError("创建任务失败！")
 	}
 
@@ -368,21 +401,12 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 	_, err = models.ProjectModel.Update(projectId, projectValue)
 	if err != nil {
-		this.ErrorLog("创建任务修改最后项目发布时间失败：" + err.Error())
+		this.ErrorLog("项目 "+projectId+" 创建任务修改最后发布时间失败：" + err.Error())
 		this.jsonError("创建任务失败！")
 	}
 
-	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
-	if len(projectNodes) <= 0 {
-		this.jsonError("该项目下没有节点！")
-	}
-	if err != nil {
-		this.ErrorLog("查询项目节点关系失败：" + err.Error())
-		this.jsonError("查询项目节点关系失败！")
-	}
-
+	// 创建节点任务
 	taskLog := make([]map[string]interface{}, len(projectNodes))
-	nodeIds := []string{}
 	for index, projectNode := range projectNodes {
 		taskLog[index] = make(map[string]interface{})
 		taskLog[index]["task_id"] = taskId
@@ -393,13 +417,10 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		taskLog[index]["commit_id"] = ""
 		taskLog[index]["create_time"] = time.Now().Unix()
 		taskLog[index]["update_time"] = time.Now().Unix()
-
-		nodeIds = append(nodeIds, projectNode["node_id"])
 	}
-
 	err = models.TaskLogModel.InsertBatch(taskLog)
 	if err != nil {
-		this.ErrorLog("创建任务日志失败：" + err.Error())
+		this.ErrorLog("项目 "+projectId+" 创建节点任务日志失败：" + err.Error())
 		this.jsonError("创建任务日志失败！")
 	}
 
@@ -410,11 +431,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.ErrorLog("创建任务失败：" + err.Error())
 		this.jsonError("创建任务日志失败！")
 	}
-	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
-	if err != nil {
-		this.ErrorLog("创建任务失败：" + err.Error())
-		this.jsonError("创建任务日志失败！")
-	}
+
 	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
 		this.ErrorLog("创建任务失败：" + err.Error())
@@ -439,6 +456,13 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			"branch":       branch,
 			"username":     project["https_username"],
 			"password":     project["https_password"],
+			"pre_command":                  project["pre_command"],
+			"pre_command_exec_type":        project["pre_command_exec_type"],
+			"pre_command_exec_timeout":     project["pre_command_exec_timeout"],
+			"post_command":                 project["post_command"],
+			"post_command_exec_type":       project["post_command_exec_type"],
+			"post_command_exec_timeout":    project["post_command_exec_timeout"],
+			"exec_user":                    project["exec_user"],
 		}
 		for _, node := range nodes {
 			if node["node_id"] == taskLog["node_id"] {
