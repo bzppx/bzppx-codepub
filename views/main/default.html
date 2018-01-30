@@ -87,7 +87,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading"> 活跃项目排行榜 </div>
+                    <div class="panel-heading"> <strong>活跃项目排行榜</strong> </div>
                     <div class="panel-body">
                         <div id="active-project-rank"></div>
                     </div>
@@ -95,10 +95,10 @@
             </div>
         </div>
         <!-- 发布数据和系统公告 -->
-        <div class="row" id="publish_data">
+        <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
-                    <div class="panel-heading">发布数据统计</div>
+                    <div class="panel-heading"> <strong>发布数据统计</strong></div>
                     <div class="panel-body">
                         <br>
                         <table class="table table-hover">
@@ -112,23 +112,23 @@
                             <tbody>
                             <tr>
                                 <td><strong>发布总数</strong></td>
-                                <td data-name="today_task_total"></td>
-                                <td data-name="yesterday_task_total">400</td>
+                                <td data-name="today_task_total">0</td>
+                                <td data-name="yesterday_task_total">0</td>
                             </tr>
                             <tr>
                                 <td><strong>发布用户</strong></td>
-                                <td data-name="today_user_total">4100</td>
-                                <td data-name="yesterday_user_total">5112</td>
+                                <td data-name="today_user_total"></td>
+                                <td data-name="yesterday_user_total">0</td>
                             </tr>
                             <tr>
                                 <td><strong>成功节点</strong></td>
-                                <td data-name="today_success_node">1540</td>
-                                <td data-name="yesterday_success_node">4511</td>
+                                <td data-name="today_success_node">0</td>
+                                <td data-name="yesterday_success_node">0</td>
                             </tr>
                             <tr>
                                 <td><strong>失败节点</strong></td>
-                                <td data-name="today_failed_node">150</td>
-                                <td data-name="yesterday_failed_node">110</td>
+                                <td data-name="today_failed_node">0</td>
+                                <td data-name="yesterday_failed_node">0</td>
                             </tr>
                             </tbody>
                         </table>
@@ -136,8 +136,8 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="panel panel-default" style="height: 283px">
-                    <div class="panel-heading">系统公告</div>
+                <div class="panel panel-default" style="height: 278px">
+                    <div class="panel-heading"><strong>系统公告</strong></div>
                     <ul class="list-group">
                         {{range $notice:=.notices}}
                         <li class="list-group-item">
@@ -152,8 +152,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
-                    <div class="panel-heading">服务器状态</div>
+                    <div class="panel-heading"><strong>服务器状态</strong></div>
                     <div class="panel-body">
+                        <br>
                         <p> CPU使用率：<strong class="cpu_text">0%</strong></p>
                         <div class="progress" style="height: 14px">
                             <div id="cpu_progress" class="progress-bar progress-bar-success progress-bar-striped active"
@@ -191,8 +192,8 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">系统联系人手册</div>
+                <div class="panel panel-default" style="height: 269px">
+                    <div class="panel-heading"><strong>系统联系人手册</strong></div>
                     <div class="panel-body">
                         <ul class="list-group">
                             <li class="list-group-item">站长(李小龙)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13134848615</li>
