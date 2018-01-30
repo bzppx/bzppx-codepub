@@ -244,3 +244,26 @@ func (t *Task) GetProjectIdsOrderByCountProjectLimit(limit int) (tasks []map[str
 	tasks = rs.Rows()
 	return
 }
+
+// 根据创建时间获取 task 数量
+func (l *Task) CountTaskAndUserByCreateTime(startTime int64, endTime int64) (total int64, userTotal int64, err error) {
+
+	db := G.DB()
+	var rs *mysql.ResultSet
+	sql := db.AR().Select("count(*) as total, count(distinct user_id) as user_total").
+		From(Table_Task_Name).
+		Where(map[string]interface{}{
+		"create_time >= ": startTime,
+		"create_time < ": endTime,
+		})
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+	res := rs.Row()
+	if len(res) > 0 {
+		total = utils.NewConvert().StringToInt64(res["total"])
+		userTotal = utils.NewConvert().StringToInt64(res["user_total"])
+	}
+	return
+}
