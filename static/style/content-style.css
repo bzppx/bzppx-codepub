@@ -25,6 +25,10 @@ th {
     text-align: center;
 }
 
+.panel-body {
+    padding-top: 10px;
+}
+
 .panel-heading {
     /*padding: 8px;*/
     border-bottom: 1px solid transparent;
@@ -33,8 +37,8 @@ th {
 }
 
 .panel {
-    margin-bottom: 5px;
-    margin-right: 3px;
+    margin-bottom: 13px;
+    /*margin-right: 3px;*/
 }
 
 .col-xs-1,

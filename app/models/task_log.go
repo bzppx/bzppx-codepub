@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/snail007/go-activerecord/mysql"
-	"strconv"
+	"bzppx-codepub/app/utils"
 )
 
 const (
@@ -185,7 +185,7 @@ func (t *TaskLog) GetAllTaskLog() (taskLogs []map[string]string, err error) {
 	return
 }
 
-func (t *TaskLog) CountTaskLogByTaskIdsAndIsSuccess(taskIds []string, isSuccess int) (total int, err error) {
+func (t *TaskLog) CountTaskLogByTaskIdsAndIsSuccess(taskIds []string, isSuccess int) (total int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 
@@ -200,7 +200,37 @@ func (t *TaskLog) CountTaskLogByTaskIdsAndIsSuccess(taskIds []string, isSuccess 
 	}
 
 	if rs.Value("total") != "" {
-		total, _ = strconv.Atoi(rs.Value("total"))
+		total = utils.NewConvert().StringToInt64(rs.Value("total"))
 	}
 	return total, nil
+}
+
+// 根据创建时间获取 task_log 数量
+func (l *TaskLog) CountByCreateTimeGroupByIsSuccess(startTime int64, endTime int64) (successTotal int64, failedTotal int64, err error) {
+
+	db := G.DB()
+	var rs *mysql.ResultSet
+	sql := db.AR().Select("is_success, count('is_success') as total").
+		From(Table_TaskLog_Name).
+		Where(map[string]interface{}{
+		"create_time >= ": startTime,
+		"create_time < ": endTime,
+		}).
+		GroupBy("is_success")
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+	res := rs.Rows()
+	if len(res) > 0 {
+		for _, r := range res {
+			if r["is_success"] == "1" {
+				successTotal = utils.NewConvert().StringToInt64(r["total"])
+			}
+			if r["is_success"] == "0" {
+				failedTotal = utils.NewConvert().StringToInt64(r["total"])
+			}
+		}
+	}
+	return
 }
