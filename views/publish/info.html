@@ -3,7 +3,7 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#base" aria-controls="base" role="tab" data-toggle="tab">基本</a></li>
-            <li role="presentation"><a href="#command" aria-controls="command" role="tab" data-toggle="tab">命令</a></li>
+            <li role="presentation"><a href="#config" aria-controls="config" role="tab" data-toggle="tab">配置</a></li>
             <li role="presentation"><a href="#node" aria-controls="node" role="tab" data-toggle="tab">节点</a></li>
         </ul>
         <br>
@@ -61,37 +61,57 @@
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="command">
-                <div class="table-responsive">
+            <div role="tabpanel" class="tab-pane" id="config">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>前置命令</strong></div>
                     <table class="table table-bordered table-hover">
                         <tbody>{{$project := .project}}{{$groupName := .groupName}}
                         <tr>
-                            <td class="w20p">前置命令</td>
-                            <td>{{$project.pre_command}}</td>
+                            <td class="w20p">命令</td>
+                            <td>
+                                <div class="col-sm-6">
+                                <pre>{{$project.pre_command}}</pre>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
-                            <td>前置命令执行方式</td>
-                            <td>{{$project.pre_command_exec_type}}</td>
+                            <td>执行方式</td>
+                            <td>
+                                {{if eq $project.pre_command_exec_type "1" }} 同步执行，遇到错误停止 {{end}}
+                                {{if eq $project.pre_command_exec_type "2" }} 同步执行，遇到错误继续 {{end}}
+                                {{if eq $project.pre_command_exec_type "3" }} 异步执行 {{end}}
+                            </td>
                         </tr>
                         <tr>
-                            <td>前置命令超时</td>
-                            <td>{{$project.pre_command_exec_timeout}}</td>
+                            <td>超时时间</td>
+                            <td>{{$project.pre_command_exec_timeout}}s</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>后置命令</strong></div>
+                    <table class="table table-bordered table-hover">
+                        <tbody>{{$project := .project}}{{$groupName := .groupName}}
+                        <tr>
+                            <td class="w20p">命令</td>
+                            <td>
+                                <div class="col-sm-6">
+                                    <pre>{{$project.post_command}}</pre>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
-                            <td>后置命令</td>
-                            <td>{{$project.post_command}}</td>
+                            <td>执行方式</td>
+                            <td>
+                                {{if eq $project.pre_command_exec_type "1" }} 同步执行，遇到错误停止 {{end}}
+                                {{if eq $project.pre_command_exec_type "2" }} 同步执行，遇到错误继续 {{end}}
+                                {{if eq $project.pre_command_exec_type "3" }} 异步执行 {{end}}
+                            </td>
                         </tr>
                         <tr>
-                            <td>后置命令执行方式</td>
-                            <td>{{$project.post_command_exec_type}}</td>
-                        </tr>
-                        <tr>
-                            <td>后置命令超时</td>
-                            <td>{{$project.post_command_exec_timeout}}</td>
-                        </tr>
-                        <tr>
-                            <td>执行命令用户</td>
-                            <td>{{$project.exec_user}}</td>
+                            <td>超时时间</td>
+                            <td>{{$project.post_command_exec_timeout}}s</td>
                         </tr>
                         </tbody>
                     </table>
