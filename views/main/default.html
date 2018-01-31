@@ -206,10 +206,17 @@
                     <div class="panel-heading">系统联系人手册</div>
                     <div class="panel-body">
                         <ul class="list-group">
-                            <li class="list-group-item">站长(李小龙)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13134848615</li>
-                            <li class="list-group-item">技术(大牛哥)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13456127694</li>
-                            <li class="list-group-item">推广(张二哥)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13457815482</li>
-                            <li class="list-group-item">客服(王女士)：<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;13134567782&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;028-888888</li>
+							{{range $contact := .contacts}}
+                            <li class="list-group-item">
+							{{$contact.position}}({{$contact.name}})：
+							{{if $contact.mobile}}
+								<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;{{$contact.mobile}}
+							{{end}}  
+							{{if $contact.telephone}}
+								&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;{{$contact.telephone}}
+							{{end}}
+							</li>
+							{{end}}
                         </ul>
                     </div>
                 </div>

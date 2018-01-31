@@ -275,4 +275,17 @@ CREATE TABLE `cp_user_project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户项目关系表';
 
 
+DROP TABLE IF EXISTS `cp_contact`;
+CREATE TABLE `cp_contact` (
+  `contact_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '联系人表主键ID',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '联系人名称',
+  `telephone` char(13) NOT NULL DEFAULT '' COMMENT '联系人座机电话',
+  `mobile` char(13) NOT NULL DEFAULT '' COMMENT '联系人手机',
+  `position` varchar(100) NOT NULL DEFAULT '' COMMENT '联系人职位',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`contact_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='联系人表';
+
+
 -- 2018-01-26 10:53:48

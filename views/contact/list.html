@@ -1,0 +1,57 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <a href="/contact/add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 添加联系人 </a>
+                </div>
+            </div>
+            <form action="" method="get">
+                <div class="col-md-6">
+                    <div class="input-group">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="w8p">ID</th>
+                <th>姓名</th>
+				<th class="w11p">职位</th>
+				<th class="w11p">座机号</th>
+                <th class="w11p">手机号</th>
+                <th class="w13p">创建时间</th>
+                <th class="w13p">修改时间</th>
+                <th class="w10p">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $contact := .contacts}}
+            <tr>
+                <td class="center">{{$contact.contact_id}}</td>
+                <td>{{$contact.name}}</td>
+				<td class="center">{{$contact.position}}</td>
+                <td class="center">{{$contact.telephone}}</td>
+				<td class="center">{{$contact.mobile}}</td>
+                <td class="center">{{dateFormat $contact.create_time "Y-m-d H:i:s"}}</td>
+                <td class="center">{{dateFormat $contact.update_time "Y-m-d H:i:s"}}</td>
+                <td class="center">
+                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/contact/update?contact_id={{$contact.contact_id}}">修改</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/contact/delete?contact_id={{$contact.contact_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    Layers.bindIframe("[name='edit']", "修改联系人信息", "400px", "850px")
+</script>

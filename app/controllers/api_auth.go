@@ -43,6 +43,9 @@ func (this *ApiAuthController) Edit() {
 	if err != nil {
 		this.viewError(err.Error(), "api/form")
 	}
+	if len(authApi) == 0 {
+		this.viewError("未查到api信息", "api/form")
+	}
 
 	this.Data["apiAuth"] = authApi
 	this.viewLayoutTitle("修改auth_api", "api/form", "page")

@@ -4,6 +4,7 @@ import (
 	"bzppx-codepub/app/models"
 	"encoding/json"
 	"fmt"
+
 	"github.com/shirou/gopsutil/mem"
 )
 
@@ -18,14 +19,14 @@ func (this *MainController) Index() {
 
 func (this *MainController) Default() {
 	var err error
-	
+
 	//获取我的项目数
 	var projectCount int64
 	var groupCount int64
-	if (this.isAdmin() || this.isRoot()) {
+	if this.isAdmin() || this.isRoot() {
 		projectCount, err = models.ProjectModel.CountProjects()
 		groupCount, err = models.GroupModel.CountGroups()
-	}else {
+	} else {
 		userProjects, err := models.UserProjectModel.GetUserProjectByUserId(this.UserID)
 		if err != nil {
 			this.ErrorLog("获取我的项目组数据失败: " + err.Error())
@@ -66,7 +67,7 @@ func (this *MainController) Default() {
 			this.ErrorLog("获取我的项目数据失败：" + err.Error())
 			this.viewError("获取数据失败")
 		}
-		successPublish = len(taskIds) - failedPublish;
+		successPublish = len(taskIds) - failedPublish
 	}
 
 	// 获取项目总排行
@@ -89,7 +90,7 @@ func (this *MainController) Default() {
 		for _, projectCountId := range projectCountIds {
 			projectPublishCount := map[string]string{
 				"project_name": "",
-				"total": projectCountId["total"],
+				"total":        projectCountId["total"],
 			}
 			for _, project := range projects {
 				if projectCountId["project_id"] == project["project_id"] {
@@ -109,6 +110,13 @@ func (this *MainController) Default() {
 		this.viewError("获取最新公告失败")
 	}
 
+	// 获取联系人信息
+	contacts, err := models.ContactModel.GetAllContact()
+	if err != nil {
+		this.ErrorLog("获取联系人信息失败：" + err.Error())
+		this.viewError("获取联系人信息失败")
+	}
+
 	// 服务器状态
 	v, _ := mem.VirtualMemory()
 	fmt.Printf("Total: %v, Free:%v, UsedPercent:%f%%\n", v.Total, v.Free, v.UsedPercent)
@@ -119,6 +127,7 @@ func (this *MainController) Default() {
 	this.Data["successPublish"] = successPublish
 	this.Data["projectPublishCountRank"] = string(jsonProjectPublishCountRank)
 	this.Data["notices"] = notices
+	this.Data["contacts"] = contacts
 	this.viewLayoutTitle("首页", "main/default", "index")
 }
 
