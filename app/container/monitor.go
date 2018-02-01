@@ -95,6 +95,7 @@ func (m *Monitor) HandleCreateStatusTaskLog() {
 			"branch":       sha1Id,
 			"username":     project["https_username"],
 			"password":     project["https_password"],
+			"dir_user":     project["code_dir_user"],
 			"pre_command":                  project["pre_command"],
 			"pre_command_exec_type":        project["pre_command_exec_type"],
 			"pre_command_exec_timeout":     project["pre_command_exec_timeout"],
