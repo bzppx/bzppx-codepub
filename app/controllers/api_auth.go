@@ -160,3 +160,8 @@ func (this *ApiAuthController) Delete() {
 	this.InfoLog("删除auth_api成功")
 	this.jsonSuccess("删除auth_api成功", nil, "/apiAuth/list")
 }
+
+// api 接入手册
+func (this *ApiAuthController) Introduce() {
+	this.viewLayoutTitle("api接入手册", "api/introduce", "page")
+}
