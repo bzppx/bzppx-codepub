@@ -36,10 +36,10 @@ func (this *ContactController) Update() {
 	contactId := strings.Trim(this.GetString("contact_id", ""), "")
 	contact, err := models.ContactModel.GetContactByContactId(contactId)
 	if err != nil {
-		this.viewError(err.Error(), "contact/list")
+		this.viewError(err.Error(), "contact/form")
 	}
 	if len(contact) == 0 {
-		this.viewError("未查到联系人信息", "contact/list")
+		this.viewError("未查到联系人信息", "contact/form")
 	}
 
 	this.Data["contact"] = contact

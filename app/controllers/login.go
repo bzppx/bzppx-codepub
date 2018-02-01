@@ -55,24 +55,24 @@ func (this *LoginController) Index() {
 		if apiAuthId != "" {
 			apiAuth, err := models.ApiAuthModel.GetApiAuthByApiAuthId(apiAuthId)
 			if err != nil {
-				this.ErrorLog("获取api_auth_id" + apiAuthId + "数据失败：" + err.Error())
 				this.jsonError("获取授权数据失败！")
 			}
 			request, err := http.PostForm(apiAuth["url"], url.Values{"username": {name}, "password": {password}})
 			if err != nil {
-				this.ErrorLog("请求" + apiAuth["url"] + "失败：" + err.Error())
 				this.jsonError("请求接口失败！")
 			}
 			defer request.Body.Close()
 			responseJson, err := ioutil.ReadAll(request.Body)
 			if err != nil {
-				this.ErrorLog("请求" + apiAuth["url"] + "后读取数据失败：" + err.Error())
 				this.jsonError("请求接口失败！")
 			}
 			var response map[string]interface{}
 			err = json.Unmarshal(responseJson, &response)
 			if err != nil {
 				this.jsonError("请求数据错误！")
+			}
+			if response["msg"].(string) != "" {
+				this.jsonError(response["msg"].(string))
 			}
 
 			//判断返回的uid的类型，如果不是string转为string
@@ -145,7 +145,6 @@ func (this *LoginController) Index() {
 		} else {
 			user, err = userModel.GetUserByName(name, "0")
 			if err != nil {
-				this.ErrorLog("查找用户失败：" + err.Error())
 				this.jsonError("账号不存在！")
 				return
 			}
