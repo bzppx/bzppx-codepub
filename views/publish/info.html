@@ -104,9 +104,9 @@
                         <tr>
                             <td>执行方式</td>
                             <td>
-                                {{if eq $project.pre_command_exec_type "1" }} 同步执行，遇到错误停止 {{end}}
-                                {{if eq $project.pre_command_exec_type "2" }} 同步执行，遇到错误继续 {{end}}
-                                {{if eq $project.pre_command_exec_type "3" }} 异步执行 {{end}}
+                                {{if eq $project.post_command_exec_type "1" }} 同步执行，遇到错误停止 {{end}}
+                                {{if eq $project.post_command_exec_type "2" }} 同步执行，遇到错误继续 {{end}}
+                                {{if eq $project.post_command_exec_type "3" }} 异步执行 {{end}}
                             </td>
                         </tr>
                         <tr>
