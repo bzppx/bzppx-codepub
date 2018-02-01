@@ -370,7 +370,6 @@ func (this *ProjectController) ConfigSave() {
 	postCommand := strings.Trim(this.GetString("post_command", ""), "")
 	postCommandExecType := strings.Trim(this.GetString("post_command_exec_type", ""), "")
 	postCommandExecTimeout := strings.Trim(this.GetString("post_command_exec_timeout", ""), "")
-	execUser := strings.Trim(this.GetString("exec_user", ""), "")
 	if projectId == "" {
 		this.viewError("项目不存在", "/project/list")
 	}
@@ -390,7 +389,6 @@ func (this *ProjectController) ConfigSave() {
 		"post_command": postCommand,
 		"post_command_exec_type": postCommandExecType,
 		"post_command_exec_timeout": postCommandExecTimeout,
-		"exec_user": execUser,
 		"update_time": time.Now().Unix(),
 	}
 	

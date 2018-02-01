@@ -188,7 +188,6 @@ CREATE TABLE `cp_project` (
   `post_command` text NOT NULL COMMENT '后置命令',
   `post_command_exec_type` int(11) NOT NULL DEFAULT '1' COMMENT '后置命令执行方式, 1 同步执行，遇到错误停止;2 同步执行，遇到错误继续;3 异步执行',
   `post_command_exec_timeout` int(11) NOT NULL DEFAULT '30' COMMENT '后置命令超时时间,单位秒',
-  `exec_user` varchar(30) NOT NULL DEFAULT '' COMMENT '执行命令用户',
   `comment` varchar(200) NOT NULL DEFAULT '' COMMENT '备注',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除 0 否 1 是',
   `last_publish_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次发布时间',
