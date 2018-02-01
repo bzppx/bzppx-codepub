@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"io/ioutil"
+	"runtime"
 )
 
 type InstallController struct {
@@ -15,7 +16,7 @@ func (this *InstallController) Index() {
 
 // 许可协议
 func (this *InstallController) License() {
-	bytes, _ := ioutil.ReadFile("LICENSE")
+	bytes, _ := ioutil.ReadFile("../LICENSE")
 	license := string(bytes)
 	this.Data["license"] = license
 	this.viewLayoutTitle("安装", "install/license", "install")
@@ -23,6 +24,16 @@ func (this *InstallController) License() {
 
 // 环境检测
 func (this *InstallController) Env() {
+
+	//获取服务器信息
+	host := this.Ctx.Input.Host()
+	osSys := runtime.GOOS
+	server := map[string]string{
+		"host": host,
+		"sys": osSys,
+		"install_dir": "",
+	}
+	this.Data["server"] = server
 	this.viewLayoutTitle("安装", "install/env", "install")
 }
 
