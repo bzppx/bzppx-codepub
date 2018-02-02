@@ -49,7 +49,7 @@ func (this *BaseController) view(viewName string) {
 
 // error view
 func (this *BaseController) viewError(errorMessage string, data ...interface{}) {
-	this.Layout = "layout/default.html"
+	this.Layout = "layout/install.html"
 	redirect := "/"
 	sleep := 2000
 	if len(data) > 0 {
@@ -58,8 +58,11 @@ func (this *BaseController) viewError(errorMessage string, data ...interface{}) 
 	if len(data) > 1 {
 		sleep = data[1].(int)
 	}
-	this.TplName = "error/error.html"
+	_, actionName := this.GetControllerAndAction()
+	methodName := strings.ToLower(actionName)
+	this.TplName = "install/error.html"
 	this.Data["title"] = "error"
+	this.Data["method"] = methodName
 	this.Data["message"] = errorMessage
 	this.Data["redirect"] = redirect
 	this.Data["sleep"] = sleep
@@ -77,7 +80,7 @@ func (this *BaseController) viewTitle(title, viewName string) {
 // return json success
 func (this *BaseController) jsonSuccess(message interface{}, data ...interface{}) {
 	url := ""
-	sleep := 2000
+	sleep := 300
 	var _data interface{}
 	if len(data) > 0 {
 		_data = data[0]
@@ -141,4 +144,9 @@ func (this *BaseController) jsonError(message interface{}, data ...interface{}) 
 func (this *BaseController) getClientIp() string {
 	s := strings.Split(this.Ctx.Request.RemoteAddr, ":")
 	return s[0]
+}
+
+// is post
+func (this *BaseController) isPost() bool {
+	return this.Ctx.Input.IsPost()
 }

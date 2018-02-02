@@ -8,9 +8,9 @@
                         <div class="list-group">
                             <a href="#" class="list-group-item"><i class="glyphicon glyphicon-hand-right"></i> 1. 许可协议</a>
                             <a href="#" class="list-group-item"><i class="glyphicon glyphicon-hand-right"></i> 2. 环境检测</a>
-                            <a href="#" class="list-group-item active"><i class="glyphicon glyphicon-hand-right"></i> 2. 系统配置</a>
+                            <a href="#" class="list-group-item"><i class="glyphicon glyphicon-hand-right"></i> 2. 系统配置</a>
                             <a href="#" class="list-group-item"><i class="glyphicon glyphicon-hand-right"></i> 3. 数据库配置</a>
-                            <a href="#" class="list-group-item"><i class="glyphicon glyphicon-hand-right"></i> 4. 准备安装</a>
+                            <a href="#" class="list-group-item active"><i class="glyphicon glyphicon-hand-right"></i> 4. 准备安装</a>
                             <a href="#" class="list-group-item"><i class="glyphicon glyphicon-hand-right"></i> 5. 安装完成</a>
                         </div>
                     </div>
@@ -20,32 +20,21 @@
         <div class="col-xs-12 col-sm-9">
             <div id="failedBox" style="margin-bottom: 0; margin-top: 10px;" class="hide"></div>
             <div class="panel-body">
-                <!-- 系统配置 -->
+                <!-- 安装准备页面 -->
                 <div class="row">{{$sysConf := .sysConf}}
                     <form class="form-horizontal" method="post" action="/install/config">
                     <div class="panel panel-default">
-                        <div class="panel-heading"><strong>系统配置</strong></div>
+                        <div class="panel-heading"><strong>准备安装</strong></div>
                         <div class="panel-body"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> addr </label>
-                                <div class="col-sm-4">
-                                    <input type="text" name="addr" class="form-control" value="{{$sysConf.addr}}" placeholder="请输入address, 默认为0.0.0.0" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 端口 </label>
-                                <div class="col-sm-4">
-                                    <input type="text" name="port" class="form-control" value="{{$sysConf.port}}" placeholder="请输入启动端口" required>
-                                </div>
-                            </div>
+                            <p>开始</p>
                         <div class="panel-footer">
                         </div>
                     </div>
-                    <div class="col-md-offset-8 pull-right">
+                    <div class="center">
                         <a href="/install/env">
                             <button type="button" class="btn btn-warning">上一步</button>
                         </a>
-                        <button type="button" onclick="Form.installSubmit(this.form)" class="btn btn-primary">下一步
+                        <button type="button" onclick="Form.installSubmit(this.form)" class="btn btn-primary">开始安装
                         </button>
                     </div>
                     </form>
