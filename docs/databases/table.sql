@@ -280,6 +280,7 @@ CREATE TABLE `cp_contact` (
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '联系人名称',
   `telephone` char(13) NOT NULL DEFAULT '' COMMENT '联系人座机电话',
   `mobile` char(13) NOT NULL DEFAULT '' COMMENT '联系人手机',
+  `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
   `position` varchar(100) NOT NULL DEFAULT '' COMMENT '联系人职位',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
