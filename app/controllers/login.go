@@ -71,16 +71,18 @@ func (this *LoginController) Index() {
 			if err != nil {
 				this.jsonError("请求数据错误！")
 			}
-			msg, ok := response["msg"]
-			if !ok {
+			if _, ok := response["msg"]; !ok {
 				this.jsonError("认证接口返回无效信息！")
 			}
-			if msg.(string) != "" {
-				this.jsonError(msg)
+			if reflect.TypeOf(response["msg"]).String() != "string" {
+				this.jsonError("接口返回msg是无效信息！")
+			}
+			if response["msg"].(string) != "" {
+				this.jsonError(response["msg"].(string))
 			}
 
 			//判断返回的uid的类型，如果不是string转为string
-			_, ok = response["uid"]
+			_, ok := response["uid"]
 			if !ok {
 				this.jsonError("认证接口返回无效信息！")
 			}
@@ -104,6 +106,9 @@ func (this *LoginController) Index() {
 			}
 
 			userData := make(map[string]interface{})
+			if reflect.TypeOf(response["given_name"]).String() != "string" {
+				this.jsonError("认证接口返回无效信息！")
+			}
 			userData["given_name"], ok = response["given_name"]
 			if !ok {
 				this.jsonError("认证接口返回无效信息！")
