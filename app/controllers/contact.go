@@ -62,7 +62,7 @@ func (this *ContactController) Modify() {
 		this.jsonError("联系人姓名不能为空！")
 	}
 	if telephone == "" && mobile == "" && email == "" {
-		this.jsonError("手机号，座机号和邮箱必须有一个！")
+		this.jsonError("手机号，座机号和邮箱必须填写一个！")
 	}
 	res, err := regexp.MatchString(`^(?:\d{3}-?\d{8}|\d{4}-?\d{7})$`, telephone)
 	if err != nil {
@@ -120,7 +120,7 @@ func (this *ContactController) Save() {
 		this.jsonError("联系人姓名不能为空！")
 	}
 	if telephone == "" && mobile == "" && email == "" {
-		this.jsonError("手机号，座机号和邮箱必须有一个！")
+		this.jsonError("手机号，座机号和邮箱必须填写一个！")
 	}
 	res, err := regexp.MatchString(`^(?:\d{3}-?\d{8}|\d{4}-?\d{7})$`, telephone)
 	if err != nil {
