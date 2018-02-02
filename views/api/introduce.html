@@ -75,7 +75,7 @@
 	}
 	//uid, given_name, msg 必须有，如果为空填空字符串，email 和 mobile 可选返回
 	$result = ['msg' => '', 'uid' => $data['uid'], "given_name" => $data['real_name'], 'email' => $data['email'], 'mobile' => $data["mobile"]];
-	echo json_encode($json, JSON_UNESCAPED_UNICODE);</pre>
+	echo json_encode($result, JSON_UNESCAPED_UNICODE);</pre>
 						</code>
                     </div>
                 </div>

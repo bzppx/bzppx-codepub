@@ -445,6 +445,26 @@ textarea {
     border-color: #0178bc;
 }
 
+.panel-purple {
+    border-color: #7044a6;
+}
+
+.panel-purple > .panel-heading {
+    color: #fff;
+    background-color: #7044a6;
+    border-color: #7044a6;
+}
+
+.panel-grey {
+    border-color: #eee;
+}
+
+.panel-grey > .panel-heading {
+    color: #000;
+    background-color: #eee;
+    border-color: #eee;
+}
+
 .huge {
     font-size: 30px;
 }

@@ -1,0 +1,94 @@
+<div class="panel panel-default">
+	<div class="panel-heading"> 
+		<strong>我的资料</strong> 
+		<div style="float:right;"><a class="glyphicon glyphicon-edit" href="/profile/update">修改</a></div>
+		
+	</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-grey">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-vcard fa-fw fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" id="group_count_text">{{.user.username}}</div>
+                                <div>用户名</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+		<div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-grey">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-user-o fa-fw fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" id="group_count_text">{{.user.given_name}}</div>
+                                <div>姓名</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+		<div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-grey">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-envelope-o fa-fw fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" id="group_count_text">{{.user.email}}</div>
+                                <div>邮箱</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+		<div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-grey">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-mobile fa-fw fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" id="group_count_text">{{.user.mobile}}</div>
+                                <div>手机</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+		<div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-grey">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-registered fa-fw fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" id="group_count_text">{{if eq .user.role "1" }} 普通用户 {{end}} {{if eq .user.role "2" }} 管理员 {{end}} {{if eq .user.role "3" }} 超级管理员 {{end}}</div>
+                                <div>角色</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>

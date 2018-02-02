@@ -53,6 +53,7 @@ func (this *ContactController) Modify() {
 	telephone := strings.Trim(this.GetString("telephone", ""), "")
 	mobile := strings.Trim(this.GetString("mobile", ""), "")
 	position := strings.Trim(this.GetString("position", ""), "")
+	email := strings.Trim(this.GetString("email", ""), "")
 
 	if contactId == "" {
 		this.jsonError("参数错误！")
@@ -60,8 +61,8 @@ func (this *ContactController) Modify() {
 	if name == "" {
 		this.jsonError("联系人姓名不能为空！")
 	}
-	if telephone == "" && mobile == "" {
-		this.jsonError("手机号和座机号必须有一个！")
+	if telephone == "" && mobile == "" && email == "" {
+		this.jsonError("手机号，座机号和邮箱必须填写一个！")
 	}
 	res, err := regexp.MatchString(`^(?:\d{3}-?\d{8}|\d{4}-?\d{7})$`, telephone)
 	if err != nil {
@@ -77,6 +78,13 @@ func (this *ContactController) Modify() {
 	if !res && mobile != "" {
 		this.jsonError("手机号不正确！")
 	}
+	res, err = regexp.MatchString(`^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`, email)
+	if err != nil {
+		this.jsonError("正则匹配邮箱失败！")
+	}
+	if !res && email != "" {
+		this.jsonError("邮箱不正确！")
+	}
 	if position == "" {
 		this.jsonError("联系人职位不能为空！")
 	}
@@ -86,6 +94,7 @@ func (this *ContactController) Modify() {
 		"telephone":   telephone,
 		"mobile":      mobile,
 		"position":    position,
+		"email":       email,
 		"update_time": time.Now().Unix(),
 	}
 
@@ -105,12 +114,13 @@ func (this *ContactController) Save() {
 	telephone := strings.Trim(this.GetString("telephone", ""), "")
 	mobile := strings.Trim(this.GetString("mobile", ""), "")
 	position := strings.Trim(this.GetString("position", ""), "")
+	email := strings.Trim(this.GetString("email", ""), "")
 
 	if name == "" {
 		this.jsonError("联系人姓名不能为空！")
 	}
-	if telephone == "" && mobile == "" {
-		this.jsonError("手机号和座机号必须有一个！")
+	if telephone == "" && mobile == "" && email == "" {
+		this.jsonError("手机号，座机号和邮箱必须填写一个！")
 	}
 	res, err := regexp.MatchString(`^(?:\d{3}-?\d{8}|\d{4}-?\d{7})$`, telephone)
 	if err != nil {
@@ -126,6 +136,13 @@ func (this *ContactController) Save() {
 	if !res && mobile != "" {
 		this.jsonError("手机号不正确！")
 	}
+	res, err = regexp.MatchString(`^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`, email)
+	if err != nil {
+		this.jsonError("正则匹配邮箱失败！")
+	}
+	if !res && email != "" {
+		this.jsonError("邮箱不正确！")
+	}
 	if position == "" {
 		this.jsonError("联系人职位不能为空！")
 	}
@@ -136,6 +153,7 @@ func (this *ContactController) Save() {
 		"telephone":   telephone,
 		"mobile":      mobile,
 		"position":    position,
+		"email":       email,
 		"create_time": timeNow,
 		"update_time": timeNow,
 	}

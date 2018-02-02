@@ -167,10 +167,13 @@ var Main = {
 				for (var i in response.data) {
 					html += '<li class="list-group-item">' + response.data[i]['position'] + '(' + response.data[i]['name'] + ')：'
 					if (response.data[i]['mobile'] != "") {
-						html += '<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;' + response.data[i]['mobile']
+						html += '<span class="glyphicon glyphicon-phone"></span>&nbsp;' + response.data[i]['mobile'] + '&nbsp;&nbsp;'
 					}
 					if (response.data[i]['telephone'] != "") {
-						html += '&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;' + response.data[i]['telephone']
+						html += '<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;' + response.data[i]['telephone'] + '&nbsp;&nbsp;'
+					}
+					if (response.data[i]['email'] != "") {
+						html += '<span class="glyphicon glyphicon-envelope"></span>&nbsp;' + response.data[i]['email']
 					}
 					html += '</li>'
 				}
