@@ -13,16 +13,18 @@ type LogController struct {
 func (this *LogController) Action() {
 
 	page, _ := this.GetInt("page", 1)
-	keyword := strings.Trim(this.GetString("keyword", ""), "")
+	level := strings.Trim(this.GetString("level", ""), "")
+	message := strings.Trim(this.GetString("message", ""), "")
+	username := strings.Trim(this.GetString("username", ""), "")
 
 	number := 15
 	limit := (page - 1) * number
 	var err error
 	var count int64
 	var logActions []map[string]string
-	if keyword != "" {
-		count, err = models.LogModel.CountLogsByKeyword(keyword)
-		logActions, err = models.LogModel.GetLogsByKeywordAndLimit(keyword, limit, number)
+	if level != "" || message != "" || username != "" {
+		count, err = models.LogModel.CountLogsByKeyword(level, message, username)
+		logActions, err = models.LogModel.GetLogsByKeywordAndLimit(level, message, username, limit, number)
 	} else {
 		count, err = models.LogModel.CountLogs()
 		logActions, err = models.LogModel.GetLogsByLimit(limit, number)
@@ -32,7 +34,9 @@ func (this *LogController) Action() {
 	}
 
 	this.Data["logActions"] = logActions
-	this.Data["keyword"] = keyword
+	this.Data["username"] = username
+	this.Data["level"] = level
+	this.Data["message"] = message
 	this.SetPaginator(number, count)
 	this.viewLayoutTitle("行为日志", "log/action", "page")
 }
