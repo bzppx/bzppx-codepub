@@ -2,13 +2,30 @@
     <div class="panel-body">
         <div class="row">
             <form action="" method="get">
-                <div class="col-md-9">
+                <div class="col-md-3">
                     <div class="input-group">
+                    </div>
+                </div>
+				<div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon"> 日志级别</span>
+                        <select class="form-control" name="level">
+                            <option value="">全部</option>
+                            <option value="7">DEBUG</option>
+							<option value="6">INFO</option>
+							<option value="4">WARNING</option>
+							<option value="3">ERROR</option>
+                        </select>
+                    </div>
+                </div>
+				<div class="col-md-3">
+                    <div>
+                        <input class="form-control" name="username" type="text" value="{{.username}}" placeholder="账号">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="keyword" type="text" value="{{.keyword}}" placeholder="描述">
+                        <input class="form-control" name="message" type="text" value="{{.message}}" placeholder="描述">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
@@ -59,5 +76,6 @@
 <script type="text/javascript">
     $(function () {
         Layers.bindIframe("[name='info']", "日志详细信息", "400px", "800px")
+		$("select").val({{.level}})
     });
 </script>
