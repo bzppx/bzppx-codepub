@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 	"github.com/astaxie/beego"
+	"bzppx-codepub/install/storage"
 )
 
 type BaseController struct {
@@ -19,8 +20,27 @@ type JsonResponse struct {
 
 // prepare
 func (this *BaseController) Prepare() {
-	controllerName, _ := this.GetControllerAndAction()
+	controllerName, actionName := this.GetControllerAndAction()
 	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
+	methodName := strings.ToLower(actionName)
+	if (methodName == "index") || (methodName == "end") || (methodName == "status") {
+		return
+	}
+	if storage.Data.Status == storage.Install_Start {
+		if (methodName == "ready" && this.isPost()) {
+			return
+		}
+		this.Redirect("/install/end", 302)
+		this.StopRun()
+	}
+	if storage.Data.Status == storage.Install_End {
+		if storage.Data.IsSuccess == storage.Install_Failed {
+			// 重置
+			storage.Data.IsSuccess = storage.Install_Default
+			storage.Data.Status = storage.Install_Ready
+			storage.Data.Result = ""
+		}
+	}
 }
 
 // view layout title

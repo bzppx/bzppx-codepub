@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "bzppx-codepub/install/storage"
 	"github.com/astaxie/beego"
 )
 

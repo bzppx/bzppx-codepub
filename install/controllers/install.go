@@ -18,7 +18,7 @@ type InstallController struct {
 
 // 安装首页
 func (this *InstallController) Index() {
-	this.viewLayoutTitle("安装", "install/index", "install")
+	this.viewLayoutTitle("codepub-安装", "install/index", "install")
 }
 
 // 许可协议
@@ -37,7 +37,7 @@ func (this *InstallController) License() {
 		this.Data["license"] = license
 
 		this.Data["license_agree"] = storage.Data.License
-		this.viewLayoutTitle("安装", "install/license", "install")
+		this.viewLayoutTitle("codepub-安装-License", "install/license", "install")
 	}
 }
 
@@ -48,8 +48,10 @@ func (this *InstallController) Env() {
 		if storage.Data.Env == storage.Env_NotAccess {
 			this.jsonError("环境检测未通过")
 		}
+		storage.Data.Env = storage.Env_Access
 		this.jsonSuccess("", nil, "/install/config")
 	}
+	storage.Data.Env = storage.Env_Access
 	//获取服务器信息
 	host := this.Ctx.Input.Host()
 	osSys := runtime.GOOS
@@ -119,7 +121,7 @@ func (this *InstallController) Env() {
 	this.Data["server"] = server
 	this.Data["envData"] = envData
 	this.Data["dirData"] = dirData
-	this.viewLayoutTitle("安装", "install/env", "install")
+	this.viewLayoutTitle("codepub-安装-环境检测", "install/env", "install")
 }
 
 // 系统配置
@@ -143,12 +145,13 @@ func (this *InstallController) Config() {
 			"addr": addr,
 			"port": port,
 		}
+		storage.Data.System = storage.Sys_Access
 		this.jsonSuccess("", nil, "/install/database")
 	}
 
 	sysConf := storage.Data.SystemConf
 	this.Data["sysConf"] = sysConf
-	this.viewLayoutTitle("安装", "install/config", "install")
+	this.viewLayoutTitle("codepub-安装-系统配置", "install/config", "install")
 }
 
 // 数据库配置
@@ -156,7 +159,7 @@ func (this *InstallController) Database() {
 
 	if !this.isPost() {
 		this.Data["databaseConf"] = storage.Data.DatabaseConf
-		this.viewLayoutTitle("数据库配置", "install/database", "install")
+		this.viewLayoutTitle("codepub-安装-数据库配置", "install/database", "install")
 	}
 
 	host := this.GetString("host", "")
@@ -208,16 +211,97 @@ func (this *InstallController) Database() {
 		"admin_name": adminName,
 		"admin_pass": adminPass,
 	}
-
-	this.jsonSuccess("", nil, "/install/installing")
+	storage.Data.Database = storage.Database_Access
+	this.jsonSuccess("", nil, "/install/ready")
 }
 
-// 正在安装
-func (this *InstallController) Installing() {
-	this.viewLayoutTitle("安装", "install/installing", "install")
+// 安装准备
+func (this *InstallController) Ready() {
+
+	if this.isPost() {
+		if (storage.Data.License != storage.License_Agree) ||
+			(storage.Data.Env != storage.Env_Access) ||
+			(storage.Data.System != storage.Sys_Access) ||
+			(storage.Data.Database != storage.Database_Access) {
+			this.jsonError("请先完成安装准备")
+		}
+		storage.StartInstall()
+		this.jsonSuccess("", nil, "/install/end")
+	}
+
+	// 协议
+	licenseConf := map[string]interface{}{
+		"name": "许可协议",
+		"value": "同意",
+		"result": "1",
+		"url": "/install/license",
+	}
+	if storage.Data.License != storage.License_Agree {
+		licenseConf["value"] = "未同意"
+		licenseConf["result"] = "0"
+	}
+	//环境检测
+	envConf := map[string]interface{}{
+		"name": "环境检测",
+		"value": "通过",
+		"result": "1",
+		"url": "/install/env",
+	}
+	if storage.Data.Env != storage.Env_Access {
+		envConf["value"] = "未通过"
+		envConf["result"] = "0"
+	}
+	//系统配置
+	sysConf := map[string]interface{}{
+		"name": "系统配置",
+		"value": "完成",
+		"result": "1",
+		"url": "/install/config",
+	}
+	if storage.Data.System != storage.Sys_Access {
+		sysConf["value"] = "未完成"
+		sysConf["result"] = "0"
+	}
+	//数据库配置
+	databaseConf := map[string]interface{}{
+		"name": "数据库配置",
+		"value": "完成",
+		"result": "1",
+		"url": "/install/database",
+	}
+	if storage.Data.Database != storage.Database_Access {
+		databaseConf["value"] = "未完成"
+		databaseConf["result"] = "0"
+	}
+
+	readyConf := []map[string]interface{}{}
+	readyConf = append(readyConf, licenseConf)
+	readyConf = append(readyConf, envConf)
+	readyConf = append(readyConf, sysConf)
+	readyConf = append(readyConf, databaseConf)
+
+	this.Data["readyConf"] = readyConf
+	this.viewLayoutTitle("codepub-安装-准备", "install/ready", "install")
 }
 
 // 安装完成
-func (this *InstallController) Finish() {
-	this.viewLayoutTitle("安装", "install/finish", "install")
+func (this *InstallController) End() {
+
+	if storage.Data.Status == storage.Install_Ready {
+		this.Redirect("/install/ready", 302)
+	}
+
+	this.viewLayoutTitle("codepub-安装完成", "install/end", "install")
+}
+
+// 获取状态
+func (this *InstallController) Status() {
+
+	data := map[string]interface{}{
+		"status": storage.Data.Status,
+		"is_success": storage.Data.IsSuccess,
+		"result": storage.Data.Result,
+	}
+
+	this.jsonSuccess("ok", data)
 }
