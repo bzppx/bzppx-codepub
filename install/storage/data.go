@@ -8,6 +8,11 @@ import (
 	"os"
 	"strings"
 	"io/ioutil"
+	"time"
+	"bzppx-codepub/app/utils"
+	"os/exec"
+	"runtime"
+	"encoding/json"
 )
 
 var Data = NewData()
@@ -34,20 +39,20 @@ const Install_Default = 0 // 默认
 const Install_Failed = 1 // 安装失败
 const Install_Success = 2 // 安装成功
 
-var defaultSystemConf = map[string]interface{}{
+var defaultSystemConf = map[string]string{
 	"addr": "0.0.0.0",
 	"port": "8080",
+	"env": "dev",
 }
 
-var defaultDatabaseConf = map[string]interface{}{
+var defaultDatabaseConf = map[string]string{
 	"host": "127.0.0.1",
 	"port": "3306",
 	"name": "codepub",
 	"user": "",
 	"pass": "",
-	"table_prefix": "cp_",
-	"conn_max_idle": 30,
-	"conn_max_connection": 200,
+	"conn_max_idle": "30",
+	"conn_max_connection": "200",
 	"admin_name": "",
 	"admin_pass": "",
 }
@@ -71,8 +76,8 @@ type data struct {
 	Env int
 	System int
 	Database int
-	SystemConf map[string]interface{}
-	DatabaseConf map[string]interface{}
+	SystemConf map[string]string
+	DatabaseConf map[string]string
 	Status int
 	Result string
 	IsSuccess int
@@ -81,10 +86,10 @@ type data struct {
 // check db
 func checkDB() (err error) {
 
-	host := Data.DatabaseConf["host"].(string)
-	port := Data.DatabaseConf["port"].(string)
-	user := Data.DatabaseConf["user"].(string)
-	pass := Data.DatabaseConf["pass"].(string)
+	host := Data.DatabaseConf["host"]
+	port := Data.DatabaseConf["port"]
+	user := Data.DatabaseConf["user"]
+	pass := Data.DatabaseConf["pass"]
 
 	db, err := sql.Open("mysql", user+":"+pass+"@tcp("+host+":"+port+")/")
 	if err != nil {
@@ -101,12 +106,11 @@ func checkDB() (err error) {
 
 // create db
 func createDB() (err error) {
-
-	host := Data.DatabaseConf["host"].(string)
-	port := Data.DatabaseConf["port"].(string)
-	user := Data.DatabaseConf["user"].(string)
-	pass := Data.DatabaseConf["pass"].(string)
-	name := Data.DatabaseConf["name"].(string)
+	host := Data.DatabaseConf["host"]
+	port := Data.DatabaseConf["port"]
+	user := Data.DatabaseConf["user"]
+	pass := Data.DatabaseConf["pass"]
+	name := Data.DatabaseConf["name"]
 
 	db, err := sql.Open("mysql", user+":"+pass+"@tcp("+host+":"+port+")/")
 	if err != nil {
@@ -123,11 +127,11 @@ func createDB() (err error) {
 // create table
 func createTable() (err error) {
 
-	host := Data.DatabaseConf["host"].(string)
-	port := Data.DatabaseConf["port"].(string)
-	user := Data.DatabaseConf["user"].(string)
-	pass := Data.DatabaseConf["pass"].(string)
-	name := Data.DatabaseConf["name"].(string)
+	host := Data.DatabaseConf["host"]
+	port := Data.DatabaseConf["port"]
+	user := Data.DatabaseConf["user"]
+	pass := Data.DatabaseConf["pass"]
+	name := Data.DatabaseConf["name"]
 
 	installDir, _ := os.Getwd()
 	installDir = strings.Replace(installDir, "install", "", 1)
@@ -136,8 +140,7 @@ func createTable() (err error) {
 		return err
 	}
 	sqlTable := string(sqlBytes);
-	fmt.Println(sqlTable)
-	db, err := sql.Open("mysql", user+":"+pass+"@tcp("+host+":"+port+")/"+name)
+	db, err := sql.Open("mysql", user+":"+pass+"@tcp("+host+":"+port+")/"+name+"?charset=utf8&multiStatements=true")
 	if err != nil {
 		return
 	}
@@ -147,6 +150,84 @@ func createTable() (err error) {
 		return
 	}
 	return nil
+}
+
+// create admin
+func createAdmin() (err error)  {
+	host := Data.DatabaseConf["host"]
+	port := Data.DatabaseConf["port"]
+	user := Data.DatabaseConf["user"]
+	pass := Data.DatabaseConf["pass"]
+	name := Data.DatabaseConf["name"]
+	adminName := Data.DatabaseConf["admin_name"]
+	adminPass := utils.NewEncrypt().Md5Encode(Data.DatabaseConf["admin_pass"])
+
+	db, err := sql.Open("mysql", user+":"+pass+"@tcp("+host+":"+port+")/"+name+"?charset=utf8")
+	if err != nil {
+		return
+	}
+	defer db.Close()
+	stmt, err := db.Prepare("INSERT cp_user SET username=?,password=?,role=?, create_time=?,update_time=?")
+	if err != nil {
+		return
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(adminName, adminPass, 3, time.Now().Unix(), time.Now().Unix())
+	return
+}
+
+// write conf
+func makeConf() (err error) {
+	installDir, _ := os.Getwd()
+	installDir = strings.Replace(installDir, "install", "", 1)
+
+	templateConf, err := utils.NewFile().GetFileContents(installDir+"conf/template.conf")
+	if err != nil {
+		return
+	}
+	// replace conf tag
+	templateConf = strings.Replace(templateConf, "#httpaddr#", Data.SystemConf["addr"], 1)
+	templateConf = strings.Replace(templateConf, "#httpport#", Data.SystemConf["port"], 1)
+	templateConf = strings.Replace(templateConf, "#db.host#", Data.DatabaseConf["host"], 1)
+	templateConf = strings.Replace(templateConf, "#db.port#", Data.DatabaseConf["port"], 1)
+	templateConf = strings.Replace(templateConf, "#db.name#", Data.DatabaseConf["name"], 1)
+	templateConf = strings.Replace(templateConf, "#db.user#", Data.DatabaseConf["user"], 1)
+	templateConf = strings.Replace(templateConf, "#db.pass#", Data.DatabaseConf["pass"], 1)
+	templateConf = strings.Replace(templateConf, "#db.conn_max_idle#", Data.DatabaseConf["conn_max_idle"], 1)
+	templateConf = strings.Replace(templateConf, "#db.conn_max_connection#", Data.DatabaseConf["conn_max_connection"], 1)
+
+	env := Data.SystemConf["env"]
+	fileObject, err := os.OpenFile(installDir+"conf/"+env+".conf", os.O_RDWR|os.O_CREATE, 0777);
+	if err != nil {
+		return
+	}
+	defer fileObject.Close();
+
+	_, err = fileObject.Write([]byte(templateConf));
+	return
+}
+
+// run codepub command
+func runCodePub() (err error) {
+	var cmd *exec.Cmd
+	installDir, _ := os.Getwd()
+	installDir = strings.Replace(installDir, "install", "", 1)
+
+	cmd = exec.Command("cmd", "/C", "set", "CODEPUBENV="+Data.SystemConf["env"])
+	cmd.Dir = installDir
+	err = cmd.Run()
+	if err != nil {
+		return
+	}
+
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command(installDir+"bzppx-codepub.exe")
+	}else {
+		cmd = exec.Command("./"+installDir+"bzppx-codepub")
+	}
+	cmd.Dir = installDir
+	err = cmd.Start()
+	return
 }
 
 func installFailed(err string)  {
@@ -159,6 +240,18 @@ func installFailed(err string)  {
 func installSuccess()  {
 	Data.Status = Install_End
 	Data.IsSuccess = Install_Success
+	result := map[string]string{
+		"env": Data.SystemConf["env"],
+		"cmd": "",
+		"url": "http://127.0.0.1:"+Data.SystemConf["port"],
+	}
+	if runtime.GOOS == "windows" {
+		result["cmd"] = "bzppx-codepub.exe"
+	}else {
+		result["cmd"] = "./bzppx-codepub"
+	}
+	resByte, _ := json.Marshal(result)
+	Data.Result = string(resByte)
 }
 
 func StartInstall()  {
@@ -186,19 +279,35 @@ func ListenInstall()  {
 					installFailed("连接数据库出错："+err.Error())
 					continue
 				}
+				log.Println("database connect success")
 				// 创建数据库
 				err = createDB()
 				if err != nil {
 					installFailed("创建数据库出错："+err.Error())
 					continue
 				}
+				log.Println("create database success")
 				// 创建表
 				err = createTable()
 				if err != nil {
 					installFailed("创建表出错："+err.Error())
 					continue
 				}
-
+				log.Println("create table success")
+				// 创建超级管理员
+				err = createAdmin()
+				if err != nil {
+					installFailed("创建管理员账号出错："+err.Error())
+					continue
+				}
+				log.Println("create admin user success")
+				// 写入 conf 文件
+				err = makeConf()
+				if err != nil {
+					installFailed("生成配置文件出错："+err.Error())
+					continue
+				}
+				log.Println("make conf file success")
 				installSuccess()
 				return
 			}

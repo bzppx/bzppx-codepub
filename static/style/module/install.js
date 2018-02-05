@@ -41,8 +41,11 @@ var Install = {
 						//成功
 						$("#install_load").addClass("hidden");
 						$("#install_failed").addClass("hidden");
-						$("#install_success a[data-name='success_message']").text(response.data.result);
-						$("#install_success a[data-name='success_message']").href(response.data.result);
+						var res = eval('(' + response.data.result + ')');
+						$("#install_success span[data-name='success_env_cmd'] code").text("set CODEPUBENV="+res.env);
+						$("#install_success span[data-name='success_run_cmd'] code").text(res.cmd);
+						$("#install_success a[data-name='success_message']").text(res.url);
+						$("#install_success a[data-name='success_message']").attr('href', res.url);
 						$("#install_success").removeClass("hidden");
 					}
 				}

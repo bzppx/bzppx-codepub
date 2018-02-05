@@ -53,7 +53,7 @@ func (this *InstallController) Env() {
 	}
 	storage.Data.Env = storage.Env_Access
 	//获取服务器信息
-	host := this.Ctx.Input.Host()
+	host := utils.NewMisc().GetLocalIp()
 	osSys := runtime.GOOS
 	installDir, _ := os.Getwd()
 	installDir = strings.Replace(installDir, "install", "", 1)
@@ -91,32 +91,68 @@ func (this *InstallController) Env() {
 	envData = append(envData, memData)
 	envData = append(envData, cpuData)
 
-	// 目录权限检测
+	// 目录文件检测
 	fileTool := utils.NewFile()
-	confDir := map[string]string{
-		"path": "conf",
+	commonConfDir := map[string]string{
+		"path": "conf/common.conf",
 		"require": "读/写",
 		"result": "1",
 	}
-	err := fileTool.IsWriterReadable(installDir+confDir["path"]+"/common.conf")
+	err := fileTool.IsWriterReadable(installDir+commonConfDir["path"])
 	if err != nil {
 		storage.Data.Env = storage.Env_NotAccess
-		confDir["result"] = "0"
+		commonConfDir["result"] = "0"
+	}
+	templateConfDir := map[string]string{
+		"path": "conf/template.conf",
+		"require": "读/写",
+		"result": "1",
+	}
+	err = fileTool.IsWriterReadable(installDir+templateConfDir["path"])
+	if err != nil {
+		storage.Data.Env = storage.Env_NotAccess
+		templateConfDir["result"] = "0"
 	}
 
 	docsDir := map[string]string{
-		"path": "docs/databases",
+		"path": "docs/databases/table.sql",
 		"require": "读/写",
 		"result": "1",
 	}
-	err = fileTool.IsWriterReadable(installDir+docsDir["path"]+"/table.sql")
+	err = fileTool.IsWriterReadable(installDir+docsDir["path"])
 	if err != nil {
 		storage.Data.Env = storage.Env_NotAccess
 		docsDir["result"] = "0"
 	}
+
+	viewsDir := map[string]string{
+		"path": "views",
+		"require": "存在且不为空",
+		"result": "1",
+	}
+	isEmpty := utils.NewFile().PathIsEmpty(installDir+viewsDir["path"])
+	if isEmpty == true {
+		storage.Data.Env = storage.Env_NotAccess
+		viewsDir["result"] = "0"
+	}
+
+	staticDir := map[string]string{
+		"path": "static",
+		"require": "存在且不为空",
+		"result": "1",
+	}
+	isEmpty = utils.NewFile().PathIsEmpty(installDir+staticDir["path"])
+	if isEmpty == true {
+		storage.Data.Env = storage.Env_NotAccess
+		staticDir["result"] = "0"
+	}
+
 	dirData := []map[string]string{}
-	dirData = append(dirData, confDir)
+	dirData = append(dirData, commonConfDir)
+	dirData = append(dirData, templateConfDir)
 	dirData = append(dirData, docsDir)
+	dirData = append(dirData, viewsDir)
+	dirData = append(dirData, staticDir)
 
 	this.Data["server"] = server
 	this.Data["envData"] = envData
@@ -128,6 +164,7 @@ func (this *InstallController) Env() {
 func (this *InstallController) Config() {
 
 	if this.isPost() {
+		env := this.GetString("env", "dev")
 		addr := this.GetString("addr", "")
 		port, _ := this.GetInt32("port", 0)
 
@@ -141,9 +178,10 @@ func (this *InstallController) Config() {
 			this.jsonError("端口超出范围")
 		}
 
-		storage.Data.SystemConf = map[string]interface{}{
+		storage.Data.SystemConf = map[string]string{
 			"addr": addr,
-			"port": port,
+			"port": strconv.FormatInt(int64(port),10),
+			"env": env,
 		}
 		storage.Data.System = storage.Sys_Access
 		this.jsonSuccess("", nil, "/install/database")
@@ -167,8 +205,8 @@ func (this *InstallController) Database() {
 	name := this.GetString("name", "")
 	user := this.GetString("user", "")
 	pass := this.GetString("pass", "")
-	connMaxIdle, _:= this.GetInt16("conn_max_idle", 0)
-	connMaxConn, _:= this.GetInt16("conn_max_connection", 0)
+	connMaxIdle := this.GetString("conn_max_idle", "0")
+	connMaxConn := this.GetString("conn_max_connection", "0")
 	adminName := this.GetString("admin_name", "")
 	adminPass := this.GetString("admin_pass", "")
 
@@ -187,10 +225,10 @@ func (this *InstallController) Database() {
 	if pass == "" {
 		this.jsonError("数据库密码不能为空！")
 	}
-	if connMaxIdle == 0 {
+	if connMaxIdle == "0" {
 		this.jsonError("数据库连接数不能为0！")
 	}
-	if connMaxConn == 0 {
+	if connMaxConn == "0" {
 		this.jsonError("最大连接数不能为0！")
 	}
 	if adminName == "" {
@@ -200,7 +238,7 @@ func (this *InstallController) Database() {
 		this.jsonError("超级管理员密码不能为空！")
 	}
 
-	storage.Data.DatabaseConf = map[string]interface{}{
+	storage.Data.DatabaseConf = map[string]string{
 		"host": host,
 		"port": port,
 		"name": name,

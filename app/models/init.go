@@ -12,7 +12,7 @@ var G *mysql.DBGroup
 
 func init() {
 	//init config file
-	env := os.Getenv("SQENV")
+	env := os.Getenv("CODEPUBENV")
 	if env == "" {
 		env = "dev"
 	}

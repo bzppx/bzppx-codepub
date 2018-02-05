@@ -28,18 +28,28 @@
                     <div class="panel panel-default">
                         <div class="panel-heading"><strong>系统配置</strong></div>
                         <div class="panel-body"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> addr </label>
-                                <div class="col-sm-4">
-                                    <input type="text" name="addr" class="form-control" value="{{$sysConf.addr}}" placeholder="请输入address, 默认为0.0.0.0" required>
-                                </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 环境 </label>
+                            <div class="col-sm-4">
+                                <select name="env" class="form-control">
+                                    <option value="dev" {{if eq $sysConf.env "dev"}} selected="selected" {{end}}>dev(开发环境)</option>
+                                    <option value="test" {{if eq $sysConf.env "test"}} selected="selected" {{end}}>test(测试环境)</option>
+                                    <option value="prod" {{if eq $sysConf.env "prod"}} selected="selected" {{end}}>prod(生产环境)</option>
+                                </select>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 端口 </label>
-                                <div class="col-sm-4">
-                                    <input type="text" name="port" class="form-control" value="{{$sysConf.port}}" placeholder="请输入启动端口" required>
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="text-danger"> * </span> addr </label>
+                            <div class="col-sm-4">
+                                <input type="text" name="addr" class="form-control" value="{{$sysConf.addr}}" placeholder="请输入address, 默认为0.0.0.0" required>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 端口 </label>
+                            <div class="col-sm-4">
+                                <input type="text" name="port" class="form-control" value="{{$sysConf.port}}" placeholder="请输入启动端口" required>
+                            </div>
+                        </div>
                         <div class="panel-footer">
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-﻿-- --------------------------------
+-- --------------------------------
 -- codepub database
 -- author: bzppx
 -- --------------------------------
@@ -21,8 +21,8 @@ CREATE TABLE `cp_api_auth` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='外部API认证表';
 
 INSERT INTO `cp_api_auth` (`api_auth_id`, `name`, `key`, `url`, `sort`, `is_show`, `is_delete`, `create_time`, `update_time`) VALUES
-(1,	'LDAP',	'ldap',	'http://127.0.0.1/ldap.php',	0,	1,	0,	0,	0),
-(2,	'LDAP_HK',	'hk',	'http://127.0.0.1/ldap.php',	1,	1,	0,	0,	0);
+(1,'LDAP',	'ldap',	'http://127.0.0.1/ldap.php',	0,	1,	0,	0,	0),
+(2,'LDAP_HK',	'hk',	'http://127.0.0.1/ldap.php',	1,	1,	0,	0,	0);
 
 -- --------------------------------
 -- 配置表
@@ -37,6 +37,18 @@ CREATE TABLE `cp_configure` (
   `is_delete` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
   PRIMARY KEY (`configure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='配置表';
+
+INSERT INTO `cp_configure` VALUES ('1', 'block_message', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('2', 'block_is_enable', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('3', 'block_start_time', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('4', 'block_end_time', '', '0','0', '0');
+INSERT INTO `cp_configure` VALUES ('5', 'email_host', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('6', 'email_port', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('7', 'email_username', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('8', 'email_password', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('9', 'email_from', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('10', 'email_is_ssl', '', '0', '0', '0');
+INSERT INTO `cp_configure` VALUES ('11', 'email_cc_list', '', '0', '0', '0');
 
 -- --------------------------------
 -- 项目组表
@@ -220,7 +232,7 @@ CREATE TABLE `cp_user` (
   `last_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '最后登录ip',
   `last_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `role` tinyint(3) NOT NULL DEFAULT '0' COMMENT '1,普通用户;  2管理员;3超级管理员;',
-  `api_auth_id` int(11) NOT NULL COMMENT '来自哪个API,0代表本地用户',
+  `api_auth_id` int(11) NOT NULL DEFAULT '0' COMMENT '来自哪个API,0代表本地用户',
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除，0 否 1 是',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',

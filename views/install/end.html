@@ -26,15 +26,22 @@
                     <div class="panel-body center">
                         <div id="install_load" class="">
                             <img src="/static/style/install/loading.gif" height="340px" width="650px">
-                            <p class="text-danger"><strong>正在努力安装中...</strong></p>
+                            <h5 class="text-danger"><strong>正在努力安装中...</strong></h5>
                         </div>
                         <div id="install_success" class="hidden">
                             <img src="/static/style/install/success.png" height="200px" width="200px">
-                            <h5 class="text-success"><strong>恭喜安装成功，请直接访问 <a href="" data-name="success_message"></a> 来使用 CodePub</strong></h5>
+                            <h5 class="text-success"><strong>恭喜安装成功!</strong></h5>
+                            <h5 class="text-success"><strong>启动命令：</strong>
+                                <span data-name="success_env_cmd"><code></code><br></span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span data-name="success_run_cmd"><code></code></span>
+                            </h5>
+                            <h5 class="text-success"><strong>访问地址：<a href="#" target="_blank" data-name="success_message"></a></strong></h5>
                         </div>
                         <div id="install_failed" class="hidden">
                             <img src="/static/style/install/cry.png" height="200px" width="200px">
-                            <h5 class="text-danger"><strong>抱歉，安装失败, 具体原因如下：</strong></h5>
+                            <h5 class="text-danger"><strong>抱歉，安装失败, 错误信息如下：</strong></h5>
                             <h5 class="text-danger" data-name="error_message"></h5>
                         </div>
                     </div>
