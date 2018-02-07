@@ -195,7 +195,7 @@ func makeConf() (err error) {
 	templateConf = strings.Replace(templateConf, "#db.conn_max_idle#", Data.DatabaseConf["conn_max_idle"], 1)
 	templateConf = strings.Replace(templateConf, "#db.conn_max_connection#", Data.DatabaseConf["conn_max_connection"], 1)
 
-	fileObject, err := os.OpenFile(installDir+"conf/app.conf", os.O_RDWR|os.O_CREATE, 0777);
+	fileObject, err := os.OpenFile(installDir+"conf/codepub.conf", os.O_RDWR|os.O_CREATE, 0777);
 	if err != nil {
 		return
 	}
@@ -236,9 +236,9 @@ func installSuccess()  {
 		"url": "http://127.0.0.1:"+Data.SystemConf["port"],
 	}
 	if runtime.GOOS == "windows" {
-		result["cmd"] = "bzppx-codepub.exe -c conf/app.conf"
+		result["cmd"] = "bzppx-codepub.exe --conf conf/codepub.conf"
 	}else {
-		result["cmd"] = "./bzppx-codepub -c conf/app.conf"
+		result["cmd"] = "./bzppx-codepub --conf conf/codepub.conf"
 	}
 	resByte, _ := json.Marshal(result)
 	Data.Result = string(resByte)

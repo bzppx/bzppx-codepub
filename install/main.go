@@ -9,7 +9,7 @@ import (
 // 安装程序
 
 var (
-	port = flag.String("port", "8090", "listen port")
+	port = flag.String("port", "8090", "please input listen port")
 )
 
 func main() {

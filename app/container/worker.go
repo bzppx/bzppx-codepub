@@ -100,7 +100,32 @@ func (t *worker) UpdateResult(taskLogId string, result string) {
 }
 
 // 初始化
-func init()  {
-	go Worker.StartPublish()
-	go Worker.StartGetStatus()
+func InitWorker()  {
+	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				beego.Error(err)
+			}
+		}()
+		Worker.StartPublish()
+	}()
+	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				beego.Error(err)
+			}
+		}()
+		Worker.StartGetStatus()
+	}()
+	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				beego.Error(err)
+			}
+		}()
+		NewMonitor().HandleCreateStatusTaskLog()
+	}()
 }
