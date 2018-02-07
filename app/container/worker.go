@@ -17,6 +17,7 @@ type worker struct {
 type AgentMessage struct {
 	Ip string
 	Port string
+	Token string
 	Args map[string]interface{}
 }
 
@@ -47,7 +48,7 @@ func (w *worker) StartPublish() {
 						beego.Error(err)
 					}
 				}()
-				err := remotes.Task.Publish(agentMsg.Ip, agentMsg.Port, agentMsg.Args)
+				err := remotes.Task.Publish(agentMsg.Ip, agentMsg.Port, agentMsg.Token, agentMsg.Args)
 				if err != nil {
 					beego.Error(err.Error())
 					w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())
@@ -72,7 +73,7 @@ func (w *worker) StartGetStatus() {
 					}
 				}()
 				for {
-					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Args)
+					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Token,agentMsg.Args)
 					if err != nil {
 						beego.Error(err.Error())
 						w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())

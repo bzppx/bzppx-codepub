@@ -93,6 +93,7 @@ CREATE TABLE `cp_node` (
   `node_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '节点信息表主键id',
   `ip` varchar(15) NOT NULL DEFAULT '' COMMENT '节点主机IP',
   `port` int(10) NOT NULL DEFAULT '0' COMMENT '节点主机端口',
+  `token` varchar(32) NOT NULL DEFAULT '' COMMENT 'token',
   `comment` varchar(30) NOT NULL DEFAULT '' COMMENT '备注',
   `last_active_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后存活时间',
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除 0 否 1 是',

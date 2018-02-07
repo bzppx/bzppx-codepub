@@ -42,7 +42,6 @@ const Install_Success = 2 // 安装成功
 var defaultSystemConf = map[string]string{
 	"addr": "0.0.0.0",
 	"port": "8080",
-	"env": "dev",
 }
 
 var defaultDatabaseConf = map[string]string{
@@ -196,8 +195,7 @@ func makeConf() (err error) {
 	templateConf = strings.Replace(templateConf, "#db.conn_max_idle#", Data.DatabaseConf["conn_max_idle"], 1)
 	templateConf = strings.Replace(templateConf, "#db.conn_max_connection#", Data.DatabaseConf["conn_max_connection"], 1)
 
-	env := Data.SystemConf["env"]
-	fileObject, err := os.OpenFile(installDir+"conf/"+env+".conf", os.O_RDWR|os.O_CREATE, 0777);
+	fileObject, err := os.OpenFile(installDir+"conf/app.conf", os.O_RDWR|os.O_CREATE, 0777);
 	if err != nil {
 		return
 	}
@@ -212,13 +210,6 @@ func runCodePub() (err error) {
 	var cmd *exec.Cmd
 	installDir, _ := os.Getwd()
 	installDir = strings.Replace(installDir, "install", "", 1)
-
-	cmd = exec.Command("cmd", "/C", "set", "CODEPUBENV="+Data.SystemConf["env"])
-	cmd.Dir = installDir
-	err = cmd.Run()
-	if err != nil {
-		return
-	}
 
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command(installDir+"bzppx-codepub.exe")
@@ -241,14 +232,13 @@ func installSuccess()  {
 	Data.Status = Install_End
 	Data.IsSuccess = Install_Success
 	result := map[string]string{
-		"env": Data.SystemConf["env"],
 		"cmd": "",
 		"url": "http://127.0.0.1:"+Data.SystemConf["port"],
 	}
 	if runtime.GOOS == "windows" {
-		result["cmd"] = "bzppx-codepub.exe"
+		result["cmd"] = "bzppx-codepub.exe -c conf/app.conf"
 	}else {
-		result["cmd"] = "./bzppx-codepub"
+		result["cmd"] = "./bzppx-codepub -c conf/app.conf"
 	}
 	resByte, _ := json.Marshal(result)
 	Data.Result = string(resByte)

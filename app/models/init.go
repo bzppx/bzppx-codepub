@@ -11,20 +11,7 @@ import (
 var G *mysql.DBGroup
 
 func init() {
-	//init config file
-	env := os.Getenv("CODEPUBENV")
-	if env == "" {
-		env = "dev"
-	}
-	if env == "dev" {
-		beego.LoadAppConfig("ini", "conf/dev.conf")
-	}
-	if env == "test" {
-		beego.LoadAppConfig("ini", "conf/test.conf")
-	}
-	if env == "prod" {
-		beego.LoadAppConfig("ini", "conf/prod.conf")
-	}
+
 	var err error
 
 	//init db

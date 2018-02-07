@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"encoding/json"
+	"bzppx-codepub/app/remotes"
 )
 
 type NodeController struct {
@@ -87,9 +89,12 @@ func (this *NodeController) Save() {
 		this.jsonError("节点ip和端口已存在！")
 	}
 
+	token := utils.NewEncrypt().Md5Encode(utils.NewMisc().RandString(8))
+
 	nodeValue := map[string]interface{}{
 		"ip":               ip,
 		"port":             port,
+		"token":            token,
 		"comment":          comment,
 		"create_time":      time.Now().Unix(),
 		"update_time":      time.Now().Unix(),
@@ -104,7 +109,7 @@ func (this *NodeController) Save() {
 	}
 	this.InfoLog("保存节点 " + utils.NewConvert().IntToString(nodeId, 10) + " 成功")
 
-	// 绑定节点组和几点关系
+	// 绑定节点组和节点关系
 	var insertValues []map[string]interface{}
 	for _, nodeGroupId := range nodeGroupIds {
 		insertValue := map[string]interface{}{
@@ -177,6 +182,7 @@ func (this *NodeController) Modify() {
 	nodeId := this.GetString("node_id", "")
 	ip := strings.Trim(this.GetString("ip", ""), "")
 	port, _ := this.GetInt("port", 0)
+	token := strings.Trim(this.GetString("token", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
 	nodeGroupIds := this.GetStrings("nodes_ids", []string{})
 
@@ -194,6 +200,9 @@ func (this *NodeController) Modify() {
 	if port <= 0 || port >= 65535 {
 		this.jsonError("port不正确！")
 	}
+	if token == "" {
+		this.jsonError("token 不能为空！")
+	}
 	if len(nodeGroupIds) == 0 {
 		this.jsonError("请至少选择一个节点组！")
 	}
@@ -210,6 +219,7 @@ func (this *NodeController) Modify() {
 	nodeValue := map[string]interface{}{
 		"ip":          ip,
 		"port":        port,
+		"token":       token,
 		"comment":     comment,
 		"update_time": time.Now().Unix(),
 	}
@@ -246,6 +256,7 @@ func (this *NodeController) Modify() {
 
 }
 
+// 删除节点
 func (this *NodeController) Delete() {
 	nodeId := this.GetString("node_id", "")
 
@@ -285,4 +296,38 @@ func (this *NodeController) Delete() {
 	}
 	this.InfoLog("删除节点 " + nodeId + " 成功")
 	this.jsonSuccess("删除节点成功", nil, "/node/list")
+}
+
+// ajax 获取节点状态
+func (this *NodeController) Status() {
+
+	nodeIdStr := this.GetString("node_ids", "")
+	if nodeIdStr == "" {
+		this.jsonSuccess("", nil, "")
+	}
+
+	var nodeIds []string
+	json.Unmarshal([]byte(nodeIdStr), &nodeIds)
+
+	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
+	if err != nil {
+		this.jsonError(err.Error())
+	}
+
+	data := []map[string]interface{}{}
+	// 检查所有的节点是否通畅
+	for _, node := range nodes {
+		nodeStatus := map[string]interface{}{
+			"node_id": node["node_id"],
+			"status": 1,
+		}
+		err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
+		if err != nil {
+			this.ErrorLog("节点 "+node["node_id"]+" 连接失败：" + err.Error())
+			nodeStatus["status"] = 0
+		}
+		data = append(data, nodeStatus)
+	}
+
+	this.jsonSuccess("ok", data)
 }

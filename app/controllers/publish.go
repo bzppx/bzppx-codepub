@@ -380,7 +380,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 
 	// 检查所有的节点是否通畅
 	for _, node := range nodes {
-		err := remotes.System.Ping(node["ip"], node["port"], nil)
+		err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
 		if err != nil {
 			this.ErrorLog("项目 "+projectId+" 创建任务节点 "+node["node_id"]+" 检测失败：" + err.Error())
 			this.jsonError("创建任务失败！节点 "+node["ip"]+":"+node["port"]+ " 连接失败")
@@ -447,6 +447,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	for _, taskLog := range taskLogs {
 		ip := ""
 		port := ""
+		token := ""
 		args := map[string]interface{}{
 			"task_log_id":  taskLog["task_log_id"],
 			"url":          project["repository_url"],
@@ -468,12 +469,14 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			if node["node_id"] == taskLog["node_id"] {
 				ip = node["ip"]
 				port = node["port"]
+				token = node["token"]
 				break
 			}
 		}
 		agentMessage := container.AgentMessage{
 			Ip:   ip,
 			Port: port,
+			Token: token,
 			Args: args,
 		}
 		container.Worker.SendPublishChan(agentMessage)

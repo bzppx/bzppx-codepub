@@ -66,6 +66,7 @@ func (m *Monitor) HandleCreateStatusTaskLog() {
 	for _, taskLog := range taskLogs {
 		ip := ""
 		port := ""
+		token := ""
 		projectId := "0"
 		sha1Id := ""
 		for _, task := range tasks {
@@ -107,12 +108,14 @@ func (m *Monitor) HandleCreateStatusTaskLog() {
 			if node["node_id"] == taskLog["node_id"] {
 				ip = node["ip"]
 				port = node["port"]
+				token = node["token"]
 				break
 			}
 		}
 		agentMessage := AgentMessage{
 			Ip:   ip,
 			Port: port,
+			Token: token,
 			Args: args,
 		}
 		Worker.SendPublishChan(agentMessage)

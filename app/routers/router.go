@@ -3,17 +3,24 @@ package routers
 import (
 	"bzppx-codepub/app/controllers"
 	"net/http"
-
 	"bzppx-codepub/app/utils"
-
 	"github.com/astaxie/beego"
+	"flag"
+)
+
+var (
+	confPath = flag.String("conf", "conf/app.conf", "please set codepub conf path")
 )
 
 func init() {
 
+	// init name
 	beego.AppConfig.Set("sys.name", "codepub")
 	beego.BConfig.AppName = beego.AppConfig.String("sys.name")
 	beego.BConfig.ServerName = beego.AppConfig.String("sys.name")
+
+	//init config file
+	beego.LoadAppConfig("ini", *confPath)
 
 	// set static path
 	beego.SetStaticPath("/static/", "static")

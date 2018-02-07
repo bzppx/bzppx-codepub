@@ -93,22 +93,12 @@ func (this *InstallController) Env() {
 
 	// 目录文件检测
 	fileTool := utils.NewFile()
-	commonConfDir := map[string]string{
-		"path": "conf/common.conf",
-		"require": "读/写",
-		"result": "1",
-	}
-	err := fileTool.IsWriterReadable(installDir+commonConfDir["path"])
-	if err != nil {
-		storage.Data.Env = storage.Env_NotAccess
-		commonConfDir["result"] = "0"
-	}
 	templateConfDir := map[string]string{
 		"path": "conf/template.conf",
 		"require": "读/写",
 		"result": "1",
 	}
-	err = fileTool.IsWriterReadable(installDir+templateConfDir["path"])
+	err := fileTool.IsWriterReadable(installDir+templateConfDir["path"])
 	if err != nil {
 		storage.Data.Env = storage.Env_NotAccess
 		templateConfDir["result"] = "0"
@@ -148,7 +138,6 @@ func (this *InstallController) Env() {
 	}
 
 	dirData := []map[string]string{}
-	dirData = append(dirData, commonConfDir)
 	dirData = append(dirData, templateConfDir)
 	dirData = append(dirData, docsDir)
 	dirData = append(dirData, viewsDir)
@@ -164,7 +153,6 @@ func (this *InstallController) Env() {
 func (this *InstallController) Config() {
 
 	if this.isPost() {
-		env := this.GetString("env", "dev")
 		addr := this.GetString("addr", "")
 		port, _ := this.GetInt32("port", 0)
 
@@ -181,7 +169,6 @@ func (this *InstallController) Config() {
 		storage.Data.SystemConf = map[string]string{
 			"addr": addr,
 			"port": strconv.FormatInt(int64(port),10),
-			"env": env,
 		}
 		storage.Data.System = storage.Sys_Access
 		this.jsonSuccess("", nil, "/install/database")

@@ -10,13 +10,16 @@ type BaseRemote struct {
 
 }
 
-func (b *BaseRemote) Call(ip string, port string, method string, args map[string]interface{}) (reply string, err error) {
+func (b *BaseRemote) Call(ip string, port string, token string, method string, args map[string]interface{}) (reply string, err error) {
 	address := ip + ":" +port
 	if address == "" {
 		return reply, errors.New("codepub connect agent error: ip:port is not empty!")
 	}
 	if method == "" {
 		return reply, errors.New("codepub connect agent error: method is not empty!")
+	}
+	if token == "" {
+		return reply, errors.New("codepub connect agent error: token is not empty!")
 	}
 
 	conf := &tls.Config{
@@ -26,7 +29,7 @@ func (b *BaseRemote) Call(ip string, port string, method string, args map[string
 	if err != nil {
 		return reply, errors.New("codepub connect agent error: " + err.Error())
 	}
-	conn.Write([]byte("agent-code"))
+	conn.Write([]byte(token))
 
 	var buf = make([]byte, 1024)
 
