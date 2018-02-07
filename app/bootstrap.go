@@ -1,17 +1,17 @@
 package app
 
 import (
-	"github.com/astaxie/beego"
-	"flag"
-	"bzppx-codepub/app/controllers"
-	"bzppx-codepub/app/utils"
-	"net/http"
-	"fmt"
 	"os"
-	"github.com/snail007/go-activerecord/mysql"
-	"bzppx-codepub/app/models"
 	"log"
+	"fmt"
+	"flag"
+	"net/http"
+	"bzppx-codepub/app/utils"
+	"bzppx-codepub/app/models"
+	"github.com/astaxie/beego"
 	"bzppx-codepub/app/container"
+	"bzppx-codepub/app/controllers"
+	"github.com/snail007/go-activerecord/mysql"
 )
 
 var (
@@ -31,6 +31,15 @@ func initConfig()  {
 
 	flag.Parse()
 
+	if *confPath == "" {
+		log.Println("conf file not empty!")
+		os.Exit(1)
+	}
+	ok, _ := utils.NewFile().PathIsExists(*confPath)
+	if ok == false{
+		log.Println("conf file "+*confPath+" not exists!")
+		os.Exit(1)
+	}
 	//init config file
 	beego.LoadAppConfig("ini", *confPath)
 
