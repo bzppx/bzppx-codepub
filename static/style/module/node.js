@@ -25,6 +25,7 @@ var Node = {
 			type: 'POST',
 			url: '/node/status',
 			data: 'node_ids=' + nodeIdsJson,
+			async: true,
 			dataType: 'json',
 			success: function(response) {
 				if (!response) {
