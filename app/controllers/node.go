@@ -316,41 +316,22 @@ func (this *NodeController) Status() {
 		this.jsonError(err.Error())
 	}
 
-	statusChan := make(chan map[string]interface{}, len(nodes))
-	exitChan := make(chan int, 1)
-	var nodesStatus []map[string]interface{}
-
-	go func() {
-		defer func() {
-			e := recover()
-			if e != nil {
-				fmt.Printf("%v", e)
-			}
-		}()
-		for {
-			select {
-			case status := <-statusChan:
-				fmt.Println(status)
-				nodesStatus = append(nodesStatus, status)
-			case <-exitChan:
-				return
-			default:
-				continue
-			}
-		}
-	}()
-
+	type Data struct{
+		NodesStatus []map[string]interface{}
+		Lock sync.Mutex
+	}
+	data := new(Data)
 	var wait sync.WaitGroup
 	// 检查所有的节点是否通畅
 	for _, node := range nodes {
 		wait.Add(1)
 		go func(node map[string]string) {
 			defer func() {
+				wait.Done()
 				err := recover()
 				if err != nil {
 					fmt.Printf("%v", err)
 				}
-				wait.Done()
 			}()
 			nodeStatus := map[string]interface{}{
 				"node_id": node["node_id"],
@@ -361,11 +342,12 @@ func (this *NodeController) Status() {
 				this.ErrorLog("节点 "+node["node_id"]+" 连接失败：" + err.Error())
 				nodeStatus["status"] = 0
 			}
-			statusChan<-nodeStatus
+			data.Lock.Lock()
+			data.NodesStatus = append(data.NodesStatus, nodeStatus)
+			data.Lock.Unlock()
 		}(node)
 	}
 
 	wait.Wait()
-	exitChan<-1
-	this.jsonSuccess("ok", nodesStatus)
+	this.jsonSuccess("ok", data.NodesStatus)
 }
