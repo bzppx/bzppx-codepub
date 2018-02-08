@@ -39,7 +39,7 @@
 				<td class="center">{{dateFormat $node.create_time "Y-m-d H:i:s"}}</td>
                 <td class="center">{{dateFormat $node.update_time "Y-m-d H:i:s"}}</td>
                 <td class="center" data-name="status" data-row="{{$node.node_id}}">
-                    <i class="glyphicon glyphicon-remove-circle text-danger"></i>
+                    <i class="glyphicon glyphicon-ok-circle text-success"></i>
                 </td>
                 <td class="center">
                     <a name="edit" class="glyphicon glyphicon-edit" data-link="/node/edit?node_id={{$node.node_id}}">修改</a>
