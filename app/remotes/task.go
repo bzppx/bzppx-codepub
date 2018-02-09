@@ -22,14 +22,14 @@ type TaskRemote struct {
 
 // 发布
 func (this *TaskRemote) Publish(ip string, port string, token string, args map[string]interface{}) error {
-	_, err := this.Call(ip, port, token, Rpc_Task_Method_Publish, args)
+	_, err := this.Call(ip, port, token, Rpc_Task_Method_Publish, args, Conn_Timeout)
 	return err
 }
 
 // 获取节点执行结果
 func (this *TaskRemote) GetResults(ip string, port string, token string, args map[string]interface{}) (bool, error) {
 
-	replay, err := this.Call(ip, port, token, Rpc_Task_Method_GetStatus, args)
+	replay, err := this.Call(ip, port, token, Rpc_Task_Method_GetStatus, args, Conn_Timeout)
 	if err != nil {
 		return false, err
 	}
@@ -52,7 +52,7 @@ func (this *TaskRemote) GetResults(ip string, port string, token string, args ma
 			return false, err
 		}
 		// 删除 agent
-		_, err = this.Call(ip, port, token, Rpc_Task_Method_Delete, args)
+		_, err = this.Call(ip, port, token, Rpc_Task_Method_Delete, args, Conn_Timeout)
 		return true, nil
 	} else {
 		return false, nil

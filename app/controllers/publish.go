@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 	"bzppx-codepub/app/remotes"
+	"sync"
+	"fmt"
 )
 
 type PublishController struct {
@@ -379,12 +381,37 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 
 	// 检查所有的节点是否通畅
+	type BadNodes struct {
+		Nodes []map[string]string
+		Lock sync.Mutex
+	}
+	badNodes := new(BadNodes)
+	var wait sync.WaitGroup
 	for _, node := range nodes {
-		err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
-		if err != nil {
-			this.ErrorLog("项目 "+projectId+" 创建任务节点 "+node["node_id"]+" 检测失败：" + err.Error())
-			this.jsonError("创建任务失败！节点 "+node["ip"]+":"+node["port"]+ " 连接失败")
-		}
+		wait.Add(1)
+		go func(node map[string]string) {
+			defer func() {
+				err := recover()
+				if err != nil {
+					fmt.Printf("%v", err)
+					badNodes.Lock.Lock()
+					badNodes.Nodes = append(badNodes.Nodes, node)
+					badNodes.Lock.Unlock()
+				}
+				wait.Done()
+			}()
+			err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
+			if err != nil {
+				badNodes.Lock.Lock()
+				badNodes.Nodes = append(badNodes.Nodes, node)
+				badNodes.Lock.Unlock()
+				this.ErrorLog("项目 "+projectId+" 创建任务时节点 "+node["node_id"]+" 检测失败：" + err.Error())
+			}
+		}(node)
+	}
+	wait.Wait()
+	if len(badNodes.Nodes) > 0 {
+		this.jsonError("创建任务失败！有部分节点连接失败")
 	}
 
 	// 创建发布任务

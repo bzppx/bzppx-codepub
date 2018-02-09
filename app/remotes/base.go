@@ -4,13 +4,17 @@ import (
 	"crypto/tls"
 	"errors"
 	"net/rpc"
+	"time"
+	"net"
 )
+
+const Conn_Timeout = 300
 
 type BaseRemote struct {
 
 }
 
-func (b *BaseRemote) Call(ip string, port string, token string, method string, args map[string]interface{}) (reply string, err error) {
+func (b *BaseRemote) Call(ip string, port string, token string, method string, args map[string]interface{}, timeout int64) (reply string, err error) {
 	address := ip + ":" +port
 	if address == "" {
 		return reply, errors.New("codepub connect agent error: ip:port is not empty!")
@@ -25,7 +29,10 @@ func (b *BaseRemote) Call(ip string, port string, token string, method string, a
 	conf := &tls.Config{
 		InsecureSkipVerify: true,
 	}
-	conn, err := tls.Dial("tcp", address, conf)
+	dialer := &net.Dialer{
+		Timeout: time.Duration(timeout) * time.Millisecond,
+	}
+	conn, err := tls.DialWithDialer(dialer, "tcp", address, conf)
 	if err != nil {
 		return reply, errors.New("codepub connect agent error: " + err.Error())
 	}
@@ -40,9 +47,9 @@ func (b *BaseRemote) Call(ip string, port string, token string, method string, a
 	if string(buf[:n]) != "success" {
 		return reply, errors.New("codepub connect agent token error!")
 	}
-	client := rpc.NewClient(conn)
+	rpcClient := rpc.NewClient(conn)
 
-	err = client.Call(method, args, &reply)
+	err = rpcClient.Call(method, args, &reply)
 	if err != nil {
 		return reply, errors.New("codepub call agent error: "+err.Error())
 	}
