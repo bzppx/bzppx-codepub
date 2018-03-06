@@ -23,7 +23,7 @@
                     {{if eq $task.sha1_id ""}}
                     <label class="text-info">发布</label>
                     {{else}}
-                    <label><a data-toggle="collapse" data-target="#rollback_{{$task.task_id}}" class="text-danger">回滚</a></label>
+                    <label><a data-toggle="collapse" data-target="#rollback_{{$task.task_id}}" class="text-danger"><i class="glyphicon glyphicon-hand-down"></i>回滚</a></label>
                     {{end}}
                 </td>
                 <td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>

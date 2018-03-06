@@ -140,6 +140,7 @@ func (this *LogController) Task() {
 	if err != nil {
 		this.viewError(err.Error(), "/log/task")
 	}
+	
 	tasklogsChangeKey := make(map[string]map[int]map[string]string)
 	for index, taskLog := range taskLogs {
 		_, ok := tasklogsChangeKey[taskLog["task_id"]]
@@ -151,16 +152,16 @@ func (this *LogController) Task() {
 		}
 	}
 	for index, task := range tasks {
-		tasks[index]["status"] = "成功"
+		tasks[index]["status"] = "1"
 		tasks[index]["project_name"] = projectData[task["project_id"]]["name"]
 		tasks[index]["username"] = userData[task["user_id"]]["username"]
 		for _, taskLogChangeKey := range tasklogsChangeKey[task["task_id"]] {
 			if taskLogChangeKey["status"] != "2" {
-				tasks[index]["status"] = "正在执行"
+				tasks[index]["status"] = "2"
 				break
 			}
 			if taskLogChangeKey["is_success"] == "0" {
-				tasks[index]["status"] = "失败"
+				tasks[index]["status"] = "0"
 			}
 		}
 	}
@@ -168,7 +169,6 @@ func (this *LogController) Task() {
 	this.Data["tasks"] = tasks
 	this.Data["user_name"] = userName
 	this.Data["project_name"] = projectName
-	this.Data["user_name"] = userName
 	this.SetPaginator(number, count)
 	this.viewLayoutTitle("任务日志", "log/task", "page")
 }

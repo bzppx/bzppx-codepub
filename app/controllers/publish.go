@@ -275,6 +275,7 @@ func (this *PublishController) History() {
 // 节点信息
 func (this *PublishController) TaskLog() {
 	taskId := this.GetString("task_id", "")
+	isReturn := this.GetString("is_return", "1")
 
 	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskId(taskId)
 	if err != nil {
@@ -302,7 +303,8 @@ func (this *PublishController) TaskLog() {
 	}
 
 	this.Data["taskLogs"] = taskLogs
-	this.viewLayoutTitle("项目任务信息", "publish/task-log", "page")
+	this.Data["isReturn"] = isReturn
+	this.viewLayoutTitle("节点信息", "publish/task-log", "page")
 }
 
 // 发布操作
