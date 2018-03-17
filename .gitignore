@@ -8,3 +8,4 @@
 *.log
 bzppx-codepub
 install/install
+release*
