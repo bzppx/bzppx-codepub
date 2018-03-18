@@ -18,12 +18,32 @@ var (
 	confPath = flag.String("conf", "conf/default.conf", "please set codepub conf path")
 )
 
-func init()  {
+var (
+	version = "v0.8"
+)
 
+func init()  {
+	poster()
 	initConfig()
 	initDB()
 	initRouter()
 	container.InitWorker()
+}
+
+// poster logo
+func poster() {
+	logo := `
+                    __                     __
+  _____ ____   ____/ /___   ____   __  __ / /_
+ / ___// __ \ / __  // _ \ / __ \ / / / // __ \
+/ /__ / /_/ // /_/ //  __// /_/ // /_/ // /_/ /
+\___/ \____/ \__,_/ \___ / .___/ \__,_//_.___/
+                        /_/
+`+
+"Author: bzppx\r\n"+
+"Vserion: "+version+"\r\n"+
+"Link: github.com/bzppx/bzppx-codepub"
+fmt.Println(logo)
 }
 
 // init beego config
