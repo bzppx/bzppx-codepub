@@ -1,5 +1,9 @@
 #!/bin/bash
-VER="0.8"
+VER=$1
+if [ "$VER" = "" ]; then
+    echo 'please input pack version!'
+    exit 1
+fi
 RELEASE="release-${VER}"
 rm -rf ${RELEASE}
 mkdir ${RELEASE}
