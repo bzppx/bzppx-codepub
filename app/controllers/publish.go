@@ -512,5 +512,5 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 
 	this.InfoLog("添加发布任务 " + taskIdStr + " 成功")
-	this.jsonSuccess("发布成功！", nil, "/publish/taskLog?task_id="+taskIdStr, 1000)
+	this.jsonSuccess("创建发布任务成功！", nil, "/publish/taskLog?task_id="+taskIdStr, 1000)
 }
