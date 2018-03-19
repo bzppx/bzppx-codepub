@@ -101,6 +101,15 @@ server {
 ### 2.6 节点进度
 ![login](/docs/guide_res/images/task.png)
 
+# 开发
+
+环境要求：go 1.8
+```
+$ git clone https://github.com/bzppx/bzppx-codepub.git
+$ cd bzppx-codepub
+$ go get ./...
+$ go build ./
+```
 
 # 反馈
 
