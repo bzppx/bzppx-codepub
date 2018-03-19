@@ -42,7 +42,7 @@ $ ./codepub --conf conf/codepub.conf
 ## 2. codepub-agent 安装
 请查看 https://github.com/bzppx/bzppx-agent-codepub
 
-## 3. nginx 配置方向代理
+## 3. nginx 配置反向代理
 ```
 upstream frontends {
     server 127.0.0.1:8088; # codepub 监听的ip:port
