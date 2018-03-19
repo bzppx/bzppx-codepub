@@ -50,15 +50,15 @@ func (this *ProjectController) Save() {
 	}
 	if pullType == "http" {
 		if repositoryUrl[0:7] != "http://" {
-			this.jsonError("代码仓库地址必须是 https:// 开头！")
+			this.jsonError("代码仓库地址必须是 http:// 开头！")
 		}
 	}else if(pullType == "https") {
 		if repositoryUrl[0:8] != "https://" {
 			this.jsonError("代码仓库地址必须是 https:// 开头！")
 		}
 	}else if(pullType == "ssh") {
-		if repositoryUrl[0:4] != "git@" {
-			this.jsonError("代码仓库地址必须是 https:// 开头！")
+		if repositoryUrl[0:4] != "ssh@" {
+			this.jsonError("代码仓库地址必须是 ssh@ 开头！")
 		}
 	}else {
 		this.jsonError("无效的代码拉取方式！")
