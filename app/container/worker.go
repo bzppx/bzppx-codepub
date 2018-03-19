@@ -109,7 +109,7 @@ func (t *worker) PublishFailed(taskLogId string, result string)  {
 	}
 	_, err := models.TaskLogModel.Update(taskLogId, taskLogValue)
 	if err != nil {
-		return false, err
+		beego.Error("update task_log public failed error: "+ err.Error())
 	}
 }
 
