@@ -114,6 +114,7 @@ $ go build ./
 # 反馈
 
 欢迎提交意见和代码 https://github.com/bzppx/bzppx-codepub/issues
+官方交流 QQ 群：547481058
 
 ## License
 
