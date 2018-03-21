@@ -32,10 +32,13 @@ $ cd codepub
 $ wget https://github.com/bzppx/bzppx-codepub/releases/download/v0.8/bzppx-codepub-linux-amd64.tar.gz
 # 解压到当前目录
 $ tar -zxvf bzppx-codepub-linux-amd64.tar.gz
+# 进入程序安装目录
+$ cd install
 # 执行安装程序，默认端口为 8090，指定其他端口加参数 --port=8087
-$ ./install/install
+$ ./install
 # 浏览器访问 http://ip:8090 进入安装界面，完成安装配置
 # Ctrl + C 停止 install 程序, 启动 codepub 管理后台
+$ cd ..
 $ ./codepub --conf conf/codepub.conf
 ```
 
