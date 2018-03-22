@@ -45,4 +45,13 @@ cd ..
 tar -czvf "${RELEASE}/bzppx-codepub-linux-386.tar.gz" bzppx-codepub conf/ docs/ logs/.gitignore static/ views/ install/install LICENSE README.md
 rm -rf bzppx-codepub
 
+echo 'Start pack mac amd64'
+GOOS=darwin GOARCH=amd64 go get ./...
+GOOS=darwin GOARCH=amd64 go build ./
+cd install
+GOOS=darwin GOARCH=amd64 go build ./
+cd ..
+tar -czvf "${RELEASE}/bzppx-codepub-mac-amd64.tar.gz" bzppx-codepub conf/ docs/ logs/.gitignore static/ views/ install/install LICENSE README.md
+rm -rf bzppx-codepub
+
 echo 'END'

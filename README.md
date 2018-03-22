@@ -110,7 +110,6 @@ server {
 ```
 $ git clone https://github.com/bzppx/bzppx-codepub.git
 $ cd bzppx-codepub
-$ go get ./...
 $ go build ./
 ```
 
