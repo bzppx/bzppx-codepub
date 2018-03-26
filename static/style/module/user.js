@@ -27,7 +27,7 @@ var User = {
 				projectIds.push($(this).val());
 			});
 		}
-		if(type == 'node') {
+		if(type == 'project') {
 			projectIds.push(id);
 			var parentId = $(element).attr("data-parent");
 			var flag = true;
@@ -59,13 +59,13 @@ var User = {
 			dataType: "json",
 			success : function(response) {
 				if(response.code == 0) {
-					Form.failedBox(response.message);
 					console.log("失败: "+response.message)
+					Common.errorBox(Form.failedBox, response.message);
 				}
 			},
 			error : function(response) {
-				Form.failedBox("添加节点失败");
 				console.log("失败");
+				Common.errorBox(Form.failedBox, "添加节点失败");
 			}
 		});
 	}
