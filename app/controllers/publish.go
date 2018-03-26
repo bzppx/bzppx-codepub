@@ -66,6 +66,11 @@ func (this *PublishController) Project() {
 	limit := (page - 1) * number
 	var count int64
 	var projects []map[string]string
+
+	if (keywords["group_id"] == "") && (len(groups) > 0) {
+		keywords["group_id"] = groups[0]["group_id"]
+	}
+
 	if len(keywords) > 0 {
 		count, err = models.ProjectModel.CountProjectsByKeywords(keywords)
 		projects, err = models.ProjectModel.GetProjectsByKeywordsAndLimit(keywords, limit, number)
@@ -88,10 +93,6 @@ func (this *PublishController) Project() {
 		if err != nil {
 			this.viewError("获取封版配置出错")
 		}
-	}
-
-	if (keywords["group_id"] == "") && (len(groups) > 0) {
-		keywords["group_id"] = groups[0]["group_id"]
 	}
 
 	this.Data["isBlock"] = isBlock
