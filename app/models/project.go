@@ -2,7 +2,6 @@ package models
 
 import (
 	"bzppx-codepub/app/utils"
-
 	"github.com/snail007/go-activerecord/mysql"
 )
 
@@ -41,6 +40,29 @@ func (p *Project) GetProjectByProjectIds(projectIds []string) (projects []map[st
 		"project_id": projectIds,
 		"is_delete":  PROJECT_NORMAL,
 	}))
+	if err != nil {
+		return
+	}
+	projects = rs.Rows()
+	return
+}
+
+// 根据 project_ids 获取项目
+func (p *Project) GetProjectByProjectIdsAndKeywords(projectIds []string, keywords map[string]string) (projects []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+
+	where := map[string]interface{}{
+		"name LIKE": "%" + keywords["keyword"] + "%",
+		"project_id": projectIds,
+		"is_delete": PROJECT_NORMAL,
+	}
+	groupId, _ := keywords["group_id"]
+	if groupId != "" {
+		where["group_id"] = keywords["group_id"]
+	}
+
+	rs, err = db.Query(db.AR().From(Table_Project_Name).Where(where))
 	if err != nil {
 		return
 	}
@@ -228,6 +250,30 @@ func (project *Project) CountProjectsByKeywords(keywords map[string]string) (cou
 	return
 }
 
+// 根据关键字获取项目总数
+func (project *Project) GetProjectsByKeywords(keywords map[string]string) (projects []map[string]string, err error) {
+
+	db := G.DB()
+	var rs *mysql.ResultSet
+
+	where := map[string]interface{}{
+		"name LIKE": "%" + keywords["keyword"] + "%",
+		"is_delete": PROJECT_NORMAL,
+	}
+	groupId, _ := keywords["group_id"]
+	if groupId != "" {
+		where["group_id"] = keywords["group_id"]
+	}
+	sql := db.AR().Select("*").From(Table_Project_Name).Where(where)
+
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+	projects = rs.Rows()
+	return
+}
+
 // 获取所有的项目
 func (project *Project) GetProjects() (projects []map[string]string, err error) {
 	db := G.DB()
@@ -264,7 +310,7 @@ func (p *Project) CountGroupByProjectIds(projectIds []string) (total int64, err 
 	db := G.DB()
 	var rs *mysql.ResultSet
 	sql := db.AR().Select("count(distinct group_id) as total").
-		From(Table_Task_Name).
+		From(Table_Project_Name).
 		Where(map[string]interface{}{
 			"project_id": projectIds,
 		})
@@ -273,5 +319,27 @@ func (p *Project) CountGroupByProjectIds(projectIds []string) (total int64, err 
 		return
 	}
 	total = utils.NewConvert().StringToInt64(rs.Value("total"))
+	return
+}
+
+// 根据 project_ids 获取 groupIds
+func (p *Project) GetGroupIdsByProjectIds(projectIds []string) (groupIds []string, err error){
+	db := G.DB()
+	var rs *mysql.ResultSet
+	sql := db.AR().Select("DISTINCT (group_id)").
+		From(Table_Project_Name).
+		Where(map[string]interface{}{
+		"project_id": projectIds,
+	})
+	rs, err = db.Query(sql)
+	if err != nil {
+		return
+	}
+	groupIdsMaps := rs.Rows()
+	if len(groupIdsMaps) > 0 {
+		for _, groupIdsMap := range groupIdsMaps {
+			groupIds = append(groupIds, groupIdsMap["group_id"])
+		}
+	}
 	return
 }

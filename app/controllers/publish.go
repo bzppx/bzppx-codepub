@@ -21,7 +21,6 @@ func (this *PublishController) Project() {
 
 	userId := this.UserID
 	groupId := this.GetString("group_id", "")
-	page, _ := this.GetInt("page", 1)
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	keywords := map[string]string{
 		"group_id": groupId,
@@ -30,8 +29,22 @@ func (this *PublishController) Project() {
 
 	var err error
 	var groups []map[string]string
+	var projects []map[string]string
+
 	if this.isAdmin() || this.isRoot() {
 		groups, err = models.GroupModel.GetGroups()
+		if err != nil {
+			this.ErrorLog("查找项目组失败: " + err.Error())
+			this.viewError("查找项目出错")
+		}
+		if (keywords["group_id"] == "") && (len(groups) > 0) {
+			keywords["group_id"] = groups[0]["group_id"]
+		}
+		//if len(keywords) > 0 {
+		projects, err = models.ProjectModel.GetProjectsByKeywords(keywords)
+		//} else {
+		//	projects, err = models.ProjectModel.GetProjects()
+		//}
 		if err != nil {
 			this.ErrorLog("查找项目组失败: " + err.Error())
 			this.viewError("查找项目出错")
@@ -46,41 +59,32 @@ func (this *PublishController) Project() {
 		for _, userProject := range userProjects {
 			projectIds = append(projectIds, userProject["project_id"])
 		}
-		projects, err := models.ProjectModel.GetProjectByProjectIds(projectIds)
+		groupIds, err := models.ProjectModel.GetGroupIdsByProjectIds(projectIds)
 		if err != nil {
 			this.ErrorLog("查找项目失败: " + err.Error())
 			this.viewError("查找项目出错")
-		}
-		groupIds := []string{}
-		for _, project := range projects {
-			groupIds = append(groupIds, project["group_id"])
 		}
 		groups, err = models.GroupModel.GetGroupsByGroupIds(groupIds)
 		if err != nil {
 			this.ErrorLog("查找项目组失败: " + err.Error())
 			this.viewError("查找项目出错")
 		}
-	}
-
-	number := 12
-	limit := (page - 1) * number
-	var count int64
-	var projects []map[string]string
-
-	if (keywords["group_id"] == "") && (len(groups) > 0) {
-		keywords["group_id"] = groups[0]["group_id"]
-	}
-
-	if len(keywords) > 0 {
-		count, err = models.ProjectModel.CountProjectsByKeywords(keywords)
-		projects, err = models.ProjectModel.GetProjectsByKeywordsAndLimit(keywords, limit, number)
-	} else {
-		count, err = models.ProjectModel.CountProjects()
-		projects, err = models.ProjectModel.GetProjectsByLimit(limit, number)
-	}
-	if err != nil {
-		this.ErrorLog("查找用户项目列表失败: " + err.Error())
-		this.viewError("查找项目出错")
+		if (keywords["group_id"] == "") && (len(groups) > 0) {
+			keywords["group_id"] = groups[0]["group_id"]
+		}
+		//if len(keywords) > 0 {
+		projects, err = models.ProjectModel.GetProjectByProjectIdsAndKeywords(projectIds, keywords)
+		if err != nil {
+			this.ErrorLog("查找项目失败: " + err.Error())
+			this.viewError("查找项目出错")
+		}
+		//}else {
+		//	projects, err = models.ProjectModel.GetProjectByProjectIds(projectIds)
+		//	if err != nil {
+		//		this.ErrorLog("查找项目失败: " + err.Error())
+		//		this.viewError("查找项目出错")
+		//	}
+		//}
 	}
 
 	//判断是否封版
@@ -100,7 +104,6 @@ func (this *PublishController) Project() {
 	this.Data["projects"] = projects
 	this.Data["keywords"] = keywords
 	this.Data["groups"] = groups
-	this.SetPaginator(number, count)
 	this.viewLayoutTitle("项目列表", "publish/project", "page")
 }
 
