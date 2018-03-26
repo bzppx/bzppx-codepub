@@ -5,6 +5,7 @@ import (
 	"bzppx-codepub/app/utils"
 	"strings"
 	"time"
+	"fmt"
 )
 
 type UserController struct {
@@ -111,6 +112,9 @@ func (this *UserController) Edit() {
 	if err != nil {
 		this.viewError("用户不存在", "/user/list")
 	}
+	if user["role"] == fmt.Sprintf("%d", models.USER_ROLE_ROOT) {
+		this.viewError("不能修改超级管理员！")
+	}
 
 	this.Data["user"] = user
 	this.viewLayoutTitle("修改用户", "user/form", "page")
@@ -123,6 +127,7 @@ func (this *UserController) Modify() {
 	givenName := strings.Trim(this.GetString("given_name", ""), "")
 	email := strings.Trim(this.GetString("email", ""), "")
 	mobile := strings.Trim(this.GetString("mobile", ""), "")
+	role := strings.Trim(this.GetString("role", ""), "")
 
 	if givenName == "" {
 		this.jsonError("姓名不能为空！")
@@ -132,6 +137,9 @@ func (this *UserController) Modify() {
 	}
 	if mobile == "" {
 		this.jsonError("手机号不能为空！")
+	}
+	if role != fmt.Sprintf("%d", models.USER_ROLE_ADMIN) && role != fmt.Sprintf("%d", models.USER_ROLE_USER) {
+		this.jsonError("角色不合法！")
 	}
 
 	user, err := models.UserModel.GetUserByUserId(userId)
@@ -149,6 +157,7 @@ func (this *UserController) Modify() {
 		"given_name":  givenName,
 		"email":       email,
 		"mobile":      mobile,
+		"role":        role,
 		"create_time": time.Now().Unix(),
 		"update_time": time.Now().Unix(),
 	}
