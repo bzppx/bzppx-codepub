@@ -19,7 +19,7 @@ var (
 )
 
 var (
-	version = "v0.8"
+	version = "v0.8.1"
 )
 
 func init()  {
