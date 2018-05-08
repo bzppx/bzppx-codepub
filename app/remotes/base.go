@@ -6,9 +6,11 @@ import (
 	"net/rpc"
 	"time"
 	"net"
+	"bzppx-agent-codepub/utils"
+	"github.com/astaxie/beego"
 )
 
-const Conn_Timeout = 300
+var Conn_Timeout = beego.AppConfig.DefaultInt64("agent.tls_timeout", 1000)
 
 type BaseRemote struct {
 
@@ -25,7 +27,6 @@ func (b *BaseRemote) Call(ip string, port string, token string, method string, a
 	if token == "" {
 		return reply, errors.New("codepub connect agent error: token is not empty!")
 	}
-
 	conf := &tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -34,17 +35,28 @@ func (b *BaseRemote) Call(ip string, port string, token string, method string, a
 	}
 	conn, err := tls.DialWithDialer(dialer, "tcp", address, conf)
 	if err != nil {
-		return reply, errors.New("codepub connect agent error: " + err.Error())
+		return reply, errors.New("codepub connect agent tls handle error: " + err.Error())
 	}
-	conn.Write([]byte(token))
 
-	var buf = make([]byte, 1024)
+	defer conn.Close()
 
-	n, err := conn.Read(buf)
+	// encode pack write
+	tokenEncode, err := utils.NewCodec().EncodePack([]byte(token))
 	if err != nil {
-		return reply, errors.New("codepub read conn error: "+err.Error())
+		conn.Close()
+		return reply, errors.New("codepub encode pack error, " + err.Error())
 	}
-	if string(buf[:n]) != "success" {
+	_, err = conn.Write([]byte(tokenEncode))
+	if err != nil {
+		return reply, errors.New("codepub send token error, " + err.Error())
+	}
+
+	// read decode pack
+	str, err := utils.NewCodec().DecodePack(conn)
+	if err != nil {
+		return reply, errors.New("codepub read token result error: "+err.Error())
+	}
+	if str != "success" {
 		return reply, errors.New("codepub connect agent token error!")
 	}
 	rpcClient := rpc.NewClient(conn)
