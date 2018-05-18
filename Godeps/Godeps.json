@@ -1,7 +1,7 @@
 {
 	"ImportPath": "bzppx-codepub",
 	"GoVersion": "go1.8",
-	"GodepVersion": "v79",
+	"GodepVersion": "v80",
 	"Packages": [
 		"./..."
 	],
@@ -90,14 +90,24 @@
 			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
 		},
 		{
+			"ImportPath": "github.com/shirou/gopsutil/cpu",
+			"Comment": "v2.18.04-5-g57f370e",
+			"Rev": "57f370e13068146efe1cb7129f79e5d51da8a242"
+		},
+		{
+			"ImportPath": "github.com/shirou/gopsutil/disk",
+			"Comment": "v2.18.04-5-g57f370e",
+			"Rev": "57f370e13068146efe1cb7129f79e5d51da8a242"
+		},
+		{
 			"ImportPath": "github.com/shirou/gopsutil/internal/common",
-			"Comment": "v2.17.12-27-gc432be2",
-			"Rev": "c432be29ccce470088d07eea25b3ea7e68a8afbb"
+			"Comment": "v2.18.04-5-g57f370e",
+			"Rev": "57f370e13068146efe1cb7129f79e5d51da8a242"
 		},
 		{
 			"ImportPath": "github.com/shirou/gopsutil/mem",
-			"Comment": "v2.17.12-27-gc432be2",
-			"Rev": "c432be29ccce470088d07eea25b3ea7e68a8afbb"
+			"Comment": "v2.18.04-5-g57f370e",
+			"Rev": "57f370e13068146efe1cb7129f79e5d51da8a242"
 		},
 		{
 			"ImportPath": "github.com/snail007/go-activerecord/mysql",
