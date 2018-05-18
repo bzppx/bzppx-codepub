@@ -2,6 +2,7 @@ package models
 
 import (
 	"bzppx-codepub/app/utils"
+
 	"github.com/snail007/go-activerecord/mysql"
 )
 
@@ -50,24 +51,32 @@ func (l *Log) Insert(log map[string]interface{}) (id int64, err error) {
 }
 
 // 根据关键字分页获取日志
-func (l *Log) GetLogsByKeywordAndLimit(keyword string, limit int, number int) (logs []map[string]string, err error) {
-	
+func (l *Log) GetLogsByKeywordAndLimit(level, message, username string, limit int, number int) (logs []map[string]string, err error) {
+
 	db := G.DB()
+	where := make(map[string]interface{})
+	if level != "" {
+		where["level"] = level
+	}
+	if message != "" {
+		where["message LIKE"] = "%" + message + "%"
+	}
+	if username != "" {
+		where["username LIKE"] = "%" + username + "%"
+	}
 	var rs *mysql.ResultSet
-	rs, err = db.Query(db.AR().From(Table_Log_Name).Where(map[string]interface{}{
-		"message LIKE": "%" + keyword + "%",
-	}).Limit(limit, number).OrderBy("log_id", "DESC"))
+	rs, err = db.Query(db.AR().From(Table_Log_Name).Where(where).Limit(limit, number).OrderBy("log_id", "DESC"))
 	if err != nil {
 		return
 	}
 	logs = rs.Rows()
-	
+
 	return
 }
 
 // 分页获取日志
 func (l *Log) GetLogsByLimit(limit int, number int) (logs []map[string]string, err error) {
-	
+
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(
@@ -79,13 +88,13 @@ func (l *Log) GetLogsByLimit(limit int, number int) (logs []map[string]string, e
 		return
 	}
 	logs = rs.Rows()
-	
+
 	return
 }
 
 // 获取日志总数
 func (l *Log) CountLogs() (count int64, err error) {
-	
+
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(
@@ -100,16 +109,24 @@ func (l *Log) CountLogs() (count int64, err error) {
 }
 
 // 根据关键字获取日志总数
-func (l *Log) CountLogsByKeyword(keyword string) (count int64, err error) {
-	
+func (l *Log) CountLogsByKeyword(level, message, username string) (count int64, err error) {
+
 	db := G.DB()
+	where := make(map[string]interface{})
+	if level != "" {
+		where["level"] = level
+	}
+	if message != "" {
+		where["message LIKE"] = "%" + message + "%"
+	}
+	if username != "" {
+		where["username LIKE"] = "%" + username + "%"
+	}
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().
 		Select("count(*) as total").
 		From(Table_Log_Name).
-		Where(map[string]interface{}{
-		"message LIKE": "%" + keyword + "%",
-	}))
+		Where(where))
 	if err != nil {
 		return
 	}

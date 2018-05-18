@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <br>{{$user := .user}}
+        <br>{{$user := .user}}{{$loginUser := .loginUser}}
         <form class="form-horizontal" method="post" action="{{if $user}} /user/modify {{else}} /user/save {{end}}">
             <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 用户名</label>
@@ -36,6 +36,21 @@
                     <input type="text" name="mobile" class="form-control" placeholder="请输入手机号" value="{{$user.mobile}}" required>
                 </div>
             </div>
+            {{if $user}}
+            {{if eq $loginUser.role "3"}}
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 角色</label>
+                <div class="col-sm-4">
+                    <select name="role" class="form-control">
+                        <option value="1" {{if eq $user.role "1"}} selected {{end}}>普通用户</option>
+                        <option value="2" {{if eq $user.role "2"}} selected {{end}}>管理员</option>
+                    </select>
+                </div>
+            </div>
+            {{else}}
+            <input type="hidden" name="role" value="{{$user.role}}">
+            {{end}}
+            {{end}}
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="button" onclick="Form.ajaxSubmit(this.form, {{if $user}} true {{else}} false {{end}});" class="btn btn-primary">保存</button>

@@ -4,22 +4,16 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">api接入手册</div>
-                    <div class="panel-body">
-                        <table class="table table-bordered">
-							<thead>
-					            <tr>
-					                <th class="w13p"></th>
-					                <th></th>
-					            </tr>
-					        </thead>
+                    <div class="panel-body"></div>
+                    <table class="table table-bordered">
                             <tbody>
 							<tr>
-                                <td><strong>url</strong></td>
+                                <td class="w10p"><strong>URL</strong></td>
                                 <td>第三方 api 接口地址</td>
                             </tr>
                             <tr>
                                 <td><strong>请求方法</strong></td>
-                                <td>post</td>
+                                <td>POST</td>
                             </tr>
                             <tr>
                                 <td><strong>请求参数</strong></td>
@@ -32,11 +26,11 @@
                                 <td><strong>成功时返回</strong></td>
                                 <td>
 <pre>{
-    	msg: "", 输出信息，成功时为空字符串，必须返回
-    	uid: "", 用户id，必须是字母数字或者下划线，如果有其他字符会登录失败，必须返回
-	given_name: "", 用户名，字符串，必须返回
-	email: "", 用户邮箱，没有留空
-	mobile: "", 用户手机号，没有留空
+    msg: "", 输出信息，成功时为空字符串，必须返回
+    uid: "", 用户id，必须是字母数字或者下划线，如果有其他字符会登录失败，必须返回
+    given_name: "", 用户名，字符串，必须返回
+    email: "", 用户邮箱，没有留空
+    mobile: "", 用户手机号，没有留空
 }</pre>
 								</td>
                             </tr>
@@ -50,7 +44,6 @@
                             </tr>
                             </tbody>
                         </table>
-                    </div>
                 </div>
             </div>
         </div>
@@ -59,24 +52,30 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"> php 代码示例 </div>
                     <div class="panel-body">
-                        <code>
-<pre><?php
-	//获取数据
-	$username = $_POST["username"];
-	$password = $_POST["password"];
-	//连接数据库伪代码<br>
-	$conn = mysql_connect();
-	$data = $conn->query("select * from user where username=" . $username);
-	//判断是否存在账号或者密码是否正确 （验证数据的正确性）
-	if (empty($data) || $data['password'] != $password) {
-		$result['msg'] = "账号或密码错误！";
-		echo json_encode($result, JSON_UNESCAPED_UNICODE);
-		exit();<br>
-	}
-	//uid, given_name, msg 必须有，如果为空填空字符串，email 和 mobile 可选返回
-	$result = ['msg' => '', 'uid' => $data['uid'], "given_name" => $data['real_name'], 'email' => $data['email'], 'mobile' => $data["mobile"]];
-	echo json_encode($json, JSON_UNESCAPED_UNICODE);</pre>
-						</code>
+<pre>
+    <?php
+    //获取数据
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    //连接数据库伪代码<br>
+    $conn = mysql_connect();
+    $data = $conn->query("select * from user where username=" . $username);
+    //判断是否存在账号或者密码是否正确 （验证数据的正确性）
+    if (empty($data) || $data['password'] != $password) {
+        $result['msg'] = "账号或密码错误！";
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        exit();<br>
+    }
+    //uid, given_name, msg 必须有，如果为空填空字符串，email 和 mobile 可选返回
+    $result = [
+        'msg' => '',
+        'uid' => $data['uid'],
+        'given_name' => $data['real_name'],
+        'email' => $data['email'],
+        'mobile' => $data["mobile"]
+    ];
+    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+</pre>
                     </div>
                 </div>
             </div>

@@ -7,9 +7,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>{{.title}}</title>
-    {{template "common/head.html" .}}
+    <link rel="stylesheet" type="text/css" href="/static/style/lightweight-admin-template.css">
+    <link rel="stylesheet" type="text/css" href="/static/style/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/style/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/style/font-awesome/css/font-awesome.min.css">
+    <link rel="icon" href="/static/style/favicon.ico">
 
     <script src="/static/style/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
@@ -19,6 +21,7 @@
     <script src="/static/style/common/layers.js"></script>
     <script src="/static/style/common/form.js"></script>
     <script src="/static/style/common/common.js"></script>
+    <script src="/static/style/module/install.js"></script>
 
     <link rel="stylesheet" href="/static/style/content-style.css">
 </head>
@@ -33,7 +36,7 @@
             <div class="header__account account account--has-login">
                 <div class="account__wrapper">
                     <img class="account__img" src="/static/style/irfan-maulana.jpg" />
-                    <span class="account__name">开源地址</span>
+                    <span class="account__name"><a style="color: whitesmoke" href="https://github.com/bzppx/bzppx-codepub" target="_blank">开源地址</a></span>
                 </div>
             </div>
         </div>

@@ -17,6 +17,7 @@ type worker struct {
 type AgentMessage struct {
 	Ip string
 	Port string
+	Token string
 	Args map[string]interface{}
 }
 
@@ -47,10 +48,10 @@ func (w *worker) StartPublish() {
 						beego.Error(err)
 					}
 				}()
-				err := remotes.Task.Publish(agentMsg.Ip, agentMsg.Port, agentMsg.Args)
+				err := remotes.Task.Publish(agentMsg.Ip, agentMsg.Port, agentMsg.Token, agentMsg.Args)
 				if err != nil {
 					beego.Error(err.Error())
-					w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())
+					w.PublishFailed(agentMsg.Args["task_log_id"].(string), err.Error())
 				}else {
 					w.SendGetStatusChan(agentMsg)
 				}
@@ -72,7 +73,7 @@ func (w *worker) StartGetStatus() {
 					}
 				}()
 				for {
-					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Args)
+					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Token,agentMsg.Args)
 					if err != nil {
 						beego.Error(err.Error())
 						w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())
@@ -98,8 +99,47 @@ func (t *worker) UpdateResult(taskLogId string, result string) {
 	}
 }
 
+func (t *worker) PublishFailed(taskLogId string, result string)  {
+	taskLogValue := map[string]interface{}{
+		"status": models.TASKLOG_STATUS_FINISH,
+		"is_success": models.TASKLOG_FAILED,
+		"result": result,
+		"commit_id": "",
+		"update_time": time.Now().Unix(),
+	}
+	_, err := models.TaskLogModel.Update(taskLogId, taskLogValue)
+	if err != nil {
+		beego.Error("update task_log public failed error: "+ err.Error())
+	}
+}
+
 // 初始化
-func init()  {
-	go Worker.StartPublish()
-	go Worker.StartGetStatus()
+func InitWorker()  {
+	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				beego.Error(err)
+			}
+		}()
+		Worker.StartPublish()
+	}()
+	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				beego.Error(err)
+			}
+		}()
+		Worker.StartGetStatus()
+	}()
+	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				beego.Error(err)
+			}
+		}()
+		NewMonitor().HandleCreateStatusTaskLog()
+	}()
 }

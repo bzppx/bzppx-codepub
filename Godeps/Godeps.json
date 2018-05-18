@@ -111,7 +111,7 @@
 		},
 		{
 			"ImportPath": "github.com/snail007/go-activerecord/mysql",
-			"Rev": "53722debe43d3b9ecd00fa4b23966d16ae1f8bb9"
+			"Rev": "7d1523cc722ec3429f5817fd3c3780b7d5f1ad89"
 		},
 		{
 			"ImportPath": "golang.org/x/image/font",

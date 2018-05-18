@@ -28,9 +28,7 @@ type JsonResponse struct {
 func (this *BaseController) Prepare() {
 	controllerName, _ := this.GetControllerAndAction()
 	controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
-	if controllerName == "install" {
-		return
-	}
+
 	if this.isLogin() && this.inAccessList(beego.AppConfig.String("guest_access_list")) {
 		this.Redirect("/main/index", 302)
 		this.StopRun()

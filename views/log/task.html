@@ -1,14 +1,17 @@
-<div class="panel panel-default">
+<div class="panel panel-default">{{$project := .project}}{{$username := .username}}
     <div class="panel-body">
         <div class="row">
             <form action="/log/task" method="get">
-				<div class="col-md-6"></div>
-				<div class="col-md-3">
-					<input class="form-control" name="user_name" type="text" value="{{.user_name}}" placeholder="请填写用户名">   
-				</div>
+                <div class="col-md-6"></div>
                 <div class="col-md-3">
                     <div class="input-group">
-						<input class="form-control" name="project_name" type="text" value="{{.project_name}}" placeholder="请填写项目名">
+                        <span class="input-group-addon"> 用户名 </span>
+                        <input class="form-control" name="user_name" type="text" value="{{.user_name}}" placeholder="请填写用户名">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input class="form-control" name="project_name" type="text" value="{{.project_name}}" placeholder="请填写项目名">
                         <span class="input-group-btn">
 			            	<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 			            </span>
@@ -22,32 +25,49 @@
             <thead>
             <tr>
                 <th class="w8p">ID</th>
-                <th class="w11p">项目名</th>
+                <th class="w10p">项目</th>
+                <th class="w8p">发布人</th>
                 <th>备注</th>
-				<th class="w13p">commit_id</th>
-				<th class="w8p">创建人</th>
-				<th class="w8p">发布状态</th>
-                <th class="w14p">创建时间</th>
-                <th class="w14p">发布时间</th>
-                <th class="w12p">操作</th>
+                <th class="w8p">类型</th>
+                <th class="w13p">创建时间</th>
+                <th class="w8p">结果</th>
+                <th class="w10p">操作</th>
             </tr>
             </thead>
             <tbody>
-			{{range $task := .tasks}}
+            {{range $task := .tasks}}
             <tr>
                 <td class="center">{{$task.task_id}}</td>
-                <td>{{$task.project_name}}</td>
-                <td class="center">{{$task.comment}}</td>
-                <td class="center">{{$task.sha1_id}}</td>
+                <td class="center">{{$task.project_name}}</td>
                 <td class="center">{{$task.username}}</td>
-				<td class="center">{{$task.status}}</td>
-				<td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
-				<td class="center">{{dateFormat $task.publish_time "Y-m-d H:i:s"}}</td>
+                <td>{{$task.comment}}</td>
                 <td class="center">
-                    <a name="watch" class="glyphicon glyphicon-eye-open" data-link="/publish/taskLog?task_id={{$task.task_id}}">查看发布</a>
+                    {{if eq $task.sha1_id ""}}
+                    <label class="text-info">发布</label>
+                    {{else}}
+                    <label><a data-toggle="collapse" data-target="#rollback_{{$task.task_id}}" class="text-danger"><i class="glyphicon glyphicon-hand-down"></i>回滚</a></label>
+                    {{end}}
+                </td>
+                <td class="center">{{dateFormat $task.create_time "Y-m-d H:i:s"}}</td>
+                <td class="center">
+                    {{if eq $task.status "1"}}
+                    <span class="label label-success">成功</span>
+                    {{else if eq $task.status "2"}}
+                    <img src='/static/style/layui/layer/theme/default/loading-2.gif' style='max-width:17px;'>
+                    {{else}}
+                    <span class="label label-danger">失败</span>
+                    {{end}}
+                </td>
+                <td class="center">
+                    <a name="watch" class="glyphicon glyphicon-eye-open" data-link="/publish/taskLog?task_id={{$task.task_id}}&is_return=0">节点状态</a>
                 </td>
             </tr>
-			{{end}}
+            <tr class="collapse" id="rollback_{{$task.task_id}}">
+                <td colspan="6" class="center">
+                    <strong class="text-danger">sha1_id: {{$task.sha1_id}}</strong>
+                </td>
+            </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
@@ -56,5 +76,5 @@
     </div>
 </div>
 <script type="text/javascript">
-    Layers.bindIframe("[name='watch']", "查看任务发布日志", "600px", "950px")
+	Layers.bindIframe("[name='watch']", "查看任务发布日志", "500px", "1050px")
 </script>

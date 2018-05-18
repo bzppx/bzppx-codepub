@@ -50,7 +50,7 @@ func (this *ProjectController) Save() {
 	}
 	if pullType == "http" {
 		if repositoryUrl[0:7] != "http://" {
-			this.jsonError("代码仓库地址必须是 https:// 开头！")
+			this.jsonError("代码仓库地址必须是 http:// 开头！")
 		}
 	}else if(pullType == "https") {
 		if repositoryUrl[0:8] != "https://" {
@@ -58,7 +58,7 @@ func (this *ProjectController) Save() {
 		}
 	}else if(pullType == "ssh") {
 		if repositoryUrl[0:4] != "git@" {
-			this.jsonError("代码仓库地址必须是 https:// 开头！")
+			this.jsonError("代码仓库地址必须是 git@ 开头！")
 		}
 	}else {
 		this.jsonError("无效的代码拉取方式！")
@@ -185,7 +185,7 @@ func (this *ProjectController) Edit() {
 	
 	repUrl := project["repository_url"]
 	pullType := "http"
-	if repUrl[0:4] == "ssh@" {
+	if repUrl[0:4] == "git@" {
 		pullType = "ssh"
 	}else if repUrl[0:8] == "https://" {
 		pullType = "https"
@@ -232,7 +232,7 @@ func (this *ProjectController) Modify() {
 	}
 	if pullType == "http" {
 		if repositoryUrl[0:7] != "http://" {
-			this.jsonError("代码仓库地址必须是 https:// 开头！")
+			this.jsonError("代码仓库地址必须是 http:// 开头！")
 		}
 	}else if(pullType == "https") {
 		if repositoryUrl[0:8] != "https://" {
@@ -240,7 +240,7 @@ func (this *ProjectController) Modify() {
 		}
 	}else if(pullType == "ssh") {
 		if repositoryUrl[0:4] != "git@" {
-			this.jsonError("代码仓库地址必须是 https:// 开头！")
+			this.jsonError("代码仓库地址必须是 git@ 开头！")
 		}
 	}else {
 		this.jsonError("无效的代码拉取方式！")

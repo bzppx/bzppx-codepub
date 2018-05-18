@@ -13,16 +13,18 @@ type LogController struct {
 func (this *LogController) Action() {
 
 	page, _ := this.GetInt("page", 1)
-	keyword := strings.Trim(this.GetString("keyword", ""), "")
+	level := strings.Trim(this.GetString("level", ""), "")
+	message := strings.Trim(this.GetString("message", ""), "")
+	username := strings.Trim(this.GetString("username", ""), "")
 
 	number := 15
 	limit := (page - 1) * number
 	var err error
 	var count int64
 	var logActions []map[string]string
-	if keyword != "" {
-		count, err = models.LogModel.CountLogsByKeyword(keyword)
-		logActions, err = models.LogModel.GetLogsByKeywordAndLimit(keyword, limit, number)
+	if level != "" || message != "" || username != "" {
+		count, err = models.LogModel.CountLogsByKeyword(level, message, username)
+		logActions, err = models.LogModel.GetLogsByKeywordAndLimit(level, message, username, limit, number)
 	} else {
 		count, err = models.LogModel.CountLogs()
 		logActions, err = models.LogModel.GetLogsByLimit(limit, number)
@@ -32,7 +34,9 @@ func (this *LogController) Action() {
 	}
 
 	this.Data["logActions"] = logActions
-	this.Data["keyword"] = keyword
+	this.Data["username"] = username
+	this.Data["level"] = level
+	this.Data["message"] = message
 	this.SetPaginator(number, count)
 	this.viewLayoutTitle("行为日志", "log/action", "page")
 }
@@ -136,6 +140,7 @@ func (this *LogController) Task() {
 	if err != nil {
 		this.viewError(err.Error(), "/log/task")
 	}
+	
 	tasklogsChangeKey := make(map[string]map[int]map[string]string)
 	for index, taskLog := range taskLogs {
 		_, ok := tasklogsChangeKey[taskLog["task_id"]]
@@ -147,16 +152,16 @@ func (this *LogController) Task() {
 		}
 	}
 	for index, task := range tasks {
-		tasks[index]["status"] = "成功"
+		tasks[index]["status"] = "1"
 		tasks[index]["project_name"] = projectData[task["project_id"]]["name"]
 		tasks[index]["username"] = userData[task["user_id"]]["username"]
 		for _, taskLogChangeKey := range tasklogsChangeKey[task["task_id"]] {
 			if taskLogChangeKey["status"] != "2" {
-				tasks[index]["status"] = "正在执行"
+				tasks[index]["status"] = "2"
 				break
 			}
 			if taskLogChangeKey["is_success"] == "0" {
-				tasks[index]["status"] = "失败"
+				tasks[index]["status"] = "0"
 			}
 		}
 	}
@@ -164,7 +169,6 @@ func (this *LogController) Task() {
 	this.Data["tasks"] = tasks
 	this.Data["user_name"] = userName
 	this.Data["project_name"] = projectName
-	this.Data["user_name"] = userName
 	this.SetPaginator(number, count)
 	this.viewLayoutTitle("任务日志", "log/task", "page")
 }

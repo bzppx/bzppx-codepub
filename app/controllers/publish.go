@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 	"bzppx-codepub/app/remotes"
+	"sync"
+	"fmt"
 )
 
 type PublishController struct {
@@ -19,7 +21,6 @@ func (this *PublishController) Project() {
 
 	userId := this.UserID
 	groupId := this.GetString("group_id", "")
-	page, _ := this.GetInt("page", 1)
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
 	keywords := map[string]string{
 		"group_id": groupId,
@@ -28,8 +29,22 @@ func (this *PublishController) Project() {
 
 	var err error
 	var groups []map[string]string
+	var projects []map[string]string
+
 	if this.isAdmin() || this.isRoot() {
 		groups, err = models.GroupModel.GetGroups()
+		if err != nil {
+			this.ErrorLog("查找项目组失败: " + err.Error())
+			this.viewError("查找项目出错")
+		}
+		if (keywords["group_id"] == "") && (len(groups) > 0) {
+			keywords["group_id"] = groups[0]["group_id"]
+		}
+		//if len(keywords) > 0 {
+		projects, err = models.ProjectModel.GetProjectsByKeywords(keywords)
+		//} else {
+		//	projects, err = models.ProjectModel.GetProjects()
+		//}
 		if err != nil {
 			this.ErrorLog("查找项目组失败: " + err.Error())
 			this.viewError("查找项目出错")
@@ -44,36 +59,32 @@ func (this *PublishController) Project() {
 		for _, userProject := range userProjects {
 			projectIds = append(projectIds, userProject["project_id"])
 		}
-		projects, err := models.ProjectModel.GetProjectByProjectIds(projectIds)
+		groupIds, err := models.ProjectModel.GetGroupIdsByProjectIds(projectIds)
 		if err != nil {
 			this.ErrorLog("查找项目失败: " + err.Error())
 			this.viewError("查找项目出错")
-		}
-		groupIds := []string{}
-		for _, project := range projects {
-			groupIds = append(groupIds, project["group_id"])
 		}
 		groups, err = models.GroupModel.GetGroupsByGroupIds(groupIds)
 		if err != nil {
 			this.ErrorLog("查找项目组失败: " + err.Error())
 			this.viewError("查找项目出错")
 		}
-	}
-
-	number := 12
-	limit := (page - 1) * number
-	var count int64
-	var projects []map[string]string
-	if len(keywords) > 0 {
-		count, err = models.ProjectModel.CountProjectsByKeywords(keywords)
-		projects, err = models.ProjectModel.GetProjectsByKeywordsAndLimit(keywords, limit, number)
-	} else {
-		count, err = models.ProjectModel.CountProjects()
-		projects, err = models.ProjectModel.GetProjectsByLimit(limit, number)
-	}
-	if err != nil {
-		this.ErrorLog("查找用户项目列表失败: " + err.Error())
-		this.viewError("查找项目出错")
+		if (keywords["group_id"] == "") && (len(groups) > 0) {
+			keywords["group_id"] = groups[0]["group_id"]
+		}
+		//if len(keywords) > 0 {
+		projects, err = models.ProjectModel.GetProjectByProjectIdsAndKeywords(projectIds, keywords)
+		if err != nil {
+			this.ErrorLog("查找项目失败: " + err.Error())
+			this.viewError("查找项目出错")
+		}
+		//}else {
+		//	projects, err = models.ProjectModel.GetProjectByProjectIds(projectIds)
+		//	if err != nil {
+		//		this.ErrorLog("查找项目失败: " + err.Error())
+		//		this.viewError("查找项目出错")
+		//	}
+		//}
 	}
 
 	//判断是否封版
@@ -88,16 +99,11 @@ func (this *PublishController) Project() {
 		}
 	}
 
-	if (keywords["group_id"] == "") && (len(groups) > 0) {
-		keywords["group_id"] = groups[0]["group_id"]
-	}
-
 	this.Data["isBlock"] = isBlock
 	this.Data["block"] = block
 	this.Data["projects"] = projects
 	this.Data["keywords"] = keywords
 	this.Data["groups"] = groups
-	this.SetPaginator(number, count)
 	this.viewLayoutTitle("项目列表", "publish/project", "page")
 }
 
@@ -273,6 +279,7 @@ func (this *PublishController) History() {
 // 节点信息
 func (this *PublishController) TaskLog() {
 	taskId := this.GetString("task_id", "")
+	isReturn := this.GetString("is_return", "1")
 
 	taskLogs, err := models.TaskLogModel.GetTaskLogByTaskId(taskId)
 	if err != nil {
@@ -300,7 +307,8 @@ func (this *PublishController) TaskLog() {
 	}
 
 	this.Data["taskLogs"] = taskLogs
-	this.viewLayoutTitle("项目任务信息", "publish/task-log", "page")
+	this.Data["isReturn"] = isReturn
+	this.viewLayoutTitle("节点信息", "publish/task-log", "page")
 }
 
 // 发布操作
@@ -379,12 +387,37 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 
 	// 检查所有的节点是否通畅
+	type BadNodes struct {
+		Nodes []map[string]string
+		Lock sync.Mutex
+	}
+	badNodes := new(BadNodes)
+	var wait sync.WaitGroup
 	for _, node := range nodes {
-		err := remotes.System.Ping(node["ip"], node["port"], nil)
-		if err != nil {
-			this.ErrorLog("项目 "+projectId+" 创建任务节点 "+node["node_id"]+" 检测失败：" + err.Error())
-			this.jsonError("创建任务失败！节点 "+node["ip"]+":"+node["port"]+ " 连接失败")
-		}
+		wait.Add(1)
+		go func(node map[string]string) {
+			defer func() {
+				err := recover()
+				if err != nil {
+					fmt.Printf("%v", err)
+					badNodes.Lock.Lock()
+					badNodes.Nodes = append(badNodes.Nodes, node)
+					badNodes.Lock.Unlock()
+				}
+				wait.Done()
+			}()
+			err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
+			if err != nil {
+				badNodes.Lock.Lock()
+				badNodes.Nodes = append(badNodes.Nodes, node)
+				badNodes.Lock.Unlock()
+				this.ErrorLog("项目 "+projectId+" 创建任务时节点 "+node["node_id"]+" 检测失败：" + err.Error())
+			}
+		}(node)
+	}
+	wait.Wait()
+	if len(badNodes.Nodes) > 0 {
+		this.jsonError("创建任务失败！有部分节点连接失败")
 	}
 
 	// 创建发布任务
@@ -447,6 +480,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	for _, taskLog := range taskLogs {
 		ip := ""
 		port := ""
+		token := ""
 		args := map[string]interface{}{
 			"task_log_id":  taskLog["task_log_id"],
 			"url":          project["repository_url"],
@@ -456,6 +490,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			"branch":       branch,
 			"username":     project["https_username"],
 			"password":     project["https_password"],
+			"dir_user":     project["code_dir_user"],
 			"pre_command":                  project["pre_command"],
 			"pre_command_exec_type":        project["pre_command_exec_type"],
 			"pre_command_exec_timeout":     project["pre_command_exec_timeout"],
@@ -467,17 +502,19 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			if node["node_id"] == taskLog["node_id"] {
 				ip = node["ip"]
 				port = node["port"]
+				token = node["token"]
 				break
 			}
 		}
 		agentMessage := container.AgentMessage{
 			Ip:   ip,
 			Port: port,
+			Token: token,
 			Args: args,
 		}
 		container.Worker.SendPublishChan(agentMessage)
 	}
 
 	this.InfoLog("添加发布任务 " + taskIdStr + " 成功")
-	this.jsonSuccess("发布成功！", nil, "/publish/taskLog?task_id="+taskIdStr, 1000)
+	this.jsonSuccess("创建发布任务成功！", nil, "/publish/taskLog?task_id="+taskIdStr, 1000)
 }

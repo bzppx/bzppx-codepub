@@ -10,6 +10,12 @@ type ProfileController struct {
 }
 
 // 个人资料
+func (this *ProfileController) MyBak() {
+	this.Data["user"], _ = models.UserModel.GetUserByUserId(this.UserID)
+	this.viewLayoutTitle("我的资料", "profile/my", "page")
+}
+
+// 修改个人资料
 func (this *ProfileController) My() {
 	this.Data["user"], _ = models.UserModel.GetUserByUserId(this.UserID)
 	this.viewLayoutTitle("我的资料", "profile/form", "page")

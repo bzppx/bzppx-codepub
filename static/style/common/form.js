@@ -86,5 +86,56 @@ var Form = {
         $(element).ajaxSubmit(options);
 
         return false;
+    },
+
+    /**
+     * install ajax submit
+     * @param element
+     * @param inPopup
+     * @returns {boolean}
+     */
+    installSubmit: function(element) {
+
+        /**
+         * 失败信息条
+         * @param message
+         */
+        function failed(message) {
+            $(Form.failedBox).html('');
+            $(Form.failedBox).removeClass('hide');
+            $(Form.failedBox).addClass('alert alert-danger');
+            $(Form.failedBox).append('<a class="close" href="#" onclick="$(this).parent().hide();">×</a>');
+            $(Form.failedBox).append('<strong><i class="glyphicon glyphicon-remove-circle"></i> 抱歉：</strong>');
+            $(Form.failedBox).append(message);
+            $(Form.failedBox).show();
+        }
+
+        /**
+         * response
+         * @param result
+         */
+        function response(result) {
+            if (result.code == 0) {
+                failed(result.message, result.data);
+            }
+            if (result.code == 1) {
+                // successBox(result.message, result.data);
+            }
+            if (result.redirect.url) {
+                var sleepTime = result.redirect.sleep || 3000;
+                setTimeout(function() {
+                    location.href = result.redirect.url;
+                }, sleepTime);
+            }
+        }
+
+        var options = {
+            dataType: 'json',
+            success: response
+        };
+
+        $(element).ajaxSubmit(options);
+
+        return false;
     }
 };

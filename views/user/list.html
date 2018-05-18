@@ -49,14 +49,20 @@
                     {{end}}
                 </td>
                 <td class="center">
+                    {{if eq $user.last_time "0"}}
+                    ----------
+                    {{else}}
                     {{dateFormat $user.last_time "Y-m-d H:i:s"}}
+                    {{end}}
                 </td>
                 <td class="center">
-                    {{if eq $user.username "root"}}
-                    ----
+                    {{if eq $user.role "3"}}
+                    无
                     {{else}}
                     <a name="edit" class="glyphicon glyphicon-edit" data-link="/user/edit?user_id={{ $user.user_id }}">修改</a>
+                    {{if eq $user.role "1"}}
                     <a name="project" class="glyphicon glyphicon-th-list" data-link="/user/project?user_id={{ $user.user_id }}">授权</a>
+                    {{end}}
                     <a onclick="Layers.confirm('确定删除吗？', '/user/delete?user_id={{$user.user_id}}');" class="remove glyphicon glyphicon-trash">删除</a>
                     {{end}}
                 </td>

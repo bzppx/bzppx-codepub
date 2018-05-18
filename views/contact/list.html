@@ -25,8 +25,9 @@
                 <th class="w8p">ID</th>
                 <th>姓名</th>
 				<th class="w11p">职位</th>
-				<th class="w11p">座机号</th>
-                <th class="w11p">手机号</th>
+				<th class="w9p">座机号</th>
+                <th class="w9p">手机号</th>
+				<th class="w13p">邮箱</th>
                 <th class="w13p">创建时间</th>
                 <th class="w13p">修改时间</th>
                 <th class="w10p">操作</th>
@@ -40,6 +41,7 @@
 				<td class="center">{{$contact.position}}</td>
                 <td class="center">{{$contact.telephone}}</td>
 				<td class="center">{{$contact.mobile}}</td>
+				<td class="center">{{$contact.email}}</td>
                 <td class="center">{{dateFormat $contact.create_time "Y-m-d H:i:s"}}</td>
                 <td class="center">{{dateFormat $contact.update_time "Y-m-d H:i:s"}}</td>
                 <td class="center">

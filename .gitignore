@@ -7,3 +7,5 @@
 .DS_Store
 *.log
 bzppx-codepub
+install/install
+release*

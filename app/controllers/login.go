@@ -71,11 +71,21 @@ func (this *LoginController) Index() {
 			if err != nil {
 				this.jsonError("请求数据错误！")
 			}
+			if _, ok := response["msg"]; !ok {
+				this.jsonError("认证接口返回无效信息！")
+			}
+			if reflect.TypeOf(response["msg"]).String() != "string" {
+				this.jsonError("接口返回msg是无效信息！")
+			}
 			if response["msg"].(string) != "" {
 				this.jsonError(response["msg"].(string))
 			}
 
 			//判断返回的uid的类型，如果不是string转为string
+			_, ok := response["uid"]
+			if !ok {
+				this.jsonError("认证接口返回无效信息！")
+			}
 			var uid string
 			switch reflect.TypeOf(response["uid"]).String() {
 			case "int":
@@ -90,15 +100,18 @@ func (this *LoginController) Index() {
 				uid = response["uid"].(string)
 			}
 			reg := regexp.MustCompile("^[a-zA-Z0-9_]+$")
-			ok := reg.MatchString(uid)
+			ok = reg.MatchString(uid)
 			if !ok {
-				this.jsonError("返回数据的uid只能为数字字母和下划线组合错误！")
+				this.jsonError("认证接口返回无效信息！")
 			}
 
 			userData := make(map[string]interface{})
+			if reflect.TypeOf(response["given_name"]).String() != "string" {
+				this.jsonError("认证接口返回无效信息！")
+			}
 			userData["given_name"], ok = response["given_name"]
 			if !ok {
-				this.jsonError("请求数据错误！")
+				this.jsonError("认证接口返回无效信息！")
 			}
 			userData["email"], ok = response["email"]
 			if !ok {
