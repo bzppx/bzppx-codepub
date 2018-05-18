@@ -65,6 +65,36 @@
 			"Rev": "9d06b288f30e6a4491d5aa8b8b985842d68a6930"
 		},
 		{
+			"ImportPath": "github.com/emirpasic/gods/containers",
+			"Comment": "v1.9.0-13-gb2394df",
+			"Rev": "b2394dfbb6314eeb616db55d1e01928f287da4b4"
+		},
+		{
+			"ImportPath": "github.com/emirpasic/gods/lists",
+			"Comment": "v1.9.0-13-gb2394df",
+			"Rev": "b2394dfbb6314eeb616db55d1e01928f287da4b4"
+		},
+		{
+			"ImportPath": "github.com/emirpasic/gods/lists/arraylist",
+			"Comment": "v1.9.0-13-gb2394df",
+			"Rev": "b2394dfbb6314eeb616db55d1e01928f287da4b4"
+		},
+		{
+			"ImportPath": "github.com/emirpasic/gods/trees",
+			"Comment": "v1.9.0-13-gb2394df",
+			"Rev": "b2394dfbb6314eeb616db55d1e01928f287da4b4"
+		},
+		{
+			"ImportPath": "github.com/emirpasic/gods/trees/binaryheap",
+			"Comment": "v1.9.0-13-gb2394df",
+			"Rev": "b2394dfbb6314eeb616db55d1e01928f287da4b4"
+		},
+		{
+			"ImportPath": "github.com/emirpasic/gods/utils",
+			"Comment": "v1.9.0-13-gb2394df",
+			"Rev": "b2394dfbb6314eeb616db55d1e01928f287da4b4"
+		},
+		{
 			"ImportPath": "github.com/go-ole/go-ole",
 			"Comment": "v0.0.1-1-ga41e3c4",
 			"Rev": "a41e3c4b706f6ae8dfbff342b06e40fa4d2d0506"
@@ -99,8 +129,18 @@
 			"Rev": "d14ea06fba99483203c19d92cfcd13ebe73135f4"
 		},
 		{
+			"ImportPath": "github.com/kevinburke/ssh_config",
+			"Comment": "0.4-3-g4fcc689",
+			"Rev": "4fcc689beeab13c6dd7ab1d65cb9d7a1aeea9663"
+		},
+		{
 			"ImportPath": "github.com/mitchellh/go-homedir",
 			"Rev": "b8bc1bf767474819792c23f32d8286a45736f1c6"
+		},
+		{
+			"ImportPath": "github.com/pelletier/go-buffruneio",
+			"Comment": "v0.2.0-3-ge2f66f8",
+			"Rev": "e2f66f8164ca709d4c21e815860afd2024e9b894"
 		},
 		{
 			"ImportPath": "github.com/sergi/go-diff/diffmatchpatch",
@@ -172,6 +212,10 @@
 			"Rev": "85f98707c97e11569271e4d9b3d397e079c4f4d0"
 		},
 		{
+			"ImportPath": "golang.org/x/crypto/internal/chacha20",
+			"Rev": "85f98707c97e11569271e4d9b3d397e079c4f4d0"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/openpgp",
 			"Rev": "85f98707c97e11569271e4d9b3d397e079c4f4d0"
 		},
@@ -193,6 +237,10 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/openpgp/s2k",
+			"Rev": "85f98707c97e11569271e4d9b3d397e079c4f4d0"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/poly1305",
 			"Rev": "85f98707c97e11569271e4d9b3d397e079c4f4d0"
 		},
 		{
