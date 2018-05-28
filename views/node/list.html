@@ -19,14 +19,14 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th class="w8p">ID</th>
-                <th class="w13p">节点IP</th>
+                <th class="w5p">ID</th>
+                <th class="w12p">节点IP</th>
                 <th class="w8p">端口</th>
-                <th class="w20p">Token</th>
-                <th class="w11p">创建时间</th>
-                <th class="w11p">修改时间</th>
+                <th class="w22p">Token</th>
+                <th class="w13p">创建时间</th>
+                <th>备注</th>
                 <th class="w5p">状态</th>
-                <th class="w10p">操作</th>
+                <th class="w11p">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@
                 <td class="center">{{$node.port}}</td>
                 <td class="center"><strong class="text-danger">{{$node.token}}</strong></td>
 				<td class="center">{{dateFormat $node.create_time "Y-m-d H:i:s"}}</td>
-                <td class="center">{{dateFormat $node.update_time "Y-m-d H:i:s"}}</td>
+                <td>{{$node.comment}}</td>
                 <td class="center" data-name="status" data-row="{{$node.node_id}}">
                     <i class="glyphicon glyphicon-ok-circle text-success"></i>
                 </td>

@@ -215,7 +215,19 @@ func (this *LoginController) Captcha() {
 	cap.SetDisturbance(captcha.UPPER)
 	cap.SetFrontColor(color.RGBA{255, 255, 255, 255})
 	cap.SetBkgColor(color.RGBA{22, 22, 22, 00})
-	img, str := cap.Create(4, captcha.ALL)
+
+	captchaType, err := beego.AppConfig.Int("captcha::type")
+	if err != nil {
+		captchaType = captcha.UPPER
+	}
+	if captchaType < 0 || captchaType > 4 {
+		captchaType = captcha.UPPER
+	}
+	captchaNumber, err := beego.AppConfig.Int("captcha::number")
+	if err != nil {
+		captchaNumber = 4
+	}
+	img, str := cap.Create(captchaNumber, captcha.StrType(captchaType))
 	this.SetSession("captcha", strings.ToLower(str))
 	png.Encode(this.Ctx.ResponseWriter, img)
 }
