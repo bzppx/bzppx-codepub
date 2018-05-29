@@ -19,7 +19,7 @@ var (
 )
 
 var (
-	version = "v0.8.2"
+	Version = "v0.8.2"
 )
 
 func init()  {
@@ -28,6 +28,7 @@ func init()  {
 	initDB()
 	initRouter()
 	container.InitWorker()
+	controllers.Version = Version
 }
 
 // poster logo
@@ -41,8 +42,8 @@ func poster() {
                         /_/
 `+
 "Author: bzppx\r\n"+
-"Vserion: "+version+"\r\n"+
-"Link: github.com/bzppx/bzppx-codepub"
+"Version: "+Version+"\r\n"+
+"Link: https://github.com/bzppx/bzppx-codepub"
 fmt.Println(logo)
 }
 

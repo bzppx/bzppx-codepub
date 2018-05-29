@@ -41,6 +41,10 @@ th {
     /*margin-right: 3px;*/
 }
 
+.label {
+    padding: .2em .6em .2em;
+}
+
 .col-xs-1,
 .col-sm-1,
 .col-md-1,

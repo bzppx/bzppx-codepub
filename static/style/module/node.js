@@ -40,14 +40,17 @@ var Node = {
 					var nodeStatus = nodesStatus[i];
 					var nodeId = nodeStatus.node_id;
 					var status = nodeStatus.status;
+					var version = nodeStatus.version;
 					var tdStatus = $("td[data-row="+nodeId+"][data-name='status']");
 					// failed
 					if(status == 0) {
-						tdStatus.html('<i class="glyphicon glyphicon-remove-circle text-danger"></i>');
+						// tdStatus.html('<i class="glyphicon glyphicon-remove-circle text-danger"></i>');
+						tdStatus.html('<span class="label label-danger">null</span>');
 					}
 					// success
 					if(status == 1) {
-						tdStatus.html('<i class="glyphicon glyphicon-ok-circle text-success"></i>');
+						// tdStatus.html('<i class="glyphicon glyphicon-ok-circle text-success"></i>');
+						tdStatus.html('<span class="label label-success">'+version+'</span>');
 					}
 				}
 			}

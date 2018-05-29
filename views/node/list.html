@@ -25,7 +25,7 @@
                 <th class="w22p">Token</th>
                 <th class="w13p">创建时间</th>
                 <th>备注</th>
-                <th class="w5p">状态</th>
+                <th class="w8p">状态</th>
                 <th class="w11p">操作</th>
             </tr>
             </thead>
@@ -39,7 +39,7 @@
 				<td class="center">{{dateFormat $node.create_time "Y-m-d H:i:s"}}</td>
                 <td>{{$node.comment}}</td>
                 <td class="center" data-name="status" data-row="{{$node.node_id}}">
-                    <i class="glyphicon glyphicon-ok-circle text-success"></i>
+                    <span class="label label-success">null</span>
                 </td>
                 <td class="center">
                     <a name="edit" class="glyphicon glyphicon-edit" data-link="/node/edit?node_id={{$node.node_id}}">修改</a>

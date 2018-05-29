@@ -406,7 +406,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 				}
 				wait.Done()
 			}()
-			err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
+			_, err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
 			if err != nil {
 				badNodes.Lock.Lock()
 				badNodes.Nodes = append(badNodes.Nodes, node)
