@@ -83,9 +83,9 @@ func (this *ProjectController) Save() {
 	if codePath == "" {
 		this.jsonError("代码发布路径不能为空！")
 	}
-	if codeDirUser == "" {
-		this.jsonError("目录所属用户不能为空！")
-	}
+	//if codeDirUser == "" {
+	//	this.jsonError("目录所属用户不能为空！")
+	//}
 
 	project, err := models.ProjectModel.GetProjectByName(name)
 	if err != nil {
@@ -265,9 +265,9 @@ func (this *ProjectController) Modify() {
 	if codePath == "" {
 		this.jsonError("代码发布路径不能为空！")
 	}
-	if codeDirUser == "" {
-		this.jsonError("目录所属用户不能为空！")
-	}
+	//if codeDirUser == "" {
+	//	this.jsonError("目录所属用户不能为空！")
+	//}
 	
 	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
 	if err != nil {
