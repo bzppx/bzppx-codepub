@@ -178,8 +178,12 @@ func (this *LoginController) Index() {
 		identify := encrypt.Md5Encode(this.Ctx.Request.UserAgent() + this.getClientIp() + password)
 		passportValue := encrypt.Base64Encode(name + "@" + identify)
 		passport := beego.AppConfig.String("author.passport")
+		expireTime, _ := beego.AppConfig.Int("author.expire_time")
 		//fmt.Println("set cookie " + passportValue)
-		this.Ctx.SetCookie(passport, passportValue, 3600)
+		if expireTime == 0 {
+			expireTime = 3600
+		}
+		this.Ctx.SetCookie(passport, passportValue, expireTime)
 
 		userModel.Update(user["user_id"], map[string]interface{}{
 			"last_time": time.Now().Unix(),
