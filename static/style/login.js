@@ -49,6 +49,7 @@ $(function() {
                 // alert(data.message);
                 $form.find("[name='captcha']").val("");
                 refreshCode();
+                $(".captcha")[0].click();
             }
         }, "json");
         return

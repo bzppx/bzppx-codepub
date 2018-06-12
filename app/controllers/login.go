@@ -183,8 +183,12 @@ func (this *LoginController) Index() {
 		}
 		passportValue := encrypt.Base64Encode(name + "@" + identify)
 		passport := beego.AppConfig.String("author.passport")
+		expireTime, _ := beego.AppConfig.Int("author.expire_time")
 		//fmt.Println("set cookie " + passportValue)
-		this.Ctx.SetCookie(passport, passportValue, 3600)
+		if expireTime == 0 {
+			expireTime = 3600
+		}
+		this.Ctx.SetCookie(passport, passportValue, expireTime)
 
 		userModel.Update(user["user_id"], map[string]interface{}{
 			"last_time": time.Now().Unix(),
@@ -220,7 +224,19 @@ func (this *LoginController) Captcha() {
 	cap.SetDisturbance(captcha.UPPER)
 	cap.SetFrontColor(color.RGBA{255, 255, 255, 255})
 	cap.SetBkgColor(color.RGBA{22, 22, 22, 00})
-	img, str := cap.Create(4, captcha.ALL)
+
+	captchaType, err := beego.AppConfig.Int("captcha::type")
+	if err != nil {
+		captchaType = captcha.UPPER
+	}
+	if captchaType < 0 || captchaType > 4 {
+		captchaType = captcha.UPPER
+	}
+	captchaNumber, err := beego.AppConfig.Int("captcha::number")
+	if err != nil {
+		captchaNumber = 4
+	}
+	img, str := cap.Create(captchaNumber, captcha.StrType(captchaType))
 	this.SetSession("captcha", strings.ToLower(str))
 	png.Encode(this.Ctx.ResponseWriter, img)
 }

@@ -336,11 +336,14 @@ func (this *NodeController) Status() {
 			nodeStatus := map[string]interface{}{
 				"node_id": node["node_id"],
 				"status": 1,
+				"version": "null",
 			}
-			err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
+			res, err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
 			if err != nil {
 				this.ErrorLog("节点 "+node["node_id"]+" 连接失败：" + err.Error())
 				nodeStatus["status"] = 0
+			}else {
+				nodeStatus["version"] = res["version"]
 			}
 			data.Lock.Lock()
 			data.NodesStatus = append(data.NodesStatus, nodeStatus)

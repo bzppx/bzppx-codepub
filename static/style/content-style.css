@@ -41,6 +41,10 @@ th {
     /*margin-right: 3px;*/
 }
 
+.label {
+    padding: .2em .6em .2em;
+}
+
 .col-xs-1,
 .col-sm-1,
 .col-md-1,
@@ -154,7 +158,7 @@ th {
     width: 13%;
 }
 
-.w13p {
+.w14p {
     width: 14%;
 }
 
@@ -162,10 +166,27 @@ th {
     width: 15%;
 }
 
+.w16p {
+    width: 16%;
+}
+.w17p {
+    width: 17%;
+}
+.w18p {
+    width: 18%;
+}
+.w19p {
+    width: 19%;
+}
 .w20p {
     width: 20%;
 }
-
+.w21p {
+    width: 21%;
+}
+.w22p {
+    width: 22%;
+}
 .w25p {
     width: 25%;
 }

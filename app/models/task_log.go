@@ -114,7 +114,7 @@ func (l *TaskLog) InsertBatch(taskLogs []map[string]interface{}) (err error) {
 func (l *TaskLog) GetExcutingTaskIdByTaskLog() (taskIds []string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
-	rs, err = db.Query(db.AR().From(Table_TaskLog_Name).Where(map[string]interface{}{
+	rs, err = db.Query(db.AR().Select("task_id").From(Table_TaskLog_Name).Where(map[string]interface{}{
 		"status": [2]int{TASKLOG_STATUS_CREATE, TASKLOG_STATUS_SATART},
 	}).GroupBy("task_id"))
 	if err != nil {
