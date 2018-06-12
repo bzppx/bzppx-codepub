@@ -123,8 +123,14 @@ func (this *BaseController) isLogin() bool {
 		return false
 	}
 	//对比客户端UAG and IP
-	if identify != utils.NewEncrypt().Md5Encode(this.Ctx.Request.UserAgent()+this.getClientIp()+userValue["password"]) {
-		return false
+	if ok, _ := beego.AppConfig.Bool("author.passport_use_ip"); ok {
+		if identify != utils.NewEncrypt().Md5Encode(this.Ctx.Request.UserAgent()+this.getClientIp()+userValue["password"]) {
+			return false
+		}
+	} else {
+		if identify != utils.NewEncrypt().Md5Encode(this.Ctx.Request.UserAgent()+userValue["password"]) {
+			return false
+		}
 	}
 	//success
 	return true
@@ -300,35 +306,35 @@ func (this *BaseController) RecordLog(message string, level int) {
 	user := this.GetSession("author").(map[string]string)
 
 	logValue := map[string]interface{}{
-		"level": level,
-		"controller": controllerName,
-		"action": methodName,
-		"get": getParams,
-		"post": string(postParams),
-		"message": message,
-		"ip": this.getClientIp(),
-		"user_agent": userAgent,
-		"referer": referer,
-		"user_id": user["user_id"],
-		"username": user["username"],
+		"level":       level,
+		"controller":  controllerName,
+		"action":      methodName,
+		"get":         getParams,
+		"post":        string(postParams),
+		"message":     message,
+		"ip":          this.getClientIp(),
+		"user_agent":  userAgent,
+		"referer":     referer,
+		"user_id":     user["user_id"],
+		"username":    user["username"],
 		"create_time": time.Now().Unix(),
 	}
 
 	models.LogModel.Insert(logValue)
 }
 
-func (this *BaseController) ErrorLog(message string)  {
+func (this *BaseController) ErrorLog(message string) {
 	this.RecordLog(message, models.Log_Level_Error)
 }
 
-func (this *BaseController) WarningLog(message string)  {
+func (this *BaseController) WarningLog(message string) {
 	this.RecordLog(message, models.Log_Level_Warning)
 }
 
-func (this *BaseController) InfoLog(message string)  {
+func (this *BaseController) InfoLog(message string) {
 	this.RecordLog(message, models.Log_Level_Info)
 }
 
-func (this *BaseController) DebugLog(message string)  {
+func (this *BaseController) DebugLog(message string) {
 	this.RecordLog(message, models.Log_Level_Debug)
 }

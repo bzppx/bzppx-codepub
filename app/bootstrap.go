@@ -1,16 +1,17 @@
 package app
 
 import (
-	"os"
-	"log"
-	"fmt"
-	"flag"
-	"net/http"
-	"bzppx-codepub/app/utils"
-	"bzppx-codepub/app/models"
-	"github.com/astaxie/beego"
 	"bzppx-codepub/app/container"
 	"bzppx-codepub/app/controllers"
+	"bzppx-codepub/app/models"
+	"bzppx-codepub/app/utils"
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/astaxie/beego"
 	"github.com/snail007/go-activerecord/mysql"
 )
 
@@ -22,7 +23,7 @@ var (
 	version = "v0.8.1"
 )
 
-func init()  {
+func init() {
 	poster()
 	initConfig()
 	initDB()
@@ -39,15 +40,15 @@ func poster() {
 / /__ / /_/ // /_/ //  __// /_/ // /_/ // /_/ /
 \___/ \____/ \__,_/ \___ / .___/ \__,_//_.___/
                         /_/
-`+
-"Author: bzppx\r\n"+
-"Vserion: "+version+"\r\n"+
-"Link: github.com/bzppx/bzppx-codepub"
-fmt.Println(logo)
+` +
+		"Author: bzppx\r\n" +
+		"Vserion: " + version + "\r\n" +
+		"Link: github.com/bzppx/bzppx-codepub"
+	fmt.Println(logo)
 }
 
 // init beego config
-func initConfig()  {
+func initConfig() {
 
 	flag.Parse()
 
@@ -56,8 +57,8 @@ func initConfig()  {
 		os.Exit(1)
 	}
 	ok, _ := utils.NewFile().PathIsExists(*confPath)
-	if ok == false{
-		log.Println("conf file "+*confPath+" not exists!")
+	if ok == false {
+		log.Println("conf file " + *confPath + " not exists!")
 		os.Exit(1)
 	}
 	//init config file
@@ -93,6 +94,7 @@ func initRouter() {
 	// router
 	beego.BConfig.WebConfig.AutoRender = false
 	beego.BConfig.RouterCaseSensitive = false
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime, _ = beego.AppConfig.Int("sessiongcmaxlifetime")
 
 	// todo add router..
 	beego.AutoRouter(&controllers.MainController{})
@@ -121,7 +123,7 @@ func initRouter() {
 }
 
 //init db
-func initDB()  {
+func initDB() {
 	host := beego.AppConfig.String("db::host")
 	port, _ := beego.AppConfig.Int("db::port")
 	user := beego.AppConfig.String("db::user")

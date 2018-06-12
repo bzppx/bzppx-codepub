@@ -175,7 +175,12 @@ func (this *LoginController) Index() {
 		this.SetSession("author", user)
 		//保存 cookie
 		encrypt := new(utils.Encrypt)
-		identify := encrypt.Md5Encode(this.Ctx.Request.UserAgent() + this.getClientIp() + password)
+		identify := ""
+		if ok, _ := beego.AppConfig.Bool("author.passport_use_ip"); ok {
+			identify = encrypt.Md5Encode(this.Ctx.Request.UserAgent() + this.getClientIp() + password)
+		} else {
+			identify = encrypt.Md5Encode(this.Ctx.Request.UserAgent() + password)
+		}
 		passportValue := encrypt.Base64Encode(name + "@" + identify)
 		passport := beego.AppConfig.String("author.passport")
 		//fmt.Println("set cookie " + passportValue)
