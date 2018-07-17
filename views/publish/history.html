@@ -17,7 +17,7 @@
             <tbody>
             {{range $task := .tasks}}
             <tr>
-                <td class="center">{{$username}}</td>
+                <td class="center">{{$task.username}}</td>
                 <td>{{$task.comment}}</td>
                 <td class="center">
                     {{if eq $task.sha1_id ""}}

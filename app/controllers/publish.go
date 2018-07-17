@@ -219,7 +219,6 @@ func (this *PublishController) Reset() {
 func (this *PublishController) History() {
 
 	page, _ := this.GetInt("page", 1)
-	userId := this.GetString("user_id", "")
 	projectId := this.GetString("project_id", "")
 
 	if projectId == "" {
@@ -234,16 +233,20 @@ func (this *PublishController) History() {
 	var tasks []map[string]string
 	number := 20
 	limit := (page - 1) * number
-	if userId != "" {
-		count, err = models.TaskModel.CountTaskByProjectIdAndUserId(projectId, userId)
-		tasks, err = models.TaskModel.GetTaskByProjectIdAndUserId(projectId, userId, limit, number)
-	} else {
-		count, err = models.TaskModel.CountTaskByProjectId(projectId)
-		tasks, err = models.TaskModel.GetTaskByProjectId(projectId, limit, number)
-	}
+
+	count, err = models.TaskModel.CountTaskByProjectId(projectId)
+	tasks, err = models.TaskModel.GetTaskByProjectId(projectId, limit, number)
 	if err != nil {
 		this.viewError("获取任务信息出错！")
 	}
+
+	array := utils.NewArray()
+	userIds := array.ArrayColumn(tasks, "user_id")
+	users, err := models.UserModel.GetUserByUserIdsAndNoLimit(userIds)
+	if err != nil {
+		this.viewError("获取用户信息出错！")
+	}
+	usersMap := array.ChangeKey(users, "user_id")
 
 	taskIds := []string{}
 	for _, task := range tasks {
@@ -255,7 +258,8 @@ func (this *PublishController) History() {
 	if err != nil {
 		this.viewError("获取任务信息出错！")
 	}
-	for _, task := range tasks {
+	for index, task := range tasks {
+		tasks[index]["username"] = usersMap[task["user_id"]].(map[string]string)["username"]
 		for _, taskLog := range taskLogs {
 			if (taskLog["task_id"] == task["task_id"]) && (taskLog["status"] != "2")  {
 				task["status"] = "2" // 执行中
@@ -269,7 +273,6 @@ func (this *PublishController) History() {
 	}
 
 	this.Data["tasks"] = tasks
-	this.Data["userId"] = userId
 	this.Data["username"] = this.User["username"]
 	this.Data["project"] = project
 	this.SetPaginator(number, count)

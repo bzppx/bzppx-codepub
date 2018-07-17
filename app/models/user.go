@@ -282,6 +282,19 @@ func (p *User) GetUserByUserIds(userIds []string) (users []map[string]string, er
 	return
 }
 
+func (p *User) GetUserByUserIdsAndNoLimit(userIds []string) (users []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_User_Name).Where(map[string]interface{}{
+		"user_id":   userIds,
+	}))
+	if err != nil {
+		return
+	}
+	users = rs.Rows()
+	return
+}
+
 func (p *User) UpdateUserByUsername(user map[string]interface{}) (affect int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
