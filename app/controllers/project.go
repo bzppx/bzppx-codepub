@@ -568,3 +568,41 @@ func (this *ProjectController) Delete() {
 	this.InfoLog("删除项目 "+projectId+" 成功")
 	this.jsonSuccess("删除项目成功", nil, "/project/list")
 }
+
+// 复制项目
+func (this *ProjectController) Copy() {
+
+	projectId := this.GetString("project_id", "")
+	if projectId == "" {
+		this.viewError("项目不存在", "/project/list")
+	}
+
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
+	if err != nil {
+		this.viewError("项目不存在", "/project/list")
+	}
+	if len(project) == 0 {
+		this.viewError("项目不存在", "/project/list")
+	}
+
+	repUrl := project["repository_url"]
+	pullType := "http"
+	if repUrl[0:4] == "git@" {
+		pullType = "ssh"
+	}else if repUrl[0:8] == "https://" {
+		pullType = "https"
+	}else {
+		pullType = "http"
+	}
+
+	groups, err := models.GroupModel.GetGroups();
+	if err != nil {
+		this.ErrorLog("获取项目组数据失败: "+err.Error())
+		this.viewError("获取项目组错误", "/project/list")
+	}
+
+	this.Data["project"] = project
+	this.Data["pullType"] = pullType
+	this.Data["groups"] = groups
+	this.viewLayoutTitle("复制项目", "project/copy", "page")
+}

@@ -1,0 +1,128 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br>{{$project := .project}}{{$pullType := .pullType}}
+        <form class="form-horizontal" method="post" action="/project/save">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 项目名称</label>
+                <div class="col-sm-5">
+                    <input type="text" name="name" value="" class="form-control" placeholder="请输入项目名称" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 项目组</label>
+                <div class="col-sm-5">
+                    <select name="group_id" class="form-control">
+                        {{range $group := .groups}}
+                            {{if $project}}
+                            <option value="{{$group.group_id}}" {{if eq $group.group_id $project.group_id}} selected {{end}}>{{$group.name}}</option>
+                            {{else}}
+                            <option value="{{$group.group_id}}">{{$group.name}}</option>
+                            {{end}}
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="default_pull_type" value="{{if $pullType}}{{$pullType}}{{else}}https{{end}}">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 拉取方式 </label>
+                <div class="col-sm-5">
+                    <label class="radio-inline">
+                        <input type="radio" name="pull_type" value="http"> HTTP
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="pull_type" value="https"> HTTPS
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="pull_type" value="ssh"> SSH
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码仓库 </label>
+                <div class="col-sm-5">
+                    <input type="text" name="repository_url" value="{{$project.repository_url}}" class="form-control" placeholder="请输入代码仓库地址" aria-describedby="input-group1" required>
+                </div>
+            </div>
+            <div class="form-group ssh-config">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> ssh key </label>
+                <div class="col-sm-5">
+                    <!--<input type="text" name="ssh_key" value="{{$project.ssh_key}}" class="form-control" placeholder="请输入ssh 配置 key" required>-->
+                    <textarea name="ssh_key" class="form-control" placeholder="请输入 ssh 私匙" rows="8" style="font-size: 6px">{{$project.ssh_key}}</textarea>
+                </div>
+            </div>
+            <div class="form-group ssh-config">
+                <label class="col-sm-2 control-label"><span class="text-danger"></span> ssh key salt </label>
+                <div class="col-sm-5">
+                    <input type="text" name="ssh_key_salt" value="{{$project.ssh_key_salt}}" class="form-control" placeholder="请输入ssh key salt" required>
+                </div>
+            </div>
+            <div class="form-group http-config">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 用户名 </label>
+                <div class="col-sm-5">
+                    <input type="text" name="https_username" value="{{$project.https_username}}" class="form-control" placeholder="请输入 http 拉取用户名" required>
+                </div>
+            </div>
+            <div class="form-group http-config">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 密码 </label>
+                <div class="col-sm-5">
+                    <input type="password" name="https_password" value="{{$project.https_password}}" class="form-control" placeholder="请输入 http 拉取密码" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 代码分支</label>
+                <div class="col-sm-5">
+                    <input type="text" name="branch" value="{{$project.branch}}" class="form-control" placeholder="请输入要发布的代码分支名" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 发布路径</label>
+                <div class="col-sm-5">
+                    <input type="text" name="code_path" value="{{$project.code_path}}" class="form-control" placeholder="请输入代码发布路径" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"></span> 目录所属用户</label>
+                <div class="col-sm-5">
+                    <input type="text" name="code_dir_user" value="{{$project.code_dir_user}}" class="form-control" placeholder="请输入发布路径所属 linux 用户, agent为 windows 请忽略">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"></span> 备注</label>
+                <div class="col-sm-5">
+                    <input type="text" name="comment" value="{{$project.comment}}" class="form-control" placeholder="请输入备注信息" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" onclick="Form.ajaxSubmit(this.form, false);" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    // 拉取方式控制
+    $(function () {
+        var defaultPullType = $("[name='default_pull_type']").val();
+        $("input[name='pull_type'][value="+defaultPullType+"]").attr("checked", "checked");
+        changeSelect(defaultPullType);
+        $("input[name='pull_type']").each(function () {
+            $(this).bind('change', function () {
+                var pullType = $("input[name='pull_type']:checked").val();
+                changeSelect(pullType);
+            });
+        });
+        function changeSelect(pullType) {
+            if (pullType == "https") {
+                $(".ssh-config").each(function () {$(this).addClass("hidden");});
+                $(".http-config").each(function () {$(this).removeClass("hidden");});
+            }else if(pullType == "ssh") {
+                $(".ssh-config").each(function () {$(this).removeClass("hidden");});
+                $(".http-config").each(function () {$(this).addClass("hidden");});
+            }else {
+                $(".ssh-config").each(function () {$(this).addClass("hidden");});
+                $(".http-config").each(function () {$(this).removeClass("hidden");});
+            }
+        }
+    });
+</script>

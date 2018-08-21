@@ -38,7 +38,7 @@
                 <th class="w8p">分支</th>
                 <th class="w8p"> 项目组</th>
                 <th class="w13p">修改时间</th>
-                <th class="w20p">操作</th>
+                <th class="w22p">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -66,10 +66,11 @@
                     {{end}}
                 </td>
                 <td class="center">
-                    <a name="edit" class="glyphicon glyphicon-edit" data-link="/project/edit?project_id={{$project.project_id}}">修改</a>
-                    <a name="config" class="glyphicon glyphicon-cog" data-link="/project/config?project_id={{$project.project_id}}">配置</a>
-                    <a name="node" class="glyphicon glyphicon-align-justify" data-link="/project/node?project_id={{$project.project_id}}">节点</a>
-                    <a onclick="Layers.confirm('确定删除吗？', '/project/delete?project_id={{ $project.project_id }}');" class="remove glyphicon glyphicon-trash">删除</a>
+                    <a name="edit" data-link="/project/edit?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-edit"></i>修改</a>
+                    <a name="config" data-link="/project/config?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-cog"></i>配置</a>
+                    <a name="node" data-link="/project/node?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-align-justify"></i>节点</a>
+                    <a name="copy" href="/project/copy?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-plus"></i>复制</a>
+                    <a onclick="Layers.confirm('确定删除吗？', '/project/delete?project_id={{ $project.project_id }}');"><i class="remove glyphicon glyphicon-trash"></i>删除</a>
                 </td>
             </tr>
             {{end}}
