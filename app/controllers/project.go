@@ -289,8 +289,6 @@ func (this *ProjectController) Modify() {
 		"code_path": codePath,
 		"code_dir_user": codeDirUser,
 		"comment": comment,
-		"pre_command": "",
-		"post_command": "",
 		"update_time": time.Now().Unix(),
 	}
 
