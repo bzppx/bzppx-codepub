@@ -185,7 +185,65 @@ func (this *PublishController) Publish() {
 		this.viewError("封版期间，禁止发布")
 	}
 
+	// 查找默认的项目发布节点
+	defaultProjectNodes, _ := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
+	var defaultNodeIds = []string{}
+	for _, defaultProjectNode := range defaultProjectNodes {
+		defaultNodeIds = append(defaultNodeIds, defaultProjectNode["node_id"])
+	}
+	// 默认的节点信息
+	defaultNodes, err := models.NodeModel.GetNodeByNodeIds(defaultNodeIds)
+	if err != nil {
+		this.viewError("查找项目节点错误")
+	}
+	// 节点节点组关系
+	defaultNodeNodes, err := models.NodeNodesModel.GetNodeNodesByNodeIds(defaultNodeIds)
+	if err != nil {
+		this.viewError("查找项目节点错误")
+	}
+	var defaultNodesIds = []string{}
+	for _, defaultNodeNode := range defaultNodeNodes {
+		defaultNodesIds = append(defaultNodesIds, defaultNodeNode["nodes_id"])
+	}
+	// 获取默认的节点组
+	defaultNodeGroups, err := models.NodesModel.GetNodeGroupsByNodesIds(defaultNodesIds)
+	if err != nil {
+		this.viewError("查找项目节点错误")
+	}
+
+	// 组合数据
+	var projectNodes []map[string]interface{}
+	for _, nodeGroup := range defaultNodeGroups {
+		projectNode := map[string]interface{}{
+			"nodes_id": nodeGroup["nodes_id"],
+			"nodes_name": nodeGroup["name"],
+			"nodes": []map[string]string{},
+		}
+		nodeIds := []string{}
+		for _, nodeNode := range defaultNodeNodes {
+			if nodeGroup["nodes_id"] == nodeNode["nodes_id"] {
+				nodeIds = append(nodeIds, nodeNode["node_id"])
+			}
+		}
+		nodeIdsStr := strings.Join(nodeIds, ",")
+		nodeGroupNodes := []map[string]string{}
+		for _, node := range defaultNodes {
+			if strings.Contains(nodeIdsStr, node["node_id"]) {
+				nodeValue := map[string]string{
+					"node_id": node["node_id"],
+					"name": node["name"],
+					"ip": node["ip"],
+					"port": node["port"],
+				}
+				nodeGroupNodes = append(nodeGroupNodes, nodeValue)
+			}
+		}
+		projectNode["nodes"] = nodeGroupNodes
+		projectNodes = append(projectNodes, projectNode)
+	}
+
 	this.Data["project"] = project
+	this.Data["projectNodes"] = projectNodes
 	this.viewLayoutTitle("发布代码", "publish/publish", "page")
 }
 
@@ -317,21 +375,74 @@ func (this *PublishController) TaskLog() {
 // 发布操作
 func (this *PublishController) DoPublish() {
 
-	taskValue := make(map[string]interface{}, 4)
-	projectId := this.GetString("project_id", "")
-	taskValue["project_id"] = projectId
-	taskValue["user_id"] = this.UserID
-	taskValue["comment"] = this.GetString("comment", "")
-	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
-	if taskValue["comment"] == "" {
-		this.jsonError("发版说明不能为空！")
+	// 判断是否封版
+	var isBlock bool
+	var err error
+	if this.isRoot() || this.isAdmin() {
+		isBlock = false
+	} else {
+		isBlock, _, err = models.ConfigureModel.CheckIsBlock()
+		if err != nil {
+			this.jsonError("获取封版配置出错！")
+		}
+	}
+	if isBlock {
+		this.jsonError("已封版，暂时不能发布！")
 	}
 
-	this.addTaskAndTaskLog(taskValue, projectId)
+	taskValue := make(map[string]interface{}, 4)
+	projectId := this.GetString("project_id", "")
+	comment := this.GetString("comment", "")
+	nodeIds := this.GetStrings("node_id", []string{})
+	if projectId == "" {
+		this.jsonError("没有选择发版项目")
+	}
+	if comment == "" {
+		this.jsonError("发版说明不能为空")
+	}
+	if len(nodeIds) == 0 {
+		this.jsonError("没有选择发布结点")
+	}
+
+	// 判断是否具有灰度发布功能
+	project, err := models.ProjectModel.GetProjectByProjectId(projectId)
+	if err != nil {
+		this.jsonError("查找项目出错")
+	}
+	if len(project) == 0 {
+		this.jsonError("项目不存在")
+	}
+	isGrayScale := models.PROJECT_GRAYSCALE_PUBLISH_FALASE
+	if project["is_grayscale_publish"] == fmt.Sprintf("%d", models.PROJECT_GRAYSCALE_PUBLISH_TRUE) {
+		isGrayScale = models.PROJECT_GRAYSCALE_PUBLISH_TRUE
+	}
+
+	taskValue["project_id"] = projectId
+	taskValue["user_id"] = this.UserID
+	taskValue["comment"] = comment
+	taskValue["create_time"] = utils.NewConvert().IntToString(time.Now().Unix(), 10)
+
+	this.addTaskAndTaskLog(taskValue, projectId, isGrayScale, nodeIds)
+
 }
 
 // 回滚操作
 func (this *PublishController) DoReset() {
+
+	// 判断是否封版
+	var isBlock bool
+	var err error
+	if this.isRoot() || this.isAdmin() {
+		isBlock = false
+	} else {
+		isBlock, _, err = models.ConfigureModel.CheckIsBlock()
+		if err != nil {
+			this.jsonError("获取封版配置出错！")
+		}
+	}
+	if isBlock {
+		this.jsonError("已封版，暂时不能回滚！")
+	}
 
 	taskValue := make(map[string]interface{}, 4)
 	projectId := this.GetString("project_id", "")
@@ -348,41 +459,28 @@ func (this *PublishController) DoReset() {
 		this.jsonError("commit_id不能为空！")
 	}
 
-	this.addTaskAndTaskLog(taskValue, projectId)
+	this.addTaskAndTaskLog(taskValue, projectId, models.PROJECT_GRAYSCALE_PUBLISH_FALASE, []string{})
 }
 
-func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, projectId string) {
+func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, projectId string, isGrayScale int, nodeIds []string) {
 
-	// 判断是否封版
-	var isBlock bool
-	var err error
-	if this.isRoot() || this.isAdmin() {
-		isBlock = false
-	} else {
-		isBlock, _, err = models.ConfigureModel.CheckIsBlock()
+	// 不是灰度发布，获取所有的节点数据
+	if isGrayScale == models.PROJECT_GRAYSCALE_PUBLISH_FALASE {
+		// 查找该项目下的节点
+		projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
+		if len(projectNodes) <= 0 {
+			this.jsonError("该项目下还没有节点！请先添加节点后再发布")
+		}
 		if err != nil {
-			this.jsonError("获取封版配置出错！")
+			this.ErrorLog("创建任务查询项目 "+projectId+" 节点关系失败：" + err.Error())
+			this.jsonError("创建任务失败！")
+		}
+		// 查找该项目所有的节点信息
+		for _, projectNode := range projectNodes {
+			nodeIds = append(nodeIds, projectNode["node_id"])
 		}
 	}
-	if isBlock {
-		this.jsonError("已封版！")
-	}
 
-	// 查找该项目下的节点
-	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
-	if len(projectNodes) <= 0 {
-		this.jsonError("该项目下还没有节点！请先添加节点后再发布")
-	}
-	if err != nil {
-		this.ErrorLog("创建任务查询项目 "+projectId+" 节点关系失败：" + err.Error())
-		this.jsonError("创建任务失败！")
-	}
-
-	// 查找该项目所有的节点信息
-	nodeIds := []string{}
-	for _, projectNode := range projectNodes {
-		nodeIds = append(nodeIds, projectNode["node_id"])
-	}
 	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
 	if err != nil {
 		this.ErrorLog("创建任务查找项目 "+projectId+" 节点信息失败：" + err.Error())
@@ -442,11 +540,11 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 
 	// 创建节点任务
-	taskLog := make([]map[string]interface{}, len(projectNodes))
-	for index, projectNode := range projectNodes {
+	taskLog := make([]map[string]interface{}, len(nodes))
+	for index, node := range nodes {
 		taskLog[index] = make(map[string]interface{})
 		taskLog[index]["task_id"] = taskId
-		taskLog[index]["node_id"] = projectNode["node_id"]
+		taskLog[index]["node_id"] = node["node_id"]
 		taskLog[index]["status"] = "0"
 		taskLog[index]["is_success"] = "0"
 		taskLog[index]["result"] = ""

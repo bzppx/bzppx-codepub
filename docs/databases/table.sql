@@ -169,6 +169,7 @@ CREATE TABLE `cp_project` (
   `post_command_exec_timeout` int(11) NOT NULL DEFAULT '30' COMMENT '后置命令超时时间,单位秒',
   `comment` varchar(200) NOT NULL DEFAULT '' COMMENT '备注',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除 0 否 1 是',
+  `is_grayscale_publish` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否开启灰度发布 0 否 1 是',
   `last_publish_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次发布时间',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间',

@@ -40,6 +40,16 @@
                             <td>{{$project.code_path}}</td>
                         </tr>
                         <tr>
+                            <td>灰度发布</td>
+                            <td>
+                            {{if eq $project.is_grayscale_publish "1"}}
+                                <span class="label label-success">已开启</span>
+                            {{else}}
+                                <span class="label label-danger">未开启</span>
+                            {{end}}
+                            </td>
+                        </tr>
+                        <tr>
                             <td>目录所属用户</td>
                             <td>{{$project.code_dir_user}}</td>
                         </tr>

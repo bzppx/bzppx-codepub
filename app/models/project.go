@@ -8,6 +8,10 @@ import (
 const (
 	PROJECT_DELETE = 1
 	PROJECT_NORMAL = 0
+
+	// 是否灰度发布
+	PROJECT_GRAYSCALE_PUBLISH_TRUE = 1
+	PROJECT_GRAYSCALE_PUBLISH_FALASE = 0
 )
 
 const Table_Project_Name = "project"

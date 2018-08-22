@@ -77,6 +77,20 @@ func (p *NodeNodes) GetNodeNodesByNodeId(nodeId string) (nodeNodes []map[string]
 	return
 }
 
+// 根据多个 node_id 获取节点节点组关系
+func (p *NodeNodes) GetNodeNodesByNodeIds(nodeIds []string) (nodeNodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_NodeNodes_Name).Where(map[string]interface{}{
+		"node_id": nodeIds,
+	}))
+	if err != nil {
+		return
+	}
+	nodeNodes = rs.Rows()
+	return
+}
+
 // 根据 nodes_id 获取节点节点组关系
 func (p *NodeNodes) GetNodeNodesByNodesId(nodesId string) (nodeNodes []map[string]string, err error) {
 	db := G.DB()

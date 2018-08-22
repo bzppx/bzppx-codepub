@@ -32,6 +32,21 @@ func (p *Nodes) GetNodeGroupByNodesId(nodesId string) (nodes map[string]string, 
 	return
 }
 
+// 根据多个 nodes_id 获取节点组
+func (p *Nodes) GetNodeGroupsByNodesIds(nodesIds []string) (nodes []map[string]string, err error) {
+	db := G.DB()
+	var rs *mysql.ResultSet
+	rs, err = db.Query(db.AR().From(Table_Nodes_Name).Where(map[string]interface{}{
+		"nodes_id": nodesIds,
+		"is_delete": NODES_NORMAL,
+	}))
+	if err != nil {
+		return
+	}
+	nodes = rs.Rows()
+	return
+}
+
 // 节点组名称是否存在
 func (p *Nodes) HasSameNodesName(nodesId, name string) (has bool, err error) {
 	db := G.DB()

@@ -84,6 +84,25 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 开启灰度发布 </label>
+                <div class="col-sm-5">
+                    <label class="radio-inline">
+                    {{if $project}}
+                        <input type="radio" name="is_grayscale_publish" value="1" {{if eq $project.is_grayscale_publish "1"}} checked="checked" {{end}}> 是
+                    {{else}}
+                        <input type="radio" name="is_grayscale_publish" value="1"> 是
+                    {{end}}
+                    </label>
+                    <label class="radio-inline">
+                    {{if $project}}
+                        <input type="radio" name="is_grayscale_publish" value="0" {{if eq $project.is_grayscale_publish "0"}} checked="checked" {{end}}> 否
+                    {{else}}
+                        <input type="radio" name="is_grayscale_publish" value="0" checked="checked"> 否
+                    {{end}}
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-2 control-label"><span class="text-danger"></span> 目录所属用户</label>
                 <div class="col-sm-5">
                     <input type="text" name="code_dir_user" value="{{$project.code_dir_user}}" class="form-control" placeholder="请输入发布路径所属 linux 用户, agent为 windows 请忽略">

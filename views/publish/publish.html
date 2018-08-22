@@ -4,7 +4,7 @@
             <h5><strong><i class="glyphicon glyphicon-hand-down"></i> 发布代码</strong></h5>
             <hr>
         </ul>
-		{{$project := .project}}
+		{{$project := .project}}{{$projectNodes := .projectNodes}}
         <form class="form-horizontal" method="post" action="/publish/doPublish">
 			<input type="hidden" name="project_id" value="{{$project.project_id}}">
 			<div class="form-group">
@@ -23,6 +23,35 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="text-danger"> * </span> 发布节点： </label>
+                <div class="col-sm-10">
+                    {{range $projectNode := $projectNodes}}
+                        <div class="w220 inline-group">
+                            <h4><span class="label label-default">{{$projectNode.nodes_name}}</span>
+                            <span class="small">
+                                {{if eq $project.is_grayscale_publish "1"}}
+                                    <input name="nodes_id" type="checkbox" data-type="group" value="{{$projectNode.nodes_id}}" onclick="Publish.node(this)" checked="checked" />
+                                {{end}}
+                            </span>
+                            </h4>
+                            <ul class="list-group" style="margin-bottom: 5px">
+                            {{range $node := $projectNode.nodes}}
+                                <li class="list-group-item">{{$node.ip}}:{{$node.port}}
+                                    <span class="pull-right">
+                                        {{if eq $project.is_grayscale_publish "1"}}
+                                            <input name="node_id" type="checkbox" data-parent="{{$projectNode.nodes_id}}" data-type="node" value="{{$node.node_id}}" onclick="Publish.node(this)" checked="checked"/>
+                                        {{else}}
+                                            <input name="node_id" type="hidden" value="{{$node.node_id}}" />
+                                        {{end}}
+                                    </span>
+                                </li>
+                            {{end}}
+                            </ul>
+                        </div>
+                    {{end}}
+                </div>
+            </div>
+            <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="button" onclick="Form.ajaxSubmit(this.form, false)" class="btn btn-primary">发布</button>
                 </div>
@@ -30,5 +59,4 @@
         </form>
     </div>
 </div>
-
-
+<script type="text/javascript" src="/static/style/module/publish.js"></script>

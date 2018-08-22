@@ -38,6 +38,7 @@ func (this *ProjectController) Save() {
 	codePath := strings.Trim(this.GetString("code_path", ""), "")
 	codeDirUser := strings.Trim(this.GetString("code_dir_user", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
+	isGrayscalePublish := this.GetString("is_grayscale_publish", "0")
 
 	if name == "" {
 		this.jsonError("项目名不能为空！")
@@ -109,6 +110,7 @@ func (this *ProjectController) Save() {
 		"code_path": codePath,
 		"code_dir_user": codeDirUser,
 		"comment": comment,
+		"is_grayscale_publish": isGrayscalePublish,
 		"pre_command": "",
 		"post_command": "",
 		"create_time": time.Now().Unix(),
@@ -220,6 +222,7 @@ func (this *ProjectController) Modify() {
 	codePath := strings.Trim(this.GetString("code_path", ""), "")
 	codeDirUser := strings.Trim(this.GetString("code_dir_user", ""), "")
 	comment := strings.Trim(this.GetString("comment", ""), "")
+	isGrayscalePublish := this.GetString("is_grayscale_publish", "0")
 	
 	if projectId == "" {
 		this.jsonError("项目id错误！")
@@ -289,6 +292,7 @@ func (this *ProjectController) Modify() {
 		"code_path": codePath,
 		"code_dir_user": codeDirUser,
 		"comment": comment,
+		"is_grayscale_publish": isGrayscalePublish,
 		"update_time": time.Now().Unix(),
 	}
 

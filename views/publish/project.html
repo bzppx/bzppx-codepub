@@ -56,10 +56,10 @@
                 </td>
                 <td class="center">
 					{{if not $isBlock}}
-                    <a name="publish" class="glyphicon glyphicon-ok-circle" href="/publish/publish?project_id={{$project.project_id}}">发布 </a>
-                    <a name="reset" class="glyphicon glyphicon-share-alt" href="/publish/reset?project_id={{$project.project_id}}">回滚 </a>
+                    <a name="publish" href="/publish/publish?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-ok-circle"></i>发布</a>
+                    <a name="reset"  href="/publish/reset?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-share-alt"></i>回滚</a>
 					{{end}}
-                    <a name="history" class="glyphicon glyphicon-align-justify" data-link="/publish/history?project_id={{$project.project_id}}">历史 </a>
+                    <a name="history" data-link="/publish/history?project_id={{$project.project_id}}"><i class="glyphicon glyphicon-align-justify"></i>历史</a>
                 </td>
             </tr>
             {{end}}

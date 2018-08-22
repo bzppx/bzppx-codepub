@@ -1,17 +1,16 @@
 package app
 
 import (
+	"os"
+	"log"
+	"fmt"
+	"flag"
+	"net/http"
+	"bzppx-codepub/app/utils"
+	"bzppx-codepub/app/models"
+	"github.com/astaxie/beego"
 	"bzppx-codepub/app/container"
 	"bzppx-codepub/app/controllers"
-	"bzppx-codepub/app/models"
-	"bzppx-codepub/app/utils"
-	"flag"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/astaxie/beego"
 	"github.com/snail007/go-activerecord/mysql"
 )
 
@@ -20,15 +19,16 @@ var (
 )
 
 var (
-	version = "v0.8.1"
+	Version = "v0.8.3"
 )
 
-func init() {
+func init()  {
 	poster()
 	initConfig()
 	initDB()
 	initRouter()
 	container.InitWorker()
+	controllers.Version = Version
 }
 
 // poster logo
@@ -40,11 +40,11 @@ func poster() {
 / /__ / /_/ // /_/ //  __// /_/ // /_/ // /_/ /
 \___/ \____/ \__,_/ \___ / .___/ \__,_//_.___/
                         /_/
-` +
-		"Author: bzppx\r\n" +
-		"Vserion: " + version + "\r\n" +
-		"Link: github.com/bzppx/bzppx-codepub"
-	fmt.Println(logo)
+`+
+"Author: bzppx\r\n"+
+"Version: "+Version+"\r\n"+
+"Link: https://github.com/bzppx/bzppx-codepub"
+fmt.Println(logo)
 }
 
 // init beego config
