@@ -28,9 +28,7 @@ var (
 	errInvalidDSNUnsafeCollation = errors.New("invalid DSN: interpolateParams can not be used with unsafe collations")
 )
 
-// Config is a configuration parsed from a DSN string.
-// If a new Config is created instead of being parsed from a DSN string,
-// the NewConfig function should be used, which sets default values.
+// Config is a configuration parsed from a DSN string
 type Config struct {
 	User             string            // Username
 	Passwd           string            // Password (requires User)
@@ -57,53 +55,7 @@ type Config struct {
 	MultiStatements         bool // Allow multiple statements in one query
 	ParseTime               bool // Parse time values to time.Time
 	RejectReadOnly          bool // Reject read-only connections
-}
-
-// NewConfig creates a new Config and sets default values.
-func NewConfig() *Config {
-	return &Config{
-		Collation:            defaultCollation,
-		Loc:                  time.UTC,
-		MaxAllowedPacket:     defaultMaxAllowedPacket,
-		AllowNativePasswords: true,
-	}
-}
-
-func (cfg *Config) normalize() error {
-	if cfg.InterpolateParams && unsafeCollations[cfg.Collation] {
-		return errInvalidDSNUnsafeCollation
-	}
-
-	// Set default network if empty
-	if cfg.Net == "" {
-		cfg.Net = "tcp"
-	}
-
-	// Set default address if empty
-	if cfg.Addr == "" {
-		switch cfg.Net {
-		case "tcp":
-			cfg.Addr = "127.0.0.1:3306"
-		case "unix":
-			cfg.Addr = "/tmp/mysql.sock"
-		default:
-			return errors.New("default addr for network '" + cfg.Net + "' unknown")
-		}
-
-	} else if cfg.Net == "tcp" {
-		cfg.Addr = ensureHavePort(cfg.Addr)
-	}
-
-	if cfg.tls != nil {
-		if cfg.tls.ServerName == "" && !cfg.tls.InsecureSkipVerify {
-			host, _, err := net.SplitHostPort(cfg.Addr)
-			if err == nil {
-				cfg.tls.ServerName = host
-			}
-		}
-	}
-
-	return nil
+	Strict                  bool // Return warnings as errors
 }
 
 // FormatDSN formats the given Config into a DSN string which can be passed to
@@ -254,6 +206,15 @@ func (cfg *Config) FormatDSN() string {
 		}
 	}
 
+	if cfg.Strict {
+		if hasParam {
+			buf.WriteString("&strict=true")
+		} else {
+			hasParam = true
+			buf.WriteString("?strict=true")
+		}
+	}
+
 	if cfg.Timeout > 0 {
 		if hasParam {
 			buf.WriteString("&timeout=")
@@ -284,7 +245,7 @@ func (cfg *Config) FormatDSN() string {
 		buf.WriteString(cfg.WriteTimeout.String())
 	}
 
-	if cfg.MaxAllowedPacket != defaultMaxAllowedPacket {
+	if cfg.MaxAllowedPacket > 0 {
 		if hasParam {
 			buf.WriteString("&maxAllowedPacket=")
 		} else {
@@ -322,7 +283,11 @@ func (cfg *Config) FormatDSN() string {
 // ParseDSN parses the DSN string to a Config
 func ParseDSN(dsn string) (cfg *Config, err error) {
 	// New config with some default values
-	cfg = NewConfig()
+	cfg = &Config{
+		Loc:                  time.UTC,
+		Collation:            defaultCollation,
+		AllowNativePasswords: true,
+	}
 
 	// [user[:password]@][net[(addr)]]/dbname[?param1=value1&paramN=valueN]
 	// Find the last '/' (since the password or the net addr might contain a '/')
@@ -390,9 +355,28 @@ func ParseDSN(dsn string) (cfg *Config, err error) {
 		return nil, errInvalidDSNNoSlash
 	}
 
-	if err = cfg.normalize(); err != nil {
-		return nil, err
+	if cfg.InterpolateParams && unsafeCollations[cfg.Collation] {
+		return nil, errInvalidDSNUnsafeCollation
 	}
+
+	// Set default network if empty
+	if cfg.Net == "" {
+		cfg.Net = "tcp"
+	}
+
+	// Set default address if empty
+	if cfg.Addr == "" {
+		switch cfg.Net {
+		case "tcp":
+			cfg.Addr = "127.0.0.1:3306"
+		case "unix":
+			cfg.Addr = "/tmp/mysql.sock"
+		default:
+			return nil, errors.New("default addr for network '" + cfg.Net + "' unknown")
+		}
+
+	}
+
 	return
 }
 
@@ -407,6 +391,7 @@ func parseDSNParams(cfg *Config, params string) (err error) {
 
 		// cfg params
 		switch value := param[1]; param[0] {
+
 		// Disable INFILE whitelist / enable all files
 		case "allowAllFiles":
 			var isBool bool
@@ -514,7 +499,11 @@ func parseDSNParams(cfg *Config, params string) (err error) {
 
 		// Strict mode
 		case "strict":
-			panic("strict mode has been removed. See https://github.com/go-sql-driver/mysql/wiki/strict-mode")
+			var isBool bool
+			cfg.Strict, isBool = readBool(value)
+			if !isBool {
+				return errors.New("invalid bool value: " + value)
+			}
 
 		// Dial Timeout
 		case "timeout":
@@ -530,6 +519,10 @@ func parseDSNParams(cfg *Config, params string) (err error) {
 				if boolValue {
 					cfg.TLSConfig = "true"
 					cfg.tls = &tls.Config{}
+					host, _, err := net.SplitHostPort(cfg.Addr)
+					if err == nil {
+						cfg.tls.ServerName = host
+					}
 				} else {
 					cfg.TLSConfig = "false"
 				}
@@ -543,6 +536,13 @@ func parseDSNParams(cfg *Config, params string) (err error) {
 				}
 
 				if tlsConfig := getTLSConfigClone(name); tlsConfig != nil {
+					if len(tlsConfig.ServerName) == 0 && !tlsConfig.InsecureSkipVerify {
+						host, _, err := net.SplitHostPort(cfg.Addr)
+						if err == nil {
+							tlsConfig.ServerName = host
+						}
+					}
+
 					cfg.TLSConfig = name
 					cfg.tls = tlsConfig
 				} else {
@@ -574,11 +574,4 @@ func parseDSNParams(cfg *Config, params string) (err error) {
 	}
 
 	return
-}
-
-func ensureHavePort(addr string) string {
-	if _, _, err := net.SplitHostPort(addr); err != nil {
-		return net.JoinHostPort(addr, "3306")
-	}
-	return addr
 }

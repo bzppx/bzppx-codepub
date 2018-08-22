@@ -40,6 +40,7 @@ type mysqlConn struct {
 	status           statusFlag
 	sequence         uint8
 	parseTime        bool
+	strict           bool
 
 	// for context support (Go 1.8+)
 	watching bool
@@ -91,21 +92,11 @@ func (mc *mysqlConn) markBadConn(err error) error {
 }
 
 func (mc *mysqlConn) Begin() (driver.Tx, error) {
-	return mc.begin(false)
-}
-
-func (mc *mysqlConn) begin(readOnly bool) (driver.Tx, error) {
 	if mc.closed.IsSet() {
 		errLog.Print(ErrInvalidConn)
 		return nil, driver.ErrBadConn
 	}
-	var q string
-	if readOnly {
-		q = "START TRANSACTION READ ONLY"
-	} else {
-		q = "START TRANSACTION"
-	}
-	err := mc.exec(q)
+	err := mc.exec("START TRANSACTION")
 	if err == nil {
 		return &mysqlTx{mc}, err
 	}
@@ -403,7 +394,6 @@ func (mc *mysqlConn) query(query string, args []driver.Value) (*textRows, error)
 					return nil, err
 				}
 			}
-
 			// Columns
 			rows.rs.columns, err = mc.readColumns(resLen)
 			return rows, err
