@@ -234,3 +234,12 @@ func (l *TaskLog) CountByCreateTimeGroupByIsSuccess(startTime int64, endTime int
 	}
 	return
 }
+
+// 根据 node_id 删除关系
+func (l *TaskLog) DeleteByNodeId(nodeId string) (err error) {
+	db := G.DB()
+	_, err = db.Exec(db.AR().Delete(Table_TaskLog_Name, map[string]interface{}{
+		"node_id": nodeId,
+	}))
+	return
+}
