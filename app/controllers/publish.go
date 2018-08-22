@@ -475,7 +475,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	// 查找该项目所有的节点信息
 	allNodeIds := []string{}
 	for _, projectNode := range projectNodes {
-		allNodeIds = append(nodeIds, projectNode["node_id"])
+		allNodeIds = append(allNodeIds, projectNode["node_id"])
 	}
 
 	// 不是灰度发布，发布节点是所有的节点
