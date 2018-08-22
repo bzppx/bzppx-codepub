@@ -455,10 +455,9 @@ func (this *ProjectController) Node() {
 				nodeIds = append(nodeIds, nodeNode["node_id"])
 			}
 		}
-		nodeIdsStr := strings.Join(nodeIds, ",")
 		nodeGroupNodes := []map[string]string{}
 		for _, node := range nodes {
-			if strings.Contains(nodeIdsStr, node["node_id"]) {
+			if utils.Array.InArray(node["node_id"], nodeIds) {
 				nodeValue := map[string]string{
 					"node_id": node["node_id"],
 					"name": node["name"],

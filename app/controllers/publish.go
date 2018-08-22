@@ -225,10 +225,9 @@ func (this *PublishController) Publish() {
 				nodeIds = append(nodeIds, nodeNode["node_id"])
 			}
 		}
-		nodeIdsStr := strings.Join(nodeIds, ",")
 		nodeGroupNodes := []map[string]string{}
 		for _, node := range defaultNodes {
-			if strings.Contains(nodeIdsStr, node["node_id"]) {
+			if utils.Array.InArray(node["node_id"], nodeIds) {
 				nodeValue := map[string]string{
 					"node_id": node["node_id"],
 					"name": node["name"],
@@ -464,20 +463,30 @@ func (this *PublishController) DoReset() {
 
 func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{}, projectId string, isGrayScale int, nodeIds []string) {
 
-	// 不是灰度发布，获取所有的节点数据
+	// 查找该项目下所有的节点
+	projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
+	if len(projectNodes) <= 0 {
+		this.jsonError("该项目下还没有节点！请先添加节点后再发布")
+	}
+	if err != nil {
+		this.ErrorLog("创建任务查询项目 "+projectId+" 节点关系失败：" + err.Error())
+		this.jsonError("创建任务失败！")
+	}
+	// 查找该项目所有的节点信息
+	allNodeIds := []string{}
+	for _, projectNode := range projectNodes {
+		allNodeIds = append(nodeIds, projectNode["node_id"])
+	}
+
+	// 不是灰度发布，发布节点是所有的节点
 	if isGrayScale == models.PROJECT_GRAYSCALE_PUBLISH_FALASE {
-		// 查找该项目下的节点
-		projectNodes, err := models.ProjectNodeModel.GetProjectNodeByProjectId(projectId)
-		if len(projectNodes) <= 0 {
-			this.jsonError("该项目下还没有节点！请先添加节点后再发布")
-		}
-		if err != nil {
-			this.ErrorLog("创建任务查询项目 "+projectId+" 节点关系失败：" + err.Error())
-			this.jsonError("创建任务失败！")
-		}
-		// 查找该项目所有的节点信息
-		for _, projectNode := range projectNodes {
-			nodeIds = append(nodeIds, projectNode["node_id"])
+		nodeIds = allNodeIds
+	}else {
+		// 验证节点是否是该项目下节点
+		for _, nodeId := range nodeIds {
+			if !utils.Array.InArray(nodeId, allNodeIds) {
+				this.jsonError("不能选择不属于该项目下的节点")
+			}
 		}
 	}
 
