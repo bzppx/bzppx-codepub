@@ -7,11 +7,6 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "bzppx-agent-codepub/utils",
-			"Comment": "v0.8.2-2-gdf23463",
-			"Rev": "df234633f944c9d1b427f6d9c01cf532403f2271"
-		},
-		{
 			"ImportPath": "github.com/StackExchange/wmi",
 			"Rev": "5d049714c4a64225c3c79a7cf7d02f7fb5b96338"
 		},
