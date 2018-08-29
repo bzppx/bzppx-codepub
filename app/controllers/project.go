@@ -143,7 +143,7 @@ func (this *ProjectController) List() {
 	var err error
 	var count int64
 	var projects []map[string]string
-	if (len(keywords) > 0) {
+	if len(keywords) > 0 {
 		count, err = models.ProjectModel.CountProjectsByKeywords(keywords)
 		projects, err = models.ProjectModel.GetProjectsByKeywordsAndLimit(keywords, limit, number)
 	}else {

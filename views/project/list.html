@@ -10,16 +10,16 @@
                     <div class="input-group">
                         <span class="input-group-addon"> 项目组</span>
                         <select class="form-control" name="group_id">
-                            <option value="">全部</option>
+                            <option name="group_id" value="">全部</option>
                             {{range $group := .groups}}
-                            <option value="{{$group.group_id}}">{{$group.name}}</option>
+                            <option value="{{$group.group_id}}" {{if eq $.keywords.group_id $group.group_id}} selected="selected" {{end}}>{{$group.name}}</option>
                             {{end}}
                         </select>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input class="form-control" name="name" type="text" value="" placeholder=" 项目名">
+                        <input class="form-control" name="keyword" type="text" value="{{.keywords.keyword}}" placeholder=" 项目名">
 				            <span class="input-group-btn">
 				              <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 				            </span>
